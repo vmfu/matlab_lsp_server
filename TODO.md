@@ -145,23 +145,23 @@
 - [x] 1.11.5 Тест: Проверка отсутствия warnings в server.py
 - [x] 1.11.6 Отметка выполнения в TODO.md (поставить ✅ в 1.11.1-1.11.3)
 - [x] 1.11.7 Коммит: `git commit -m "style(server): fix linting warnings (unused imports, long lines)"`
-- [ ] 1.11.8 Пуш: `git push origin master`
-- [ ] 1.11.9 Суммаризация: Описание исправлений linting warnings
-- [ ] 1.11.10 Переход к 2.1 и исполнение TODOs
+- [x] 1.11.8 Пуш: `git push origin master`
+- [x] 1.11.9 Суммаризация: Описание исправлений linting warnings
+- [x] 1.11.10 Переход к 2.1 и исполнение TODOs
 
 ---
 
 ## Phase 2: Essential Features - Основные возможности
 
 ### 2.1 Реализация парсера MATLAB (базовый)
-- [ ] **2.1.1 Анализ задачи**: Изучение MATLAB синтаксиса, проектирование `MatlabParser` для извлечения функций и переменных. **Использовать**: DuckDuckGo MCP для поиска MATLAB syntax docs, z_ai MCP для генерации regex паттернов, z_ai_tools MCP для анализа примеров MATLAB кода
-- [ ] 2.1.2 Создание `src/parser/models.py` с моделями данных (FunctionInfo, VariableInfo, ParseResult)
-- [ ] 2.1.3 Создание `src/parser/matlab_parser.py` с `MatlabParser`
-- [ ] 2.1.4 Реализация извлечения определений функций (function/end)
-- [ ] 2.1.5 Реализация извлечения объявлений переменных
-- [ ] 2.1.6 Реализация извлечения комментариев для документации
-- [ ] 2.1.7 Тест: Парсинг `for_tests/test_matlab_lsp_simple.m` и проверка результатов
-- [ ] 2.1.8 Отметка выполнения в TODO.md (поставить ✅ в 2.1.1-2.1.6)
+- [x] **2.1.1 Анализ задачи**: Изучение MATLAB синтаксиса, проектирование `MatlabParser` для извлечения функций и переменных. **Использовать**: DuckDuckGo MCP для поиска MATLAB syntax docs, z_ai MCP для генерации regex паттернов, z_ai_tools MCP для анализа примеров MATLAB кода
+- [x] 2.1.2 Создание `src/parser/models.py` с моделями данных (FunctionInfo, VariableInfo, ParseResult)
+- [x] 2.1.3 Создание `src/parser/matlab_parser.py` с `MatlabParser`
+- [x] 2.1.4 Реализация извлечения определений функций (function/end)
+- [x] 2.1.5 Реализация извлечения объявлений переменных
+- [x] 2.1.6 Реализация извлечения комментариев для документации
+- [x] 2.1.7 Тест: Парсинг `for_tests/test_matlab_lsp_simple.m` и проверка результатов
+- [x] 2.1.8 Отметка выполнения в TODO.md (поставить ✅ в 2.1.1-2.1.6)
 - [ ] 2.1.9 Коммит: `git commit -m "feat(parser): implement basic MatlabParser (functions, variables, comments)"`
 - [ ] 2.1.10 Пуш: `git push origin master`
 - [ ] 2.1.11 Суммаризация: Описание реализованного парсера MATLAB
