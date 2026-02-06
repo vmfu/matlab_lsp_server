@@ -6,20 +6,25 @@ Language Server Protocol implementation for MATLAB language support.
 """
 
 import argparse
+import logging
 import sys
-from typing import Optional
 
-from pygls.protocol import LanguageServerProtocol
 from pygls.server import LanguageServer
+
+from src.utils.logging import get_logger, setup_logging
 
 __version__ = "0.1.0"
 __all__ = ["MatLSServer", "main"]
+
+# Global logger
+logger = get_logger(__name__)
 
 
 class MatLSServer(LanguageServer):
     """MATLAB Language Server.
 
-    Extends pygls LanguageServer to provide MATLAB-specific language features.
+    Extends pygls LanguageServer to provide MATLAB-specific language
+    features.
     """
 
     def __init__(self, *args, **kwargs):
@@ -27,6 +32,7 @@ class MatLSServer(LanguageServer):
 
     async def initialize_process(self):
         """Initialize the server and register LSP capabilities."""
+        logger.info("Initializing MATLAB LSP Server")
         # TODO: Register handlers and capabilities
         pass
 
@@ -94,9 +100,14 @@ Examples:
 
 
 def main() -> int:
-    """Main entry point for the LSP server."""
+    """Main entry point for LSP server."""
     parser = create_parser()
     args = parser.parse_args()
+
+    # Setup logging
+    log_level = logging.DEBUG if args.verbose else logging.INFO
+    setup_logging(level=log_level)
+    logger.info(f"MATLAB LSP Server v{__version__} starting...")
 
     # Validate arguments
     if not args.stdio and not args.tcp:
@@ -104,7 +115,7 @@ def main() -> int:
         return 1
 
     if args.stdio and args.tcp:
-        print("Error: Cannot specify both --stdio and --tcp", file=sys.stderr)
+        logger.error("Cannot specify both --stdio and --tcp")
         return 1
 
     # Create server instance
@@ -116,21 +127,21 @@ def main() -> int:
     # Run server
     try:
         if args.stdio:
-            print(f"MATLAB LSP Server v{__version__} starting in stdio mode...",
-                  file=sys.stderr)
+            logger.debug("Starting in stdio mode")
             server.start_io()
         elif args.tcp:
-            print(f"MATLAB LSP Server v{__version__} starting on {args.host}:{args.port}...",
-                  file=sys.stderr)
+            logger.info(
+                f"Starting TCP mode on {args.host}:{args.port}"
+            )
             server.start_tcp(args.host, args.port)
 
         return 0
 
     except KeyboardInterrupt:
-        print("\nShutting down server...", file=sys.stderr)
+        logger.info("Shutting down server...")
         return 0
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        logger.error(f"Error: {e}")
         return 1
 
 
