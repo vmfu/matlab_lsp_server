@@ -133,18 +133,18 @@
 - [x] 1.10.7 Тест: Запуск `pytest --cov=src` и проверка покрытия
 - [x] 1.10.8 Отметка выполнения в TODO.md (поставить ✅ в 1.10.1-1.10.6)
 - [x] 1.10.9 Коммит: `git commit -m "test(pytest): setup pytest framework and basic unit/integration tests"`
-- [ ] 1.10.10 Пуш: `git push origin master`
-- [ ] 1.10.11 Суммаризация: Описание настроенного тестового фреймворка
+- [x] 1.10.10 Пуш: `git push origin master`
+- [x] 1.10.11 Суммаризация: Описание настроенного тестового фреймворка
 - [ ] 1.10.12 Переход к 1.11 и исполнение TODOs
 
 ### 1.11 Очистка linting warning в server.py
 - [ ] **1.11.1 Анализ задачи**: Анализ текущих warning (unused imports, long lines), планировка исправлений
-- [ ] 1.11.2 Удаление неиспользуемых импортов (`typing.Optional`, `pygls.protocol.LanguageServerProtocol`)
-- [ ] 1.11.3 Разбивка длинных строк (строки 119, 123) для соответствия PEP 8
-- [ ] 1.11.4 Запуск `flake8 server.py` для проверки исправлений
-- [ ] 1.11.5 Тест: Проверка отсутствия warnings в server.py
-- [ ] 1.11.6 Отметка выполнения в TODO.md (поставить ✅ в 1.11.1-1.11.3)
-- [ ] 1.11.7 Коммит: `git commit -m "style(server): fix linting warnings (unused imports, long lines)"`
+- [x] 1.11.2 Удаление неиспользуемых импортов (`typing.Optional`, `pygls.protocol.LanguageServerProtocol`)
+- [x] 1.11.3 Разбивка длинных строк (строки 119, 123) для соответствия PEP 8
+- [x] 1.11.4 Запуск `flake8 server.py` для проверки исправлений
+- [x] 1.11.5 Тест: Проверка отсутствия warnings в server.py
+- [x] 1.11.6 Отметка выполнения в TODO.md (поставить ✅ в 1.11.1-1.11.3)
+- [x] 1.11.7 Коммит: `git commit -m "style(server): fix linting warnings (unused imports, long lines)"`
 - [ ] 1.11.8 Пуш: `git push origin master`
 - [ ] 1.11.9 Суммаризация: Описание исправлений linting warnings
 - [ ] 1.11.10 Переход к 2.1 и исполнение TODOs

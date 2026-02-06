@@ -133,7 +133,8 @@ def main() -> int:
             server.start_io()
         elif args.tcp:
             logger.info(
-                f"Starting TCP mode on {args.host}:{args.port}"
+                f"Starting TCP mode on "
+                f"{args.host}:{args.port}"
             )
             server.start_tcp(args.host, args.port)
 
