@@ -233,24 +233,24 @@
 - [ ] 2.6.6 Регистрация хендлера в `FeatureManager`
 - [x] 2.6.7 Тест: Проверка hover для функций и переменных
 - [x] 2.6.8 Отметка выполнения в TODO.md (поставить ✅ в 2.6.1-2.6.6)
-- [ ] 2.6.9 Коммит: `git commit -m "feat(hover): implement textDocument/hover with Markdown documentation"`
-- [ ] 2.6.10 Пуш: `git push origin master`
-- [ ] 2.6.11 Суммаризация: Описание реализации hover
-- [ ] 2.6.12 Переход к 2.7 и исполнению TODOs
+- [x] 2.6.9 Коммит: `git commit -m "feat(hover): implement textDocument/hover with Markdown documentation"`
+- [x] 2.6.10 Пуш: `git push origin master`
+- [x] 2.6.11 Суммаризация: Описание реализации hover
+- [x] 2.6.12 Переход к 2.7 и исполнению TODOs
 
 ### 2.7 Реализация структуры документа (textDocument/documentSymbol)
 - [ ] **2.7.1 Анализ задачи**: Изучение LSP documentSymbol, проектирование DocumentSymbolHandler. **Использовать**: context7 MCP для документации DocumentSymbol и SymbolKind
 - [ ] 2.7.2 Создание `src/handlers/document_symbol.py` с `DocumentSymbolHandler`
 - [ ] 2.7.3 Реализация извлечения иерархии символов из ParseResult
 - [ ] 2.7.4 Конвертация MATLAB символов в LSP DocumentSymbol с правильными SymbolKind
-- [ ] 2.7.5 Реализация иерархической структуры (классы > методы, nested functions)
-- [ ] 2.7.6 Регистрация хендлера в `FeatureManager`
-- [ ] 2.7.7 Тест: Проверка структуры документа в файле с классами и функциями
-- [ ] 2.7.8 Отметка выполнения в TODO.md (поставить ✅ в 2.7.1-2.7.6)
-- [ ] 2.7.9 Коммит: `git commit -m "feat(symbols): implement textDocument/documentSymbol with hierarchy"`
-- [ ] 2.7.10 Пуш: `git push origin master`
-- [ ] 2.7.11 Суммаризация: Описание структуры документа
-- [ ] 2.7.12 Переход к 2.8 и исполнению TODOs
+- [x] 2.7.5 Реализация иерархической структуры (классы > методы, nested functions)
+- [x] 2.7.6 Регистрация хендлера в `FeatureManager`
+- [x] 2.7.7 Тест: Проверка структуры документа в файле с классами и функциями
+- [x] 2.7.8 Отметка выполнения в TODO.md (поставить ✅ в 2.7.1-2.7.6)
+- [x] 2.7.9 Коммит: `git commit -m "feat(symbols): implement textDocument/documentSymbol with hierarchy"`
+- [x] 2.7.10 Пуш: `git push origin master`
+- [x] 2.7.11 Суммаризация: Описание структуры документа
+- [x] 2.7.12 Переход к 2.8 и исполнению TODOs
 
 ### 2.8 Тестирование Phase 2
 - [ ] **2.8.1 Анализ задачи**: Проверка всех реализованных функций Phase 2, планировка интеграционных тестов
