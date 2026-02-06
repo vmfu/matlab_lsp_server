@@ -165,10 +165,10 @@
 - [x] 2.1.9 Коммит: `git commit -m "feat(parser): implement basic MatlabParser (functions, variables, comments)"`
 - [x] 2.1.10 Пуш: `git push origin master`
 - [x] 2.1.11 Суммаризация: Описание реализованного парсера MATLAB
-- [ ] 2.1.12 Переход к 2.2 и исполнению TODOs
+- [x] 2.1.12 Переход к 2.2 и исполнению TODOs
 
 ### 2.2 Расширенный парсер MATLAB (классы и вложенные функции)
-- [ ] **2.2.1 Анализ задачи**: Изучение MATLAB classdef syntax и nested functions, планировка расширений парсера. **Использовать**: DuckDuckGo MCP для поиска MATLAB OOP syntax, z_ai MCP для генерации парсера классов
+- [x] **2.2.1 Анализ задачи**: Изучение MATLAB classdef syntax и nested functions, планировка расширений парсера. **Использовать**: DuckDuckGo MCP для поиска MATLAB OOP syntax, z_ai MCP для генерации парсера классов
 - [x] 2.2.2 Реализация извлечения определений классов (classdef/end)
 - [x] 2.2.3 Реализация извлечения свойств классов
 - [x] 2.2.4 Реализация извлечения методов классов
@@ -182,17 +182,17 @@
 - [x] 2.2.12 Переход к 2.3 и исполнению TODOs
 
 ### 2.3 Реализация менеджера кэширования
-- [ ] **2.3.1 Анализ задачи**: Изучение требований к кэшированию (parse cache, analysis cache), проектирование `CacheManager`. **Использовать**: context7 MCP для документации cachetools
-- [ ] 2.3.2 Создание `src/utils/cache.py` с `CacheManager`
-- [ ] 2.3.3 Реализация кэша результатов парсинга файлов
+- [x] **2.3.1 Анализ задачи**: Изучение требований к кэшированию (parse cache, analysis cache), проектирование `CacheManager`. **Использовать**: context7 MCP для документации cachetools
+- [x] 2.3.2 Создание `src/utils/cache.py` с `CacheManager`
+- [x] 2.3.3 Реализация кэша результатов парсинга файлов
 - [x] 2.3.4 Реализация кэша результатов mlint анализа
-- [ ] 2.3.5 Реализация инвалидации кэша при изменении файла
-- [ ] 2.3.6 Интеграция кэширования в парсер и анализатор
-- [ ] 2.3.7 Тест: Проверка работы кэша и инвалидации
-- [ ] 2.3.8 Отметка выполнения в TODO.md (поставить ✅ в 2.3.1-2.3.6)
-- [ ] 2.3.9 Коммит: `git commit -m "feat(cache): implement CacheManager for parse and analysis results"`
+- [x] 2.3.5 Реализация инвалидации кэша при изменении файла
+- [x] 2.3.6 Интеграция кэширования в парсер и анализатор
+- [x] 2.3.7 Тест: Проверка работы кэша и инвалидации
+- [x] 2.3.8 Отметка выполнения в TODO.md (поставить ✅ в 2.3.1-2.3.6)
+- [x] 2.3.9 Коммит: `git commit -m "feat(cache): implement CacheManager for parse and analysis results"`
 - [x] 2.3.10 Пуш: `git push origin master`
-- [ ] 2.3.11 Суммаризация: Описание менеджера кэширования
+- [x] 2.3.11 Суммаризация: Описание менеджера кэширования
 - [x] 2.3.12 Переход к 2.4 и исполнению TODOs
 
 ### 2.4 Реализация таблицы символов (Symbol Table)
@@ -202,35 +202,35 @@
 - [x] 2.4.4 Реализация удаления символов при закрытии файлов
 - [x] 2.4.5 Реализация поиска символов по имени и URI
 - [x] 2.4.6 Интеграция с `MatlabParser` для пополнения Symbol Table
-- [ ] 2.4.7 Тест: Индексация символов в тестовых .m файлах
+- [x] 2.4.7 Тест: Индексация символов в тестовых .m файлах
 - [x] 2.4.8 Отметка выполнения в TODO.md (поставить ✅ в 2.4.1-2.4.6)
-- [ ] 2.4.9 Коммит: `git commit -m "feat(symbols): implement SymbolTable for code indexing"`
-- [ ] 2.4.10 Пуш: `git push origin master`
-- [ ] 2.4.11 Суммаризация: Описание таблицы символов
+- [x] 2.4.9 Коммит: `git commit -m "feat(symbols): implement SymbolTable for code indexing"`
+- [x] 2.4.10 Пуш: `git push origin master`
+- [x] 2.4.11 Суммаризация: Описание таблицы символов
 - [x] 2.4.12 Переход к 2.5 и исполнению TODOs
 
 ### 2.5 Реализация автодополнения кода (textDocument/completion)
 - [x] **2.5.1 Анализ задачи**: Изучение LSP completion items, проектирование CompletionHandler. **Использовать**: context7 MCP для документации CompletionItem и CompletionParams, z_ai MCP для генерации логики ранжирования
-- [ ] 2.5.2 Создание `src/handlers/completion.py` с `CompletionHandler`
-- [ ] 2.5.3 Реализация получения контекста курсора
-- [ ] 2.5.4 Реализация фильтрации кандидатов из Symbol Table
-- [ ] 2.5.5 Реализация ранжирования результатов (по частоте использования, контекстуальность)
+- [x] 2.5.2 Создание `src/handlers/completion.py` с `CompletionHandler`
+- [x] 2.5.3 Реализация получения контекста курсора
+- [x] 2.5.4 Реализация фильтрации кандидатов из Symbol Table
+- [x] 2.5.5 Реализация ранжирования результатов (по частоте использования, контекстуальность)
 - [x] 2.5.6 Добавление built-in MATLAB функций к результатам
-- [ ] 2.5.7 Регистрация хендлера в `FeatureManager`
-- [ ] 2.5.8 Тест: Проверка автодополнения в тестовом .m файле
-- [ ] 2.5.9 Отметка выполнения в TODO.md (поставить ✅ в 2.5.1-2.5.7)
-- [ ] 2.5.10 Коммит: `git commit -m "feat(completion): implement textDocument/completion with ranking"`
-- [ ] 2.5.11 Пуш: `git push origin master`
+- [x] 2.5.7 Регистрация хендлера в `FeatureManager`
+- [x] 2.5.8 Тест: Проверка автодополнения в тестовом .m файле
+- [x] 2.5.9 Отметка выполнения в TODO.md (поставить ✅ в 2.5.1-2.5.7)
+- [x] 2.5.10 Коммит: `git commit -m "feat(completion): implement textDocument/completion with ranking"`
+- [x] 2.5.11 Пуш: `git push origin master`
 - [x] 2.5.12 Суммаризация: Описание автодополнения
-- [ ] 2.5.13 Переход к 2.6 и исполнению TODOs
+- [x] 2.5.13 Переход к 2.6 и исполнению TODOs
 
 ### 2.6 Реализация подсказок при наведении (textDocument/hover)
-- [ ] **2.6.1 Анализ задачи**: Изучение LSP hover, проектирование HoverHandler для отображения документации. **Использовать**: context7 MCP для документации HoverParams и HoverResult
-- [ ] 2.6.2 Создание `src/handlers/hover.py` с `HoverHandler`
+- [x] **2.6.1 Анализ задачи**: Изучение LSP hover, проектирование HoverHandler для отображения документации. **Использовать**: context7 MCP для документации HoverParams и HoverResult
+- [x] 2.6.2 Создание `src/handlers/hover.py` с `HoverHandler`
 - [x] 2.6.3 Реализация получения информации о символе под курсором
-- [ ] 2.6.4 Реализация извлечения документации из комментариев
-- [ ] 2.6.5 Реализация форматирования вывода с Markdown
-- [ ] 2.6.6 Регистрация хендлера в `FeatureManager`
+- [x] 2.6.4 Реализация извлечения документации из комментариев
+- [x] 2.6.5 Реализация форматирования вывода с Markdown
+- [x] 2.6.6 Регистрация хендлера в `FeatureManager`
 - [x] 2.6.7 Тест: Проверка hover для функций и переменных
 - [x] 2.6.8 Отметка выполнения в TODO.md (поставить ✅ в 2.6.1-2.6.6)
 - [x] 2.6.9 Коммит: `git commit -m "feat(hover): implement textDocument/hover with Markdown documentation"`
@@ -240,9 +240,9 @@
 
 ### 2.7 Реализация структуры документа (textDocument/documentSymbol)
 - [x] **2.7.1 Анализ задачи**: Изучение LSP documentSymbol, проектирование DocumentSymbolHandler. **Использовать**: context7 MCP для документации DocumentSymbol и SymbolKind
-- [ ] 2.7.2 Создание `src/handlers/document_symbol.py` с `DocumentSymbolHandler`
-- [ ] 2.7.3 Реализация извлечения иерархии символов из ParseResult
-- [ ] 2.7.4 Конвертация MATLAB символов в LSP DocumentSymbol с правильными SymbolKind
+- [x] 2.7.2 Создание `src/handlers/document_symbol.py` с `DocumentSymbolHandler`
+- [x] 2.7.3 Реализация извлечения иерархии символов из ParseResult
+- [x] 2.7.4 Конвертация MATLAB символов в LSP DocumentSymbol с правильными SymbolKind
 - [x] 2.7.5 Реализация иерархической структуры (классы > методы, nested functions)
 - [x] 2.7.6 Регистрация хендлера в `FeatureManager`
 - [x] 2.7.7 Тест: Проверка структуры документа в файле с классами и функциями
@@ -255,16 +255,16 @@
 ### 2.8 Тестирование Phase 2
 - [x] **2.8.1 Анализ задачи**: Проверка всех реализованных функций Phase 2, планировка интеграционных тестов
 - [x] 2.8.2 Создание `tests/unit/test_parser.py` с тестами парсера
-- [ ] 2.8.3 Создание `tests/unit/test_cache.py` с тестами кэша
+- [x] 2.8.3 Создание `tests/unit/test_cache.py` с тестами кэша
 - [x] 2.8.4 Создание `tests/unit/test_symbol_table.py` с тестами Symbol Table
 - [x] 2.8.5 Создание `tests/unit/test_handlers.py` с тестами completion и hover
 - [x] 2.8.6 Создание `tests/fixtures/matlab_samples/` с тестовыми .m файлами
 - [x] 2.8.7 Запуск `pytest --cov=src` и проверка покрытия (>70%)
 - [x] 2.8.8 Отметка выполнения в TODO.md (поставить ✅ в 2.8.1-2.8.6)
 - [x] 2.8.9 Коммит: `git commit -m "test(phase2): add comprehensive tests for parser, cache, symbols, handlers"`
-- [ ] 2.8.10 Пуш: `git push origin master`
-- [ ] 2.8.11 Суммаризация: Описание результатов тестирования Phase 2
-- [ ] 2.8.12 Переход к 3.1 и исполнению TODOs
+- [x] 2.8.10 Пуш: `git push origin master`
+- [x] 2.8.11 Суммаризация: Описание результатов тестирования Phase 2
+- [x] 2.8.12 Переход к 3.1 и исполнению TODOs
 
 ---
 
