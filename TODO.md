@@ -64,20 +64,20 @@
 - [x] 1.5.6 Регистрация lifecycle хендлеров в `MatLSServer`
 - [x] 1.5.7 Тест: Проверка инициализации сервера через JSON-RPC сообщения
 - [x] 1.5.8 Отметка выполнения в TODO.md (поставить ✅ в 1.5.1-1.5.6)
-- [ ] 1.5.9 Коммит: `git commit -m "feat(protocol): implement LSP lifecycle handlers (initialize, shutdown, exit)"`
+- [x] 1.5.9 Коммит: `git commit -m "feat(protocol): implement LSP lifecycle handlers (initialize, shutdown, exit)"`
 - [ ] 1.5.10 Пуш: `git push origin master`
 - [ ] 1.5.11 Суммаризация: Описание реализации lifecycle хендлеров
 - [ ] 1.5.12 Переход к 1.6 и исполнение TODOs
 
 ### 1.6 Реализация менеджера возможностей (Feature Manager)
-- [ ] **1.6.1 Анализ задачи**: Изучение LSP capabilities, проектирование `FeatureManager` для регистрации LSP возможностей. **Использовать**: context7 MCP для документации LSP capabilities в lsprotocol
-- [ ] 1.6.2 Создание `src/features/feature_manager.py` с классом `FeatureManager`
-- [ ] 1.6.3 Реализация метода `register()` для регистрации хендлеров
-- [ ] 1.6.4 Реализация метода `get_capabilities()` для получения списка возможностей
-- [ ] 1.6.5 Интеграция `FeatureManager` в `MatLSServer`
-- [ ] 1.6.6 Тест: Проверка регистрации хендлеров и получения capabilities
-- [ ] 1.6.7 Отметка выполнения в TODO.md (поставить ✅ в 1.6.1-1.6.5)
-- [ ] 1.6.8 Коммит: `git commit -m "feat(features): implement FeatureManager for LSP capabilities"`
+- [x] **1.6.1 Анализ задачи**: Изучение LSP capabilities, проектирование `FeatureManager` для регистрации LSP возможностей. **Использовать**: context7 MCP для документации LSP capabilities в lsprotocol
+- [x] 1.6.2 Создание `src/features/feature_manager.py` с классом `FeatureManager`
+- [x] 1.6.3 Реализация метода `register()` для регистрации хендлеров
+- [x] 1.6.4 Реализация метода `get_capabilities()` для получения списка возможностей
+- [x] 1.6.5 Интеграция `FeatureManager` в `MatLSServer`
+- [x] 1.6.6 Тест: Проверка регистрации хендлеров и получения capabilities
+- [x] 1.6.7 Отметка выполнения в TODO.md (поставить ✅ в 1.6.1-1.6.5)
+- [x] 1.6.8 Коммит: `git commit -m "feat(features): implement FeatureManager for LSP capabilities"`
 - [ ] 1.6.9 Пуш: `git push origin master`
 - [ ] 1.6.10 Суммаризация: Описание менеджера возможностей
 - [ ] 1.6.11 Переход к 1.7 и исполнение TODOs

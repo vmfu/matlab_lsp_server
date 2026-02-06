@@ -2,7 +2,7 @@
 REM MATLAB Lint Script for Windows
 REM Run mlint on all .m files in the current directory
 
-set MATLAB_PATH=C:\Program Files\MATLAB\R2023b\bin\win64\mlint.exe
+set MATLAB_PATH=H:\Program Files\MATLAB\R2023b\bin\win64\mlint.exe
 
 if not exist "%MATLAB_PATH%" (
     echo Error: mlint.exe not found at %MATLAB_PATH%

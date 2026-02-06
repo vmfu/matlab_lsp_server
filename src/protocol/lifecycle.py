@@ -9,14 +9,25 @@ from typing import Any, Optional
 from lsprotocol.types import (
     InitializeParams,
     InitializeResult,
-    ServerCapabilities,
-    TextDocumentSyncKind,
 )
 from pygls.server import LanguageServer
 
 from src.utils.logging import get_logger
+from src.features.feature_manager import FeatureManager
 
 logger = get_logger(__name__)
+
+# Global feature manager instance
+_feature_manager = None
+
+
+def get_feature_manager() -> FeatureManager:
+    """Get or create the global FeatureManager instance."""
+    global _feature_manager
+    if _feature_manager is None:
+        _feature_manager = FeatureManager()
+        logger.debug("FeatureManager instance created")
+    return _feature_manager
 
 
 def register_lifecycle_handlers(server: LanguageServer) -> None:
@@ -44,36 +55,9 @@ def register_lifecycle_handlers(server: LanguageServer) -> None:
             f"v{params.client_info.version if params.client_info else 'unknown'}"
         )
 
-        # Define server capabilities
-        capabilities = ServerCapabilities(
-            # Text document synchronization (full for now)
-            text_document_sync=TextDocumentSyncKind.Full,
-            # We support completion (to be implemented)
-            completion_provider={
-                "resolveProvider": False,
-                "triggerCharacters": [".", "("],
-            },
-            # We support hover (to be implemented)
-            hover_provider=True,
-            # We support document symbols (to be implemented)
-            document_symbol_provider=True,
-            # We support definition (to be implemented)
-            definition_provider=True,
-            # We support references (to be implemented)
-            references_provider=True,
-            # We support code actions (to be implemented)
-            code_action_provider={
-                "codeActionKinds": [
-                    "quickfix",
-                    "refactor",
-                    "source.organizeImports",
-                ]
-            },
-            # We support document formatting (to be implemented)
-            document_formatting_provider=True,
-            # We support workspace symbols (to be implemented)
-            workspace_symbol_provider=True,
-        )
+        # Get capabilities from FeatureManager
+        feature_mgr = get_feature_manager()
+        capabilities = feature_mgr.get_capabilities()
 
         logger.info("Server capabilities configured")
         return InitializeResult(
