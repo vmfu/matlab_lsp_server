@@ -1,417 +1,447 @@
-# Архитектура LSP MATLAB Server для Windows
+# LSP MATLAB Server Architecture
 
-## Обзор проекта
+Document describing the architecture and design decisions of LSP MATLAB Server.
 
-LSP MATLAB Server - это реализация Language Server Protocol (LSP) для языка программирования MATLAB, предназначенная для работы на платформе Windows. Сервер обеспечивает интеллектуальные возможности редактирования кода MATLAB в различных редакторах, включая TUI Crush.
+## Overview
 
-## Технологический стек
+LSP MATLAB Server is an event-driven Language Server Protocol (LSP) implementation built with Python and pygls framework. The server provides intelligent code editing features for MATLAB files (.m, .mlx).
 
-### Основные технологии
+## Architecture
 
-| Компонент | Технология | Назначение |
-|-----------|------------|------------|
-| **LSP Framework** | pygls (Python) | Библиотека для создания Language Server |
-| **Python** | 3.10+ | Основной язык реализации |
-| **Анализ кода MATLAB** | MATLAB mlint.exe | Статический анализ кода MATLAB |
-| **Парсинг кода** | tree-sitter-matlab / regex | Парсинг MATLAB синтаксиса |
-
-### Зависимости
-
-```python
-# Основные зависимости
-pygls>=0.13.0              # LSP framework
-lsprotocol>=2023.0.0      # LSP протокол типы
-```
-
-> **Использование интеллектуальных инструментов**: Для определения оптимальных зависимостей и версий библиотек используются инструменты анализа экосистемы Python, такие как агенты для поиска и анализа документации на PyPI и GitHub, а также MCP инструменты:
-> - **z_ai MCP** - для генерации и анализа кода
-> - **context7 MCP** - для получения актуальной документации по библиотекам
-> - **DuckDuckGo MCP** - для поиска в интернете
-> - **Filesystem MCP** - для анализа файлов проекта
-
-## Архитектурные компоненты
+### Layered Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         LSP Client (TUI Crush)                  │
-└─────────────────────────────────────────────────────────────────┘
-                              ▲
-                              │ JSON-RPC
-                              │ (stdin/stdout)
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                   MATLAB LSP Server (pygls)                     │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
-│  │   Protocol   │  │   Features   │  │     Handlers         │  │
-│  │   Layer      │  │   Manager    │  │     (LSP methods)    │  │
-│  └──────────────┘  └──────────────┘  └──────────────────────┘  │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
-│  │    Parser    │  │   Analyzer   │  │   Cache Manager      │  │
-│  │   MATLAB     │  │   (mlint)    │  │                      │  │
-│  └──────────────┘  └──────────────┘  └──────────────────────┘  │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
-│  │ Symbol Table │  │ Indexer      │  │   Config Manager     │  │
-│  └──────────────┘  └──────────────┘  └──────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-                              ▲
-                              │ Process execution
-                              │
-┌─────────────────────────────────────────────────────────────────┐
-│              MATLAB Installation (mlint.exe)                     │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                   LSP Client (IDE)                 │
+└────────────────────────────────────┬────────────────────┘
+                             │ LSP Protocol
+                             │ (JSON-RPC)
+                             ▼
+┌─────────────────────────────────────────────────────────────┐
+│              LSP MATLAB Server (pygls)          │
+└────────────────────────────────────┬────────────────────┘
+                             │
+       ┌───────────────────────┼───────────────────────┐
+       │                       │                       │
+       ▼                       ▼                       ▼
+┌─────────────┐    ┌─────────────────┐    ┌──────────────┐
+│  Handlers   │    │   Protocol      │    │   Features   │
+│             │    │                 │    │              │
+│ Completion  │    │ Document Sync   │    │ Manager      │
+│ Hover       │    │ Lifecycle      │    │              │
+│ Definition  │    │                 │    │              │
+│ References  │    └─────────────────┘    └──────┬───────┘
+│ Code Action  │                                 │
+│ Document    │                          ┌──────────────┴─────────────┐
+│ Formatting  │                          │   Parser &   │              │
+│ Workspace   │                          │  Symbol     │    ┌─────────┤
+└─────────────┘                          │   Table     │    │ Analyzer │
+                                         └──────────────┘    └─────────┘
 ```
 
-## Подробное описание компонентов
+### Components
 
-### 1. Protocol Layer (Слой протокола)
+#### 1. LSP Server Core (`src/server.py`)
+- Entry point for LSP server
+- Initialization of pygls server
+- Registration of LSP handlers
+- Configuration management
 
-**Назначение**: Обработка LSP сообщений и координация работы сервера
+#### 2. Protocol Layer (`src/protocol/`)
 
-**Ответственности**:
-- Инициализация и завершение работы сервера (`initialize`, `shutdown`, `exit`)
-- Управление возможностями сервера (Server Capabilities)
-- Обработка lifecycle событий
+##### Document Sync (`document_sync.py`)
+- `didOpen` - File opened event
+- `didClose` - File closed event
+- `didChange` - Content changed event
+- `didSave` - File saved event
+- Document caching for efficient access
 
-**Ключевые файлы**:
-- `server.py` - Главная точка входа, настройка LSP сервера
-- `protocol/` - Модули для обработки протокольных сообщений
+##### Lifecycle (`lifecycle.py`)
+- `initialize` - Server initialization
+- `initialized` - Client ready
+- `shutdown` - Server shutdown
+- `exit` - Server exit
 
-```python
-# Пример структуры
-class MatLSServer(LanguageServer):
-    """Основной класс LSP сервера для MATLAB"""
-```
+#### 3. Handlers Layer (`src/handlers/`)
 
-### 2. Features Manager (Менеджер возможностей)
+##### Base Handler (`base.py`)
+- Abstract base class for all LSP handlers
+- Common utility methods
+- Logging integration
 
-**Назначение**: Регистрация и управление LSP возможностями
+##### Completion Handler (`completion.py`)
+- Code completion suggestions
+- Relevance ranking algorithm
+- Built-in MATLAB functions
+- Keyword completions
 
-**Поддерживаемые возможности**:
+##### Hover Handler (`hover.py`)
+- Documentation on hover
+- Symbol information display
+- Markdown formatting
+- Position-based lookup
 
-| Возможность | Статус | Описание |
-|-------------|--------|----------|
-| `textDocument/completion` | ✅ Запланировано | Автодополнение кода |
-| `textDocument/hover` | ✅ Запланировано | Информация при наведении |
-| `textDocument/definition` | ✅ Запланировано | Переход к определению |
-| `textDocument/references` | ✅ Запланировано | Поиск использований |
-| `textDocument/diagnostic` | ✅ Приоритет | Диагностика ошибок |
-| `textDocument/documentSymbol` | ✅ Запланировано | Структура документа |
-| `textDocument/codeAction` | ✅ Запланировано | Исправления кода |
-| `textDocument/formatting` | ✅ Запланировано | Форматирование |
-| `workspace/symbol` | ✅ Запланировано | Поиск символов |
+##### Definition Handler (`definition.py`)
+- Go-to-definition navigation
+- Cross-file symbol search
+- Location generation
+- Multiple definition support
 
-> **Использование интеллектуальных инструментов**: Для определения приоритетов и последовательности реализации возможностей используются агенты для анализа существующих MATLAB LSP реализаций и лучших практик разработки LSP серверов. В проекте активно применяются MCP инструменты:
-> - **z_ai MCP** - для генерации шаблонов кода LSP хендлеров
-> - **context7 MCP** - для получения документации по pygls и LSP спецификации
-> - **z_ai_tools MCP** - для анализа архитектурных диаграмм и технической документации
+##### References Handler (`references.py`)
+- Find-all-references
+- Cross-file reference search
+- includeDeclaration parameter
+- Location list generation
 
-### 3. Handlers (Обработчики LSP методов)
+##### Code Action Handler (`code_action.py`)
+- Quick fix suggestions
+- Diagnostic analysis
+- Fix generation
+- Edit application
 
-**Назначение**: Реализация конкретных LSP методов
+##### Document Symbol Handler (`document_symbol.py`)
+- Document structure outline
+- Hierarchical symbol tree
+- Symbol kind mapping
+- Nested function support
 
-**Структура директории**:
-```
-handlers/
-├── __init__.py
-├── completion.py      # Обработка автодополнения
-├── diagnostics.py     # Диагностика ошибок
-├── hover.py           # Информация при наведении
-├── definition.py      # Переход к определению
-├── references.py      # Поиск ссылок
-└── formatting.py      # Форматирование кода
-```
+##### Workspace Symbol Handler (`workspace_symbol.py`)
+- Project-wide symbol search
+- Fuzzy matching
+- Kind filtering
+- Symbol information generation
 
-### 4. MATLAB Parser (Парсер MATLAB)
+##### Formatting Handler (`formatting.py`)
+- Automatic code formatting
+- Indentation management
+- End keyword alignment
+- Configurable style
 
-**Назначение**: Парсинг MATLAB кода для извлечения информации
+##### Diagnostics Handler (`diagnostics.py`)
+- Diagnostic publishing
+- Mlint integration
+- Severity mapping
+- Error display
 
-**Возможности**:
-- Извлечение определений функций
-- Поиск объявлений переменных
-- Определение структуры классов
-- Парсинг комментариев для документации
+#### 4. Parser Layer (`src/parser/`)
 
-**Реализация**:
-- Основной: regex паттерны для MATLAB синтаксиса
-- Расширенный: tree-sitter-matlab (если доступен)
+##### MATLAB Parser (`matlab_parser.py`)
+- Regex-based MATLAB syntax parser
+- Function extraction
+- Variable extraction
+- Comment extraction
+- Class parsing
+- Nested structure support
 
-```python
-class MatlabParser:
-    """Парсер MATLAB кода"""
+##### Models (`models.py`)
+- Data classes for parse results
+- `ParseResult` - Complete parse information
+- `FunctionInfo` - Function details
+- `ClassInfo` - Class details
+- `CommentInfo` - Comment details
 
-    def parse_file(self, content: str) -> ParseResult:
-        """Парсит содержимое .m файла"""
+#### 5. Symbol Table (`src/utils/symbol_table.py`)
 
-    def extract_functions(self, content: str) -> List[FunctionInfo]:
-        """Извлекает определения функций"""
+##### Symbol Storage
+- In-memory symbol indexing
+- Multi-key indexing (name, URI, scope)
+- Fast lookup operations
+- Global instance for all handlers
 
-    def extract_variables(self, content: str) -> List[VariableInfo]:
-        """Извлекает объявления переменных"""
-```
+##### Symbol Types
+- Functions (nested and standalone)
+- Variables (global and persistent)
+- Classes (MATLAB classes)
+- Properties (class properties)
+- Methods (class methods)
 
-> **Использование интеллектуальных инструментов**: Для разработки парсера MATLAB используются агенты для поиска и анализа существующих реализаций парсеров MATLAB на GitHub, а также исследования MATLAB синтаксиса в официальной документации. Применяем MCP инструменты:
-> - **z_ai MCP** - для генерации regex паттернов и парсинга
-> - **context7 MCP** - для доступа к документации MATLAB
-> - **z_ai_tools MCP** - для анализа примеров MATLAB кода и extraction из скриншотов
+#### 6. Cache Manager (`src/utils/cache.py`)
 
-### 5. Analyzer (Анализатор)
+##### Caching Strategy
+- In-memory LRU cache
+- TTL (Time-To-Live) expiration
+- Content-based invalidation
+- Statistics tracking
 
-**Назначение**: Интеграция с MATLAB инструментами статического анализа
+##### Cache Types
+- Parse result cache
+- Mlint analysis cache
+- Symbol lookup cache
 
-**Основной инструмент**: `mlint.exe` из MATLAB
+#### 7. Analyzer Layer (`src/analyzer/`)
 
-**Функционал**:
-- Вызов mlint для анализа кода
-- Парсинг вывода mlint
-- Преобразование в LSP диагностики
-- Кэширование результатов анализа
+##### Base Analyzer (`base_analyzer.py`)
+- Abstract analyzer interface
+- Result model
+- Diagnostic format
 
-```python
-class MlintAnalyzer:
-    """Анализатор на основе MATLAB mlint"""
+##### Mlint Analyzer (`mlint_analyzer.py`)
+- MATLAB mlint integration
+- Output parsing
+- Diagnostic mapping
+- Async execution support
 
-    def analyze(self, filepath: str) -> List[Diagnostic]:
-        """Анализирует файл и возвращает диагностику"""
+#### 8. Features Manager (`src/features/feature_manager.py`)
 
-    def parse_mlint_output(self, output: str) -> List[Diagnostic]:
-        """Парсит вывод mlint и конвертирует в LSP Diagnostic"""
-```
+##### Capability Management
+- LSP server capabilities
+- Feature enable/disable
+- Configuration options
+- Provider registration
 
-### 6. Symbol Table (Таблица символов)
+#### 9. Utilities (`src/utils/`)
 
-**Назначение**: Хранение и управление информацией о символах кода
+##### Logging (`logging.py`)
+- Configurable logging levels
+- Structured logging
+- Request tracing
+- Performance logging
 
-**Типы символов**:
-- Функции (локальные и глобальные)
-- Переменные
-- Классы
-- Свойства классов
-- Методы классов
+##### Performance (`performance.py`)
+- LRU cache implementation
+- Debouncing utilities
+- Time measurement decorator
+- Optimization helpers
 
-**Индексация**:
-- File-level индекс (символы в файле)
-- Workspace-level индекс (символы проекта)
+##### Configuration (`config.py`)
+- Server settings
+- Environment variables
+- Default values
+- Validation
 
-```python
-class SymbolTable:
-    """Таблица символов MATLAB проекта"""
+##### Document Store (`document_store.py`)
+- Document content caching
+- Version tracking
+- Efficient lookup
 
-    def add_symbols(self, uri: str, symbols: List[Symbol]):
-        """Добавляет символы для документа"""
+## Data Flow
 
-    def get_definition(self, uri: str, line: int, column: int) -> Optional[Location]:
-        """Находит определение символа"""
-
-    def find_references(self, uri: str, line: int, column: int) -> List[Location]:
-        """Находит все использования символа"""
-
-    def get_workspace_symbols(self, query: str) -> List[SymbolInformation]:
-        """Поиск символов по имени"""
-```
-
-### 7. Cache Manager (Менеджер кэша)
-
-**Назначение**: Оптимизация производительности через кэширование
-
-**Уровни кэша**:
-1. **Parse Cache** - результаты парсинга файлов
-2. **Analysis Cache** - результаты mlint анализа
-3. **Symbol Cache** - индекс символов
-4. **Completion Cache** - результаты автодополнения
-
-```python
-class CacheManager:
-    """Менеджер кэша для оптимизации"""
-
-    def get_cached_parse(self, uri: str) -> Optional[ParseResult]:
-        """Получает кэшированные результаты парсинга"""
-
-    def invalidate(self, uri: str):
-        """Инвалидирует кэш для файла"""
-```
-
-### 8. Config Manager (Менеджер конфигурации)
-
-**Назначение**: Управление настройками сервера
-
-**Конфигурация**:
-- Путь к MATLAB (для mlint)
-- Правила диагностики
-- Настройки форматирования
-- Исключения из анализа
-
-```python
-class ConfigManager:
-    """Менеджер конфигурации"""
-
-    def get_matlab_path(self) -> str:
-        """Возвращает путь к MATLAB"""
-
-    def get_diagnotic_rules(self) -> Dict[str, bool]:
-        """Возвращает активные правила диагностики"""
-```
-
-## Потоки обработки данных
-
-### Поток диагностики
+### 1. File Open Flow
 
 ```
-Document Change (didChange)
-        ↓
-   Cache Check
-        ↓
-   Parse File
-        ↓
-   Run mlint
-        ↓
-   Parse Output
-        ↓
-   Convert to LSP Diagnostics
-        ↓
-   Publish Diagnostics
+LSP Client → didOpen → Document Sync → Document Store
+              ↓
+         Parser → Symbol Table → Handlers
 ```
 
-### Поток автодополнения
+### 2. Completion Flow
 
 ```
-Completion Request
-        ↓
-   Get Cursor Position
-        ↓
-   Parse Context
-        ↓
-   Query Symbol Table
-        ↓
-   Filter Candidates
-        ↓
-   Rank Results
-        ↓
-   Return Completion Items
+LSP Client → completion → Completion Handler → Symbol Table
+              ↓                      ↓
+         Symbol Table → Ranking → LSP Client
 ```
 
-### Поток перехода к определению
+### 3. Go-to-Definition Flow
 
 ```
-Definition Request
-        ↓
-   Get Cursor Position
-        ↓
-   Parse Symbol
-        ↓
-   Search Symbol Table
-        ↓
-   Return Location
+LSP Client → definition → Definition Handler → Symbol Table
+              ↓                           ↓
+         Position Lookup → Location → LSP Client
 ```
 
-## Структура проекта
+### 4. Diagnostics Flow
 
 ```
-lsp_matlab_for_windows/
-├── server.py                  # Главный файл сервера
-├── requirements.txt           # Зависимости Python
-├── setup.py                   # Установка пакета
-├── src/
-│   ├── __init__.py
-│   ├── protocol/              # LSP протокол обработчики
-│   │   ├── __init__.py
-│   │   └── lifecycle.py
-│   ├── handlers/              # LSP обработчики
-│   │   ├── __init__.py
-│   │   ├── completion.py
-│   │   ├── diagnostics.py
-│   │   ├── hover.py
-│   │   ├── definition.py
-│   │   ├── references.py
-│   │   ├── formatting.py
-│   │   └── symbols.py
-│   ├── parser/                # Парсер MATLAB
-│   │   ├── __init__.py
-│   │   ├── matlab_parser.py
-│   │   └── models.py
-│   ├── analyzer/              # Анализаторы
-│   │   ├── __init__.py
-│   │   ├── mlint_analyzer.py
-│   │   └── base_analyzer.py
-│   ├── features/              # LSP возможности
-│   │   ├── __init__.py
-│   │   └── feature_manager.py
-│   └── utils/                 # Утилиты
-│       ├── __init__.py
-│       ├── cache.py
-│       ├── config.py
-│       └── logging.py
-├── tests/                     # Тесты
-│   ├── unit/
-│   ├── integration/
-│   └── fixtures/
-├── docs/                      # Документация
-│   ├── ARCHITECTURE.md
-│   ├── README.md
-│   ├── DEVELOPMENT.md
-│   ├── DOCUMENTATION.md
-│   └── INTEGRATION.md
-└── for_tests/                 # Тестовые MATLAB файлы
-    ├── test_lsp_detailed.m
-    └── test_matlab_lsp_simple.m
+File Change → didChange → Document Sync → Analyzer
+                                      ↓
+                                 Mlint → Diagnostics Handler → LSP Client
 ```
 
-## Интеграция с TUI Crush
+## Design Decisions
 
-TUI Crush является LSP клиентом, который:
-1. Запускает MATLAB LSP сервер как отдельный процесс
-2. Отправляет JSON-RPC сообщения через stdin/stdout
-3. Отображает диагностику и предоставляет функции редактирования
+### 1. Regex-Based Parser
+**Decision**: Use regex for MATLAB parsing
+**Rationale**:
+- Faster than full AST for large files
+- Simpler implementation
+- Easier to extend for new syntax
 
-Подробная инструкция по интеграции находится в `INTEGRATION.md`.
+**Trade-offs**:
+- Less precise than AST
+- More complex nested structures
+- Harder to validate syntax
 
-## Производительность и оптимизация
+### 2. In-Memory Symbol Table
+**Decision**: Store symbols in memory
+**Rationale**:
+- Faster lookups (O(1) for direct access)
+- No disk I/O latency
+- Simpler implementation
 
-### Стратегии оптимизации
+**Trade-offs**:
+- Symbol table cleared on server restart
+- Memory usage grows with project size
+- No persistence across sessions
 
-1. **Кэширование**: Все результаты парсинга и анализа кэшируются
-2. **Инкрементный анализ**: Только измененные файлы переанализируются
-3. **Ленивая загрузка**: Индексация создается по требованию
-4. **Параллельная обработка**: Несколько файлов анализируются параллельно
-5. **Дебаунсинг**: События изменения файла группируются
+### 3. Event-Driven Architecture
+**Decision**: Use pygls event system
+**Rationale**:
+- Clean separation of concerns
+- Easy to add new features
+- Standard LSP patterns
 
-### Метрики производительности
+**Trade-offs**:
+- Requires understanding LSP events
+- Event order dependencies
+- Debugging event chains
 
-| Операция | Целевое время | Текущий статус |
-|----------|---------------|----------------|
-| Начальная инициализация | < 1с | Не реализовано |
-| Парсинг файла (1KB) | < 50ms | Не реализовано |
-| Анализ mlint (10KB) | < 500ms | Не реализовано |
-| Автодополнение | < 100ms | Не реализовано |
-| Диагностика файла | < 300ms | Не реализовано |
+### 4. Cache-First Approach
+**Decision**: Cache all expensive operations
+**Rationale**:
+- Significant performance improvement
+- Reduced CPU usage
+- Better user experience
 
-## Безопасность
+**Trade-offs**:
+- Cache invalidation complexity
+- Stale data risk
+- Memory overhead
 
-1. **Валидация путей**: Все пути файлов проверяются
-2. **Изоляция процессов**: MATLAB mlint запускается изолированно
-3. **Ограничение ресурсов**: Лимиты на время выполнения и память
-4. **Логирование**: Все операции логируются для аудита
+### 5. Handler-First Design
+**Decision**: Implement each LSP feature as separate handler
+**Rationale**:
+- Clear module boundaries
+- Independent testing
+- Easy to enable/disable features
 
-## Расширяемость
+**Trade-offs**:
+- More files in project
+- Boilerplate code
+- Handler initialization overhead
 
-Архитектура поддерживает добавление:
-- Новых LSP возможностей
-- Дополнительных анализаторов
-- Альтернативных парсеров
-- Новых источников документации
-- Плагинов для интеграции с внешними инструментами
+## Performance Considerations
 
-## Следующие шаги
+### 1. Parser Performance
+- **Issue**: Regex parsing can be slow for large files
+- **Solution**: Incremental parsing, result caching
+- **Metric**: <100ms for 1000 line file
 
-1. [ ] Реализовать базовую структуру сервера
-2. [ ] Интеграция с mlint для диагностики
-3. [ ] Реализация парсера MATLAB
-4. [ ] Таблица символов и индексация
-5. [ ] Автодополнение кода
-6. [ ] Переход к определению
-7. [ ] Поиск использований
-8. [ ] Форматирование кода
-9. [ ] Интеграция с TUI Crush
-10. [ ] Написание тестов и документации
+### 2. Symbol Table Performance
+- **Issue**: Linear search in symbol table
+- **Solution**: LRU cache for common lookups
+- **Metric**: <1ms for symbol lookup
+
+### 3. Handler Performance
+- **Issue**: Blocking handler calls
+- **Solution**: Async execution for I/O operations
+- **Metric**: <50ms for completion
+
+### 4. Cache Performance
+- **Issue**: Cache memory growth
+- **Solution**: LRU eviction, TTL expiration
+- **Metric**: Max 100MB cache size
+
+## Scalability
+
+### Current Limitations
+1. **File Size**: Optimal for files <10,000 lines
+2. **Symbol Count**: Optimal for <50,000 symbols
+3. **Project Size**: Tested with ~500 files
+4. **Concurrent Users**: Single user per server instance
+
+### Future Improvements
+1. **Incremental Parsing**: Parse only changed lines
+2. **Persistent Cache**: Cache to disk for restart
+3. **Index Database**: SQLite for large symbol tables
+4. **Async I/O**: Non-blocking file operations
+5. **Multi-User**: Support for concurrent users
+
+## Testing Strategy
+
+### Unit Tests
+- Test each component independently
+- Mock external dependencies
+- Focus on edge cases
+- Coverage target: >80%
+
+### Integration Tests
+- Test handler chains
+- Real file scenarios
+- LSP protocol compliance
+- Coverage target: >70%
+
+### Performance Tests
+- Measure handler latency
+- Profile bottlenecks
+- Memory usage monitoring
+- Benchmark large files
+
+## Security Considerations
+
+### 1. Input Validation
+- Validate file paths
+- Sanitize user input
+- Prevent path traversal
+
+### 2. Resource Limits
+- Max file size: 10MB
+- Max symbol count: 100,000
+- Max cache entries: 10,000
+
+### 3. Error Handling
+- Graceful degradation
+- No uncaught exceptions
+- Proper logging
+
+## Dependencies
+
+### Core Dependencies
+- `pygls` - LSP framework
+- `lsprotocol` - LSP types
+- `python` - 3.10+
+
+### Development Dependencies
+- `pytest` - Testing
+- `pytest-cov` - Coverage
+- `black` - Formatting
+- `flake8` - Linting
+- `isort` - Import sorting
+
+### External Tools
+- `mlint` - MATLAB linting (optional)
+- `python` - Execution environment
+
+## Future Architecture
+
+### Phase 5: Advanced Features (Planned)
+- Signature Help - function parameter hints
+- Rename - symbol refactoring
+- Code Lens - in-line references
+- Semantic Tokens - enhanced highlighting
+- Folding - code structure folding
+
+### Phase 6: Production Readiness (Planned)
+- PyPI package
+- Multi-platform testing
+- Documentation site
+- CI/CD pipeline
+- Version management
+
+## Maintenance
+
+### Adding New Features
+
+1. Create handler in `src/handlers/`
+2. Register in `FeatureManager`
+3. Add tests in `tests/unit/`
+4. Update `README.md`
+5. Update `CHANGELOG.md`
+
+### Debugging
+
+1. Enable DEBUG logging
+2. Check symbol table contents
+3. Verify parse results
+4. Profile performance
+5. Test with real .m files
+
+### Version Compatibility
+
+- LSP: 3.17
+- MATLAB: R2020b+ (partial)
+- Python: 3.10+
+
+## Conclusion
+
+LSP MATLAB Server uses a layered, event-driven architecture optimized for performance and maintainability. The design follows LSP best practices while providing MATLAB-specific optimizations for code intelligence.

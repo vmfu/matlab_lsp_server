@@ -1,238 +1,335 @@
-# LSP MATLAB Server для Windows
+# LSP MATLAB Server
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![LSP 3.17](https://img.shields.io/badge/LSP-3.17-green.svg)](https://microsoft.github.io/language-server-protocol/)
+Language Server Protocol (LSP) implementation for MATLAB code editing support in modern IDEs (VS Code, JetBrains, etc.).
 
-LSP MATLAB Server - это реализация **Language Server Protocol (LSP)** для языка программирования MATLAB, предназначенная для работы на платформе Windows.
+## Overview
 
-Сервер обеспечивает интеллектуальные возможности редактирования кода MATLAB в любых LSP-совместимых редакторах, включая [TUI Crush](https://charm.sh/), VS Code, Neovim, Emacs и другие.
+LSP MATLAB Server provides intelligent code editing features for MATLAB files (.m, .mlx):
 
-## Возможности
+- **Syntax highlighting** - Code structure analysis
+- **Code completion** - Intelligent suggestions based on project symbols
+- **Go-to-definition** - Navigate to function/variable definitions
+- **Find-references** - Locate all usages of a symbol
+- **Hover documentation** - Display symbol information on mouse hover
+- **Document symbols** - Outline view of file structure
+- **Quick fixes** - Automatic suggestions for common errors
+- **Code formatting** - Automatic MATLAB code formatting
+- **Workspace search** - Search symbols across entire project
 
-| Возможность | Статус | Описание |
-|-------------|--------|----------|
-| 🔍 **Диагностика** | ✅ В разработке | Обнаружение ошибок и предупреждений через MATLAB mlint |
-| 💡 **Автодополнение** | 📋 Запланировано | Интеллектуальное дополнение кода |
-| 📖 **Подсказки** | 📋 Запланировано | Информация при наведении на символы |
-| 🔗 **Переход к определению** | 📋 Запланировано | Быстрый переход к определениям функций/переменных |
-| 🔎 **Поиск использований** | 📋 Запланировано | Поиск всех использований символа |
-| 📑 **Структура документа** | 📋 Запланировано | Навигация по функциям и классам |
-| 🛠️ **Исправления** | 📋 Запланировано | Быстрые исправления кода |
-| ✨ **Форматирование** | 📋 Запланировано | Автоматическое форматирование кода |
-| 🗂️ **Символы рабочей области** | 📋 Запланировано | Глобальный поиск по проекту |
+## Features
 
-## Требования
+### Essential Features (Phase 2)
 
-- **Windows**: 10/11
-- **Python**: 3.10 или новее
-- **MATLAB**: R2020b или новее (для mlint)
-- **LSP-совместимый редактор**: TUI Crush, VS Code, Neovim, и др.
+#### Matlab Parser
+Regex-based MATLAB code parser supporting:
+- Function definitions (`function ... end`)
+- Variable declarations (`global`, `persistent`)
+- Comments (single-line `%` and block `%{ ... }%`)
+- Class definitions (`classdef ... end`)
+- Nested functions and methods
+- Class properties
 
-## Быстрый старт
+#### Symbol Table
+In-memory code symbol indexing:
+- Storage for functions, variables, classes, properties
+- Search by name and URI
+- Automatic update on file parsing
+- Statistics tracking
 
-### Установка
+#### Cache Manager
+Performance optimization with result caching:
+- In-memory cache with TTL (5 minutes default)
+- Parsing result caching
+- Mlint analysis caching
+- File change invalidation
+
+#### Code Completion
+Intelligent code suggestions:
+- Project symbols from SymbolTable
+- Built-in MATLAB functions (sin, cos, sqrt, abs, zeros, ones, eye, size, length, disp, fprintf, input, keyboard, error, warning)
+- MATLAB keywords (if, else, elseif, for, while, end, function, return, break, continue)
+- Relevance ranking (exact > prefix > partial)
+- Limited to 20 results
+
+#### Hover Provider
+Documentation display on cursor hover:
+- Symbol search by position
+- Symbol information display
+- Markdown documentation
+- Symbol kind emojis
+
+#### Document Symbols
+Hierarchical document structure:
+- Classes > methods > functions hierarchy
+- Nested function support
+- LSP DocumentSymbol format
+
+### Advanced Features (Phase 3)
+
+#### Go-to-Definition
+Navigate to symbol definitions:
+- Symbol search by position
+- Cross-file definition search
+- LSP Location format
+
+#### Find-All-References
+Locate symbol usages:
+- All references search
+- includeDeclaration parameter
+- Cross-file reference search
+
+#### Code Actions
+Quick fixes for errors:
+- Undefined function suggestions
+- Missing semicolon fixes
+- Unused variable warnings
+- End statement suggestions
+
+#### Workspace Symbols
+Project-wide symbol search:
+- Fuzzy matching by query
+- Symbol kind filtering
+- Optimized search
+
+### Polish Features (Phase 4)
+
+#### Code Formatting
+Automatic MATLAB code formatting:
+- Configurable indentation
+- End keyword alignment
+- Operator and space formatting
+
+#### Performance Optimizations
+- LRU cache for symbol table
+- Debouncing for operations
+- Time measurement decorator
+- Performance utilities
+
+## Installation
+
+### Requirements
+
+- Python 3.10+
+- pygls
+- lsprotocol
+- pytest (for development)
+- pytest-cov (for development)
+
+### Install from Source
 
 ```bash
-# Клонируйте репозиторий
-git clone https://github.com/your-username/lsp_matlab_for_windows.git
+git clone https://github.com/yourusername/lsp_matlab_for_windows.git
 cd lsp_matlab_for_windows
-
-# Установите зависимости
-pip install -r requirements.txt
-
-# Или установите как пакет
 pip install -e .
 ```
 
-### Настройка пути к MATLAB
-
-Сервер использует `mlint.exe` из MATLAB для анализа кода. Укажите путь к MATLAB:
-
-**Метод 1: Переменная окружения**
-```batch
-set MATLAB_PATH=C:\Program Files\MATLAB\R2023b\bin\win64
-```
-
-**Метод 2: Конфигурационный файл**
-```json
-// .matlab-lsprc.json
-{
-  "matlabPath": "C:\\Program Files\\MATLAB\\R2023b\\bin\\win64"
-}
-```
-
-### Запуск сервера
+### Development Setup
 
 ```bash
-python server.py --stdio
+# Install dependencies
+pip install -r requirements.txt
+
+# Install pre-commit hooks
+pre-commit install
+
+# Run tests
+pytest --cov=src
 ```
 
-### Интеграция с TUI Crush
+## Usage
 
-Добавьте следующую конфигурацию в `.crush.json`:
+### Starting the Server
+
+```bash
+python -m src.server --stdio
+```
+
+### VS Code Integration
+
+Create `.vscode/settings.json`:
 
 ```json
 {
-  "lsp": {
-    "matlab": {
-      "command": "python",
-      "args": ["C:/path/to/lsp_matlab_for_windows/server.py", "--stdio"],
-      "filetypes": ["matlab", "m"],
-      "rootPatterns": [".git", ".matlab-lsprc.json"],
-      "workspace": [
-        "C:/Users/MSI/Desktop/projects/lsp_matlab_for_windows"
-      ]
-    }
-  }
+  "matlab.lsp.path": "path/to/python",
+  "matlab.lsp.args": ["-m", "src.server", "--stdio"]
 }
 ```
 
-Подробная инструкция по интеграции в `INTEGRATION.md`.
+### JetBrains Integration
 
-## Использование
+Configure in Settings > Languages & Frameworks > MATLAB:
 
-### Диагностика ошибок
+- **Language Server**: Custom
+- **Server path**: `path/to/python`
+- **Arguments**: `-m src.server --stdio`
 
-Сервер автоматически анализирует .m файлы и предоставляет диагностику:
+## Project Structure
 
-```matlab
-% test.m
-function simple_test()
-    x = 10
-    y = x + z  % Ошибка: z не определена
-    result = undefined_function(x)  % Ошибка: функция не существует
-end
+```
+lsp_matlab_for_windows/
+├── src/
+│   ├── __init__.py
+│   ├── server.py                 # Main LSP server
+│   ├── parser/                   # MATLAB parser
+│   │   ├── __init__.py
+│   │   ├── matlab_parser.py
+│   │   └── models.py
+│   ├── handlers/                 # LSP handlers
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   ├── completion.py
+│   │   ├── hover.py
+│   │   ├── definition.py
+│   │   ├── references.py
+│   │   ├── code_action.py
+│   │   ├── document_symbol.py
+│   │   ├── workspace_symbol.py
+│   │   ├── formatting.py
+│   │   └── diagnostics.py
+│   ├── analyzer/                 # Code analyzers
+│   │   ├── __init__.py
+│   │   ├── base_analyzer.py
+│   │   └── mlint_analyzer.py
+│   ├── protocol/                 # LSP protocol
+│   │   ├── __init__.py
+│   │   ├── document_sync.py
+│   │   └── lifecycle.py
+│   ├── utils/                    # Utilities
+│   │   ├── __init__.py
+│   │   ├── cache.py
+│   │   ├── symbol_table.py
+│   │   ├── logging.py
+│   │   ├── config.py
+│   │   ├── performance.py
+│   │   └── document_store.py
+│   └── features/                 # Feature management
+│       ├── __init__.py
+│       └── feature_manager.py
+├── tests/
+│   ├── __init__.py
+│   ├── unit/
+│   │   ├── test_parser.py
+│   │   ├── test_cache.py
+│   │   ├── test_symbol_table.py
+│   │   ├── test_completion.py
+│   │   ├── test_hover.py
+│   │   ├── test_definition.py
+│   │   ├── test_references.py
+│   │   ├── test_code_action.py
+│   │   ├── test_document_symbol.py
+│   │   ├── test_workspace_symbol.py
+│   │   ├── test_formatting.py
+│   │   └── test_performance.py
+│   ├── fixtures/
+│   │   └── matlab_samples/
+│   └── integration/
+├── CHANGELOG.md
+├── pyproject.toml
+├── requirements.txt
+├── .pre-commit-config.yaml
+└── README.md
 ```
 
-LSP клиент покажет:
-- Красное подчеркивание для ошибок
-- Желтое для предупреждений
-- Описание проблемы при наведении
+## Development
 
-### Команды сервера
+### Running Tests
 
-| Команда | Описание |
-|---------|----------|
-| `--stdio` | Запуск в режиме stdio (для LSP клиентов) |
-| `--tcp` | Запуск в режиме TCP (для отладки) |
-| `--port` | Порт для TCP режима (по умолчанию 4389) |
-| `--verbose` | Подробное логирование |
-| `--version` | Показать версию |
+```bash
+# Run all tests
+pytest
 
-## Архитектура
+# Run with coverage
+pytest --cov=src --cov-report=html
 
-Сервер построен на основе фреймворка [pygls](https://github.com/openlawlibrary/pygls) и использует:
+# Run specific test file
+pytest tests/unit/test_parser.py
+```
 
-- **pygls** - библиотека для создания LSP серверов
-- **MATLAB mlint** - статический анализатор MATLAB кода
-- **Парсер MATLAB** - анализ синтаксиса и извлечение символов
+### Pre-commit Hooks
 
-Подробная архитектура описана в `ARCHITECTURE.md`.
+Project uses pre-commit hooks for code quality:
 
-## Документация
+- **flake8** - Python linting
+- **isort** - Import sorting
+- **black** - Code formatting
+- **yamllint** - YAML validation
 
-- 📐 [ARCHITECTURE.md](ARCHITECTURE.md) - Архитектура и дизайн системы
-- 🛠️ [DEVELOPMENT.md](DEVELOPMENT.md) - Руководство по разработке
-- 📚 [DOCUMENTATION.md](DOCUMENTATION.md) - API документация
-- 🔌 [INTEGRATION.md](INTEGRATION.md) - Инструкция по интеграции
+Install hooks:
+```bash
+pre-commit install
+```
 
-## Вклад в проект
+Run manually:
+```bash
+pre-commit run --all-files
+```
 
-Мы приветствуем вклад в проект! Пожалуйста, прочитайте `DEVELOPMENT.md` для получения информации о том, как внести свой вклад.
+## LSP Capabilities
 
-### Как внести вклад
+### Implemented Features
 
-1. Форкните репозиторий
-2. Создайте ветку для вашей функции (`git checkout -b feature/AmazingFeature`)
-3. Внесите изменения (`git commit -m 'Add some AmazingFeature'`)
-4. Запушьте в ветку (`git push origin feature/AmazingFeature`)
-5. Откройте Pull Request
+- ✅ `textDocument/completion` - Code completion
+- ✅ `textDocument/hover` - Hover information
+- ✅ `textDocument/documentSymbol` - Document outline
+- ✅ `textDocument/definition` - Go-to-definition
+- ✅ `textDocument/references` - Find-references
+- ✅ `textDocument/codeAction` - Quick fixes
+- ✅ `workspace/symbol` - Workspace search
+- ✅ `textDocument/formatting` - Code formatting
+- ✅ `textDocument/sync` - Document synchronization
 
-## Лицензия
+### Synchronization
 
-Этот проект распространяется под лицензией MIT - подробнее см. файл [LICENSE](LICENSE).
+- ✅ `textDocument/didOpen` - File opened
+- ✅ `textDocument/didClose` - File closed
+- ✅ `textDocument/didChange` - Content changed
+- ✅ `workspace/didChangeWorkspaceFolders` - Project changes
 
-## Благодарности
+## Configuration
 
-- [pygls](https://github.com/openlawlibrary/pygls) - отличный фреймворк для LSP
-- [MATLAB](https://www.mathworks.com/) - язык программирования и инструменты
-- [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) - спецификация LSP
+### Server Options
 
-> **Примечание**: При разработке проекта активно используются интеллектуальные инструменты и MCP серверы для анализа существующих решений, исследования лучших практик и автоматизации рутинных задач:
-> - **z_ai MCP** - для генерации и анализа кода Python
-> - **context7 MCP** - для получения актуальной документации по библиотекам (pygls, lsprotocol)
-> - **z_ai_tools MCP** - для анализа изображений, диаграмм и скриншотов
-> - **DuckDuckGo MCP** - для поиска информации в интернете
-> - **Filesystem MCP** - для анализа структуры проекта и файлов
->
-> Это позволяет создавать более качественный и поддерживаемый код.
+- `indent_size` - Indentation size (default: 4)
+- `max_line_length` - Maximum line length (default: 80)
+- `cache_ttl` - Cache time-to-live in seconds (default: 300)
 
-## Контакты
+### Logging
 
-- **Автор**: Ваше Имя
-- **Email**: your.email@example.com
-- **Issues**: [GitHub Issues](https://github.com/your-username/lsp_matlab_for_windows/issues)
+Configure logging level via environment variable:
 
-## Roadmap
+```bash
+export LSP_LOG_LEVEL=DEBUG  # DEBUG, INFO, WARNING, ERROR
+python -m src.server --stdio
+```
 
-### Phase 1: Core (Текущая)
-- [x] Архитектура и документация
-- [ ] Базовый LSP сервер
-- [ ] Интеграция с mlint
-- [ ] Диагностика ошибок
+## Troubleshooting
 
-### Phase 2: Essential Features
-- [ ] Парсер MATLAB
-- [ ] Автодополнение кода
-- [ ] Подсказки при наведении
-- [ ] Таблица символов
+### Common Issues
 
-### Phase 3: Advanced Features
-- [ ] Переход к определению
-- [ ] Поиск использований
-- [ ] Структура документа
-- [ ] Исправления кода
+#### Completion not working
+- Check SymbolTable is populated
+- Verify parser is extracting symbols correctly
+- Check logging for errors
 
-### Phase 4: Polish
-- [ ] Форматирование кода
-- [ ] Символы рабочей области
-- [ ] Производительность
-- [ ] Тестирование и документация
+#### Diagnostics not showing
+- Ensure mlint integration is configured
+- Check file path handling
+- Verify diagnostics publishing
 
-## FAQ
+#### Performance issues
+- Enable LRU caching
+- Reduce cache TTL
+- Check for memory leaks
+- Profile with `python -m cProfile`
 
-### Что такое LSP?
+## Contributing
 
-**Language Server Protocol (LSP)** - это открытый протокол для коммуникации между редакторами кода и языковыми серверами. LSP позволяет писать языковую поддержку один раз и использовать её во многих редакторах.
+See [DEVELOPMENT.md](DEVELOPMENT.md) for development guidelines.
 
-### Зачем нужен отдельный сервер для MATLAB?
+## License
 
-MATLAB имеет уникальный синтаксис и семантику. LSP сервер обеспечивает:
-- Корректную диагностику ошибок
-- Интеллектуальное автодополнение
-- Понимание MATLAB-specific конструкций
+MIT License - See LICENSE file for details.
 
-### Обязательна ли установка MATLAB?
+## Changelog
 
-Да, для полноценной работы требуется установленная MATLAB (R2020b или новее). Сервер использует `mlint.exe` для статического анализа кода.
-
-### Можно ли использовать без MATLAB?
-
-В будущем планируется реализация альтернативного анализатора, которая позволит работать без установленной MATLAB, но с ограниченной функциональностью.
-
-### Совместим ли сервер с macOS и Linux?
-
-В текущей версии сервер оптимизирован для Windows. Планируется поддержка macOS и Linux в будущих версиях.
-
-## Поддержка
-
-Если у вас есть вопросы или проблемы:
-
-1. Проверьте [FAQ](#faq)
-2. Посмотрите [Issues](https://github.com/your-username/lsp_matlab_for_windows/issues)
-3. Создайте новый Issue с подробным описанием
-
----
-
-**Сделано с ❤️ для MATLAB сообщества**
+See [CHANGELOG.md](CHANGELOG.md) for version history.

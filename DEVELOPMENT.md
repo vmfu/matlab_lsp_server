@@ -1,646 +1,610 @@
-# Руководство по разработке
+# LSP MATLAB Server Development Guide
 
-Этот документ предназначен для разработчиков, которые хотят внести вклад в проект LSP MATLAB Server для Windows.
+Guide for developing and extending LSP MATLAB Server.
 
-## Содержание
+## Development Setup
 
-- [Настройка окружения](#настройка-окружения)
-- [Структура проекта](#структура-проекта)
-- [Процесс разработки](#процесс-разработки)
-- [Написание кода](#написание-кода)
-- [Тестирование](#тестирование)
-- [Отладка](#отладка)
-- [Использование интеллектуальных инструментов](#использование-интеллектуальных-инструментов)
-
-## Настройка окружения
-
-### Требования
-
-- Python 3.10 или новее
-- MATLAB R2020b или новее (для разработки и тестирования)
-- Git
-- Редактор кода с поддержкой LSP (рекомендуется VS Code с pygls)
-
-### Установка
+### 1. Clone Repository
 
 ```bash
-# Клонируйте репозиторий
-git clone https://github.com/your-username/lsp_matlab_for_windows.git
+git clone https://github.com/yourusername/lsp_matlab_for_windows.git
 cd lsp_matlab_for_windows
-
-# Создайте виртуальное окружение
-python -m venv venv
-
-# Активируйте виртуальное окружение (Windows)
-venv\Scripts\activate
-
-# Установите зависимости разработки
-pip install -r requirements-dev.txt
-
-# Установите пакет в режиме редактирования
-pip install -e .
 ```
 
-### Конфигурация разработки
+### 2. Install Dependencies
 
 ```bash
-# Установите pre-commit хуки
-pre-commit install
-
-# Настройте путь к MATLAB
-set MATLAB_PATH=C:\Program Files\MATLAB\R2023b\bin\win64
+pip install -r requirements.txt
 ```
 
-### VS Code (рекомендуется)
+### 3. Install Pre-commit Hooks
 
-Установите следующие расширения:
-- Python (Microsoft)
-- Pylance (Microsoft)
-- LSP (ms-vscode-languageserver.vscode-lsp-client)
+```bash
+pre-commit install
+```
 
-## Структура проекта
+### 4. Verify Installation
+
+```bash
+python -c "import src.server; print('Installation successful')"
+pytest --version
+```
+
+## Project Structure
 
 ```
 lsp_matlab_for_windows/
-├── server.py                      # Точка входа LSP сервера
-├── requirements.txt               # Производственные зависимости
-├── requirements-dev.txt           # Зависимости для разработки
-├── setup.py                       # Setup для pip
-├── pyproject.toml                 # Современная конфигурация
-├── .pre-commit-config.yaml        # Pre-commit хуки
-├── .gitignore
-├── .matlab-lsprc.json             # Конфигурация сервера
-│
-├── src/
-│   ├── __init__.py
-│   ├── __main__.py               # CLI интерфейс
-│   │
-│   ├── protocol/                  # LSP протокол
-│   │   ├── __init__.py
-│   │   └── lifecycle.py          # Инициализация, shutdown
-│   │
-│   ├── handlers/                  # Обработчики LSP
-│   │   ├── __init__.py
-│   │   ├── base.py               # Базовый класс
-│   │   ├── completion.py         # textDocument/completion
-│   │   ├── diagnostics.py        # textDocument/diagnostic
-│   │   ├── hover.py              # textDocument/hover
-│   │   ├── definition.py         # textDocument/definition
-│   │   ├── references.py         # textDocument/references
-│   │   ├── document_symbol.py    # textDocument/documentSymbol
-│   │   ├── code_action.py        # textDocument/codeAction
-│   │   └── formatting.py         # textDocument/formatting
-│   │
-│   ├── parser/                    # Парсер MATLAB
-│   │   ├── __init__.py
-│   │   ├── matlab_parser.py      # Главный парсер
-│   │   └── models.py             # Модели данных
-│   │
-│   ├── analyzer/                  # Анализаторы
-│   │   ├── __init__.py
-│   │   ├── base_analyzer.py      # Базовый анализатор
-│   │   └── mlint_analyzer.py     # mlint интеграция
-│   │
-│   ├── features/                  # LSP возможности
-│   │   ├── __init__.py
-│   │   └── feature_manager.py    # Регистрация возможностей
-│   │
-│   └── utils/                     # Утилиты
-│       ├── __init__.py
-│       ├── cache.py              # Кэширование
-│       ├── config.py             # Конфигурация
-│       ├── logging.py            # Логирование
-│       └── path_utils.py         # Работа с путями
-│
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py                # pytest конфигурация
-│   ├── unit/                      # Unit тесты
-│   │   ├── test_parser.py
-│   │   ├── test_analyzer.py
-│   │   └── test_handlers.py
-│   ├── integration/               # Интеграционные тесты
-│   │   ├── test_server.py
-│   │   └── test_mlint_integration.py
-│   └── fixtures/                  # Тестовые данные
-│       └── matlab_samples/
-│           ├── simple.m
-│           ├── complex.m
-│           └── errors.m
-│
-├── for_tests/                     # Ручные тестовые файлы
-│   ├── test_lsp_detailed.m
-│   └── test_matlab_lsp_simple.m
-│
-├── docs/
-│   ├── ARCHITECTURE.md
-│   ├── README.md
-│   ├── DEVELOPMENT.md            # Этот файл
-│   ├── DOCUMENTATION.md
-│   └── INTEGRATION.md
-│
-└── mlint.bat                      # Скрипт для ручного mlint
+├── src/                    # Source code
+├── tests/                   # Tests
+├── docs/                    # Documentation (planned)
+├── CHANGELOG.md             # Version history
+├── README.md                # Project overview
+├── ARCHITECTURE.md          # Design documentation
+├── DEVELOPMENT.md           # This file
+├── TODO.md                  # Development tasks
+├── pyproject.toml           # Project config
+├── requirements.txt           # Dependencies
+└── .pre-commit-config.yaml  # Code quality hooks
 ```
 
-## Процесс разработки
+## Development Workflow
 
-### Ветвление
+### Feature Development
+
+1. **Plan**
+   - Review ARCHITECTURE.md
+   - Check feature compatibility
+   - Plan handler integration
+
+2. **Implement**
+   - Create handler in `src/handlers/`
+   - Implement LSP methods
+   - Add logging
+
+3. **Test**
+   - Create test file in `tests/unit/`
+   - Write unit tests
+   - Ensure >80% coverage
+
+4. **Register**
+   - Add to `FeatureManager`
+   - Update capabilities
+   - Test with real LSP client
+
+5. **Document**
+   - Update README.md
+   - Add to CHANGELOG.md
+   - Commit changes
+
+### Code Style
 
 ```bash
-# Создайте новую ветку для фичи
-git checkout -b feature/your-feature-name
-
-# Или для исправления бага
-git checkout -b fix/bug-description
-```
-
-### Нейминг веток
-
-- `feature/` - новые возможности
-- `fix/` - исправление ошибок
-- `refactor/` - рефакторинг
-- `docs/` - обновления документации
-- `test/` - тесты
-
-### Коммиты
-
-Используйте Conventional Commits:
-
-```
-<тип>(<область>): <описание>
-
-[необязательное тело]
-
-[необязательный футер]
-```
-
-**Типы**:
-- `feat`: новая возможность
-- `fix`: исправление ошибки
-- `docs`: документация
-- `style`: форматирование (без логики)
-- `refactor`: рефакторинг
-- `test`: тесты
-- `chore`: рутинные задачи
-
-**Примеры**:
-```bash
-git commit -m "feat(diagnostics): add mlint error severity mapping"
-git commit -m "fix(parser): handle nested function definitions"
-git commit -m "docs: update installation instructions"
-```
-
-### Pull Requests
-
-Перед созданием PR убедитесь:
-
-1. [ ] Все тесты проходят
-2. [ ] Код соответствует PEP 8
-3. [ ] Добавлены тесты для новой функциональности
-4. [ ] Обновлена документация (если нужно)
-5. [ ] Запущен pre-commit
-
-## Написание кода
-
-### Стиль кода
-
-Мы следуем PEP 8 и используем следующие инструменты:
-
-```bash
-# Форматирование
+# Format code
 black src/ tests/
 
-# Линтер
-flake8 src/ tests/
-
-# Импорты
+# Sort imports
 isort src/ tests/
 
-# Типизация
-mypy src/
+# Lint code
+flake8 src/ tests/
+
+# Run before commit
+pre-commit run --all-files
 ```
 
-### Добавление нового LSP обработчика
-
-1. Создайте файл в `src/handlers/`:
-```python
-# src/handlers/your_feature.py
-from pygls.protocol import LanguageServerProtocol
-from lsprotocol.types import (
-    YourFeatureParams,
-    YourFeatureResult
-)
-
-from .base import BaseHandler
-
-class YourFeatureHandler(BaseHandler):
-    def __init__(self, protocol: LanguageServerProtocol):
-        super().__init__(protocol)
-
-    @property
-    def method_name(self) -> str:
-        return "textDocument/yourFeature"
-
-    def handle(self, params: YourFeatureParams) -> YourFeatureResult:
-        """Обработка вашего LSP метода"""
-        # Ваша логика
-        pass
-```
-
-2. Зарегистрируйте в `src/features/feature_manager.py`:
-```python
-def register_features(server: MatLSServer):
-    # ... существующие регистрации
-    server.feature.register(YourFeatureHandler)
-```
-
-3. Добавьте тесты в `tests/unit/test_handlers.py`:
-```python
-def test_your_feature_handler():
-    handler = YourFeatureHandler(mock_protocol)
-    result = handler.handle(mock_params)
-    assert result is not None
-```
-
-### Добавление новой анализаторной функции
-
-1. Создайте класс в `src/analyzer/base_analyzer.py`:
-```python
-class CustomAnalyzer(BaseAnalyzer):
-    def analyze(self, filepath: str) -> List[Diagnostic]:
-        """Ваша логика анализа"""
-        diags = []
-        # ... анализ
-        return diags
-```
-
-2. Используйте в диагностическом хендлере:
-```python
-# src/handlers/diagnostics.py
-analyzer = CustomAnalyzer(self.config)
-diagnostics = analyzer.analyze(params.text_document.uri)
-self.protocol.notify("textDocument/publishDiagnostics", ...)
-```
-
-### Парсинг MATLAB
-
-Используйте `MatlabParser` для анализа кода:
-
-```python
-from src.parser.matlab_parser import MatlabParser
-
-parser = MatlabParser()
-result = parser.parse_file(content)
-
-# Извлечение функций
-for func in result.functions:
-    print(f"Function: {func.name} at line {func.line}")
-
-# Извлечение переменных
-for var in result.variables:
-    print(f"Variable: {var.name} at line {var.line}")
-```
-
-## Тестирование
-
-### Запуск тестов
+### Running Tests
 
 ```bash
-# Все тесты
+# Run all tests
 pytest
 
-# Только unit тесты
-pytest tests/unit/
-
-# Только интеграционные
-pytest tests/integration/
-
-# С покрытием
+# Run with coverage
 pytest --cov=src --cov-report=html
 
-# Только один тест
-pytest tests/unit/test_parser.py::test_parse_function
+# Run specific test file
+pytest tests/unit/test_parser.py
+
+# Run verbose
+pytest -v --tb=short
+
+# Run integration tests
+pytest tests/integration/
 ```
 
-### Написание тестов
+## Adding LSP Handlers
 
-**Unit тесты**:
-```python
-# tests/unit/test_parser.py
-import pytest
-from src.parser.matlab_parser import MatlabParser
-
-def test_parse_function():
-    parser = MatlabParser()
-    result = parser.parse_file("function foo() end")
-
-    assert len(result.functions) == 1
-    assert result.functions[0].name == "foo"
-```
-
-**Интеграционные тесты**:
-```python
-# tests/integration/test_server.py
-from pygls.workspace import Workspace
-from src.protocol.lifecycle import MatLSServer
-
-@pytest.mark.asyncio
-async def test_server_initialization():
-    server = MatLSServer()
-    result = await server.protocol.initialize(INIT_PARAMS)
-
-    assert result.capabilities.text_document_sync
-```
-
-### Фикстуры
+### 1. Create Handler File
 
 ```python
-# tests/conftest.py
-import pytest
+# src/handlers/my_handler.py
+from lsprotocol.types import (
+    MyParams,
+    MyResult,
+)
+from pygls.server import LanguageServer
 
-@pytest.fixture
-def sample_matlab_code():
-    return """
-    function test_function()
-        x = 10;
-        y = x + 5;
-    end
-    """
-
-@pytest.fixture
-def mock_server():
-    server = MatLSServer()
-    # Настройка моков
-    return server
-```
-
-## Отладка
-
-### Логирование
-
-```python
-from src.utils.logging import get_logger
+from ..handlers.base import BaseHandler
+from ..utils.logging import get_logger
 
 logger = get_logger(__name__)
 
-logger.debug("Отладочное сообщение")
-logger.info("Информационное сообщение")
-logger.warning("Предупреждение")
-logger.error("Ошибка")
+
+class MyHandler(BaseHandler):
+    """Handler for my LSP feature."""
+
+    def handle_my_feature(
+        self,
+        server: LanguageServer,
+        params: MyParams,
+    ) -> MyResult:
+        """Handle my LSP feature."""
+        logger.debug("Handling my feature")
+
+        # Implement logic here
+        result = MyResult(...)
+
+        return result
+
+
+# Global instance
+_my_handler = None
+
+
+def get_my_handler() -> MyHandler:
+    """Get global MyHandler instance."""
+    global _my_handler
+    if _my_handler is None:
+        _my_handler = MyHandler()
+        logger.debug("MyHandler instance created")
+    return _my_handler
 ```
 
-### Отладка LSP сервера
-
-**Метод 1: TCP режим**
-```bash
-# Запуск в TCP режиме
-python server.py --tcp --port 4389 --verbose
-
-# Подключение через telnet или nc
-telnet localhost 4389
-```
-
-**Метод 2: VS Code调试**
-```json
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Debug LSP Server",
-      "type": "python",
-      "request": "launch",
-      "program": "${workspaceFolder}/server.py",
-      "args": ["--tcp", "--port", "4389", "--verbose"],
-      "console": "integratedTerminal",
-      "justMyCode": false
-    }
-  ]
-}
-```
-
-### Отладка mlint
-
-```bash
-# Ручной запуск mlint
-mlint.bat test_file.m
-
-# Или напрямую
-"C:\Program Files\MATLAB\R2023b\bin\win64\mlint.exe" test_file.m -id -severity -fix
-```
-
-## Использование интеллектуальных инструментов
-
-При разработке данного проекта активно используются интеллектуальные инструменты для улучшения качества кода и ускорения разработки:
-
-### Поиск и анализ существующих решений
-
-Используйте агенты для поиска и анализа существующих MATLAB LSP реализаций:
-
-```bash
-# Пример использования (через Crush AI)
-agent: "Найди на GitHub реализации MATLAB Language Server, проанализируй их архитектуру и особенности"
-```
-
-### Исследование MATLAB синтаксиса
-
-Для понимания особенностей MATLAB языка:
-
-```bash
-# Анализ MATLAB документации
-agentic_fetch: "https://www.mathworks.com/help/matlab/language-syntax.html"
-prompt: "Извлеки правила синтаксиса MATLAB для определения функций, классов и переменных"
-```
-
-### Анализ лучших практик
-
-Изучение лучших практик разработки LSP серверов:
-
-```bash
-# Поиск pygls примеров
-sourcegraph: "repo:openlawlibrary/pygls file:.py class:*Handler"
-```
-
-### Автоматизация рутинных задач
-
-Интеллектуальные инструменты помогают с:
-
-1. **Генерация шаблонов кода** - создание boilerplate для новых обработчиков
-2. **Анализ зависимостей** - поиск оптимальных библиотек
-3. **Рефакторинг** - предложения по улучшению кода
-4. **Документация** - автоматическое создание docs из комментариев
-5. **Тесты** - генерация тестов на основе кода
-
-### MCP серверы
-
-В проекте используются следующие MCP инструменты для ускорения разработки:
-
-#### z_ai MCP
-
-Используется для:
-- Генерации Python кода (LSP хендлеры, парсеры)
-- Анализа и рефакторинга существующего кода
-- Создания шаблонов и boilerplate кода
-
-```bash
-# Пример использования через Crush AI
-z_ai: "Создай класс для обработки textDocument/completion на основе pygls"
-```
-
-#### context7 MCP
-
-Используется для:
-- Получения актуальной документации по библиотекам (pygls, lsprotocol)
-- Изучения API LSP протокола
-- Поиска примеров использования библиотек
-
-```bash
-# Получение документации по pygls
-context7: /openlawlibrary/pygls
-query: "Как создать LSP хендлер для textDocument/completion?"
-```
-
-#### z_ai_tools MCP
-
-Используется для:
-- Анализа архитектурных диаграмм и схем
-- Извлечения текста из скриншотов с кодом
-- Анализа примеров MATLAB кода из изображений
-- Создания визуальной документации
-
-```bash
-# Анализ диаграммы
-z_ai_tools: analyze_diagram
-diagram: ARCHITECTURE.png
-prompt: "Опиши архитектуру и компоненты"
-```
-
-#### DuckDuckGo MCP
-
-Используется для:
-- Поиска информации о MATLAB синтаксисе
-- Изучения лучших практик разработки
-- Поиска решений проблем и багов
-
-```bash
-# Поиск информации
-search: "MATLAB LSP server implementation best practices"
-```
-
-#### Filesystem MCP
-
-Используется для:
-- Анализа структуры проекта
-- Поиска файлов по паттернам
-- Анализа зависимостей между файлами
-
-```bash
-# Анализ проекта
-filesystem: directory_tree
-path: C:/project/lsp_matlab_for_windows
-```
-
-### Пример использования MCP инструментов
+### 2. Register Handler
 
 ```python
-# При разработке нового LSP хендлера:
-# 1. Используйте context7 для изучения pygls API
-# 2. Используйте z_ai MCP для генерации шаблона кода
-# 3. Применяйте найденные лучшие практики
+# server.py
+from src.handlers.my_handler import get_my_handler
 
-# При разработке парсера MATLAB:
-# 1. Используйте DuckDuckGo для поиска MATLAB синтаксиса
-# 2. Используйте z_ai_tools для анализа примеров кода
-# 3. Используйте z_ai MCP для генерации regex паттернов
+# Initialize handler
+my_handler = get_my_handler()
 
-# При диагностике проблем:
-# 1. Используйте Filesystem MCP для анализа структуры
-# 2. Используйте context7 для изучения документации библиотек
-# 3. Используйте z_ai MCP для анализа и исправления кода
+# Register LSP method
+@server.feature("myFeature")
+def my_feature_handler(ls, params):
+    return my_handler.handle_my_feature(ls, params)
 ```
 
-### Пример использования MCP инструментов
+### 3. Add Feature Capability
 
 ```python
-# Перед реализацией новой фичи:
-# 1. Используйте агент для поиска существующих реализаций
-# 2. Проанализируйте архитектуру подобных проектов
-# 3. Примените лучшие практики
-
-# При разработке парсера:
-# 4. Используйте интеллектуальные инструменты для синтаксического анализа
-# 5. Исследуйте официальную MATLAB документацию
-# 6. Изучите существующие парсеры
+# src/features/feature_manager.py
+def configure_my_feature(self, enable: bool = True):
+    """Configure my feature."""
+    if enable:
+        self._capabilities.my_feature_provider = True
+        logger.debug("My feature enabled")
+    else:
+        self._capabilities.my_feature_provider = None
+        logger.debug("My feature disabled")
 ```
 
-> **Почему это важно**: Использование интеллектуальных инструментов позволяет:
-> - Избегать повторного изобретения велосипеда
-> - Применять проверенные архитектурные решения
-> - Быстро изучать новые технологии
-> - Улучшать качество кода за счет анализа лучших практик
+### 4. Create Tests
 
-## Code Review
+```python
+# tests/unit/test_my_handler.py
+import pytest
+from pygls.server import LanguageServer
 
-### Checklist для PR
+from src.handlers.my_handler import MyHandler, get_my_handler
 
-- [ ] Код соответствует PEP 8
-- [ ] Добавлены тесты
-- [ ] Все тесты проходят
-- [ ] Обновлена документация
-- [ ] Нет предупреждений flake8/mypy
-- [ ] Коммиты следуют Conventional Commits
-- [ ] Добавлено описание изменений в CHANGELOG.md
 
-### Отзыв о коде
+def test_my_handler_initialization():
+    """Test MyHandler can be initialized."""
+    handler = MyHandler()
+    assert handler is not None
 
-При review обратите внимание на:
-- Читаемость и понятность кода
-- Покрытие тестами
-- Производительность
-- Безопасность
-- Совместимость с существующим кодом
 
-## Релиз
+def test_get_my_handler():
+    """Test getting global MyHandler instance."""
+    handler1 = get_my_handler()
+    handler2 = get_my_handler()
+    assert handler1 is handler2
+```
 
-### Версионирование
+## Parser Development
 
-Следуем [Semantic Versioning](https://semver.org/):
+### Adding New MATLAB Syntax
 
-- `MAJOR.MINOR.PATCH`
-- MAJOR: breaking changes
-- MINOR: новые возможности, обратно совместимые
-- PATCH: исправления ошибок, обратно совместимые
+1. **Update Parser Models**
 
-### Процесс релиза
+```python
+# src/parser/models.py
+@dataclass
+class NewStructureInfo:
+    """Info about new MATLAB structure."""
+    name: str
+    line: int
+    # Add more fields as needed
+```
+
+2. **Add Regex Pattern**
+
+```python
+# src/parser/matlab_parser.py
+def _parse_new_structure(self, lines: List[str]) -> List[NewStructureInfo]:
+    """Parse new MATLAB structure."""
+    structures = []
+
+    for i, line in enumerate(lines):
+        # Add regex pattern here
+        match = re.match(r'your_pattern_here', line)
+
+        if match:
+            structure = NewStructureInfo(
+                name=match.group(1),
+                line=i + 1,
+            )
+            structures.append(structure)
+
+    return structures
+```
+
+3. **Update Parse Method**
+
+```python
+# src/parser/matlab_parser.py
+def parse_file(self, file_path: str) -> ParseResult:
+    """Parse MATLAB file."""
+    # Read file
+    with open(file_path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+
+    # Parse existing structures
+    functions = self._parse_functions(lines)
+    # Add new structure parsing
+    new_structures = self._parse_new_structure(lines)
+
+    return ParseResult(
+        file_path=file_path,
+        functions=functions,
+        new_structures=new_structures,
+        # Add more fields
+    )
+```
+
+## Performance Optimization
+
+### 1. Caching
+
+```python
+# src/utils/performance.py
+from src.utils.performance import create_lru_symbol_table_cache
+
+# Create cache
+symbol_cache = create_lru_symbol_table_cache(capacity=128)
+
+# Use cache
+result = symbol_cache.get(cache_key)
+if result is None:
+    result = expensive_operation()
+    symbol_cache.put(cache_key, result)
+```
+
+### 2. Debouncing
+
+```python
+from src.utils.performance import Debouncer
+
+debouncer = Debouncer(delay=0.5)
+
+@debouncer.debounce
+def on_file_change():
+    """Handle file change."""
+    # Expensive operation
+    parse_file(file_path)
+
+# Call debounced
+on_file_change()  # Will delay calls
+```
+
+### 3. Profiling
 
 ```bash
-# Обновите версию в setup.py
-bump2version minor  # или major/patch
+# Profile server
+python -m cProfile -s time src/server.py > profile.txt
 
-# Создайте тег
-git tag v1.0.0
-git push origin v1.0.0
-
-# Опубликуйте в PyPI
-python -m build
-twine upload dist/*
+# Profile specific function
+python -m cProfile -s time -o profile.prof -m src.parser
 ```
 
-## Полезные ресурсы
+## Debugging
 
+### Enable Debug Logging
+
+```bash
+export LSP_LOG_LEVEL=DEBUG
+python -m src.server --stdio
+```
+
+### Log Output
+
+Logs are written to:
+- Console (stdout/stderr)
+- Optional: File (configure in `src/utils/logging.py`)
+
+### Common Issues
+
+#### Handler Not Called
+- Check handler registration in `server.py`
+- Verify capability is advertised
+- Check LSP client supports feature
+
+#### No Completion Suggestions
+- Verify SymbolTable is populated
+- Check parser is extracting symbols
+- Enable DEBUG logging
+
+#### Diagnostics Not Showing
+- Check mlint integration
+- Verify diagnostics publishing
+- Check file path handling
+
+#### Performance Issues
+- Check cache size
+- Reduce cache TTL
+- Profile with cProfile
+
+## Testing
+
+### Unit Tests
+
+```bash
+# Run specific test
+pytest tests/unit/test_parser.py::test_parse_function
+
+# Run with output
+pytest -v --tb=short
+
+# Run with coverage
+pytest --cov=src.tests/unit/test_parser.py --cov-report=html
+```
+
+### Integration Tests
+
+```bash
+# Create test file
+# tests/integration/test_full_workflow.py
+
+# Run integration tests
+pytest tests/integration/
+```
+
+### Test Fixtures
+
+Create test MATLAB files in `tests/fixtures/matlab_samples/`:
+
+```matlab
+% test_fixtures/simple_function.m
+function result = simpleFunction(x)
+    y = x * 2;
+    result = y + 1;
+end
+```
+
+## Continuous Integration
+
+### Pre-commit Hooks
+
+Hooks run before each commit:
+
+- **black** - Format Python code
+- **isort** - Sort imports
+- **flake8** - Lint Python code
+- **yamllint** - Validate YAML files
+
+### Manual Hook Run
+
+```bash
+pre-commit run --all-files
+pre-commit run --files src/parser.py
+```
+
+## Release Process
+
+### 1. Update Version
+
+```python
+# src/server.py
+__version__ = "0.2.0"  # Bump version
+```
+
+### 2. Update CHANGELOG
+
+```markdown
+## [0.2.0] - YYYY-MM-DD
+
+### Added
+- New feature description
+
+### Changed
+- Modified feature description
+
+### Fixed
+- Bug fix description
+```
+
+### 3. Tag and Push
+
+```bash
+git add -A
+git commit -m "chore(release): bump version to 0.2.0"
+git tag v0.2.0
+git push origin master
+git push --tags
+```
+
+## Contributing Guidelines
+
+### Code Review
+
+1. **Self-review**
+   - Run `pre-commit run --all-files`
+   - Run `pytest --cov=src`
+   - Check code style
+
+2. **Test with Real Files**
+   - Test with actual .m files
+   - Verify LSP client compatibility
+   - Check performance
+
+3. **Documentation**
+   - Update README.md if needed
+   - Add to CHANGELOG.md
+   - Comment complex code
+
+### Pull Request Process
+
+1. Create feature branch
+2. Implement feature
+3. Add tests (>80% coverage)
+4. Update documentation
+5. Submit PR with description
+
+## Common Commands
+
+```bash
+# Development
+pytest --cov=src
+black src/
+isort src/
+flake8 src/
+
+# Git
+git status
+git add .
+git commit -m "message"
+git push
+
+# Server
+python -m src.server --stdio
+```
+
+## Troubleshooting
+
+### Import Errors
+
+```bash
+# Check Python path
+python -c "import sys; print(sys.path)"
+
+# Install in development mode
+pip install -e .
+```
+
+### Test Failures
+
+```bash
+# Run single test
+pytest tests/unit/test_parser.py::test_parse_function -v
+
+# Debug with pdb
+pytest --pdb tests/unit/test_parser.py::test_parse_function
+```
+
+### Server Not Starting
+
+```bash
+# Check dependencies
+pip list
+
+# Verify Python version
+python --version
+
+# Enable debug logging
+export LSP_LOG_LEVEL=DEBUG
+```
+
+## Resources
+
+### LSP Documentation
 - [LSP Specification](https://microsoft.github.io/language-server-protocol/)
 - [pygls Documentation](https://pygls.readthedocs.io/)
-- [MATLAB Documentation](https://www.mathworks.com/help/matlab/)
-- [lsprotocol Types](https://lsprotocol.readthedocs.io/)
+- [VS Code Extension API](https://code.visualstudio.com/api)
 
-## Поддержка
+### MATLAB Documentation
+- [MATLAB Documentation](https://www.mathworks.com/help/)
+- [MATLAB Syntax](https://www.mathworks.com/help/matlab/ref/)
+- [Class Definitions](https://www.mathworks.com/help/matlab/ref/classdef.html)
 
-Если у вас есть вопросы по разработке:
+### Python Tools
+- [pytest](https://docs.pytest.org/)
+- [black](https://black.readthedocs.io/)
+- [flake8](https://flake8.pycqa.org/)
+- [isort](https://pycqa.github.io/isort/)
 
-1. Прочитайте этот документ
-2. Посмотрите существующий код
-3. Задайте вопрос в GitHub Discussions
-4. Создайте Issue для багов или предложений
+## Support
 
----
+### Getting Help
 
-**Счастливого кодирования!** 🚀
+- Check ARCHITECTURE.md for design decisions
+- Review existing handlers for patterns
+- Enable DEBUG logging for detailed output
+- Check GitHub Issues for known problems
+
+### Reporting Bugs
+
+1. Include error message
+2. Provide reproduction steps
+3. Include environment details (OS, Python version)
+4. Attach logs if possible
+5. Create issue in GitHub
+
+## Best Practices
+
+### 1. Always Add Tests
+- Target >80% code coverage
+- Test both success and failure cases
+- Test with real .m files
+
+### 2. Use Logging
+- Log important operations
+- Use appropriate log levels
+- Include context in log messages
+
+### 3. Handle Errors Gracefully
+- Catch exceptions properly
+- Log error details
+- Return appropriate LSP responses
+
+### 4. Optimize Performance
+- Cache expensive operations
+- Avoid redundant parsing
+- Use async for I/O operations
+
+### 5. Follow Style Guide
+- Use black for formatting
+- Follow PEP 8
+- Keep functions focused and small
+- Add docstrings to public functions
+
+## Next Steps
+
+### For New Contributors
+
+1. Read ARCHITECTURE.md
+2. Study existing handlers
+3. Pick a task from TODO.md
+4. Implement and test
+5. Submit PR
+
+### For Maintainers
+
+1. Review PRs promptly
+2. Ensure CI/CD passes
+3. Update documentation
+4. Release new versions regularly
+5. Monitor performance
+
+## License
+
+See LICENSE file for details.
