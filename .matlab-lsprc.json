@@ -1,0 +1,21 @@
+{
+  "matlabPath": "C:\\Program Files\\MATLAB\\R2023b\\bin\\win64",
+  "maxDiagnostics": 100,
+  "diagnosticRules": {
+    "all": true,
+    "unusedVariable": true,
+    "missingSemicolon": false
+  },
+  "formatting": {
+    "indentSize": 4,
+    "insertSpaces": true
+  },
+  "completion": {
+    "enableSnippets": true,
+    "maxSuggestions": 50
+  },
+  "cache": {
+    "enabled": true,
+    "maxSize": 1000
+  }
+}
