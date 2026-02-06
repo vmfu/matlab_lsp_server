@@ -274,19 +274,19 @@
 - [x] **3.1.1 Анализ задачи**: Изучение LSP definition, проектирование DefinitionHandler. **Использовать**: context7 MCP для документации Location и DefinitionParams, z_ai MCP для логики поиска определений
 - [x] 3.1.2 Создание `src/handlers/definition.py` с `DefinitionHandler`
 - [x] 3.1.3 Реализация получения символа под курсором
-- [ ] 3.1.4 Реализация поиска определения в Symbol Table
+- [x] 3.1.4 Реализация поиска определения в Symbol Table
 - [x] 3.1.5 Реализация кросс-файлового поиска определений
 - [x] 3.1.6 Регистрация хендлера в `FeatureManager`
 - [x] 3.1.7 Тест: Проверка перехода к определению функции/переменной
-- [ ] 3.1.8 Отметка выполнения в TODO.md (поставить ✅ в 3.1.1-3.1.6)
-- [ ] 3.1.9 Коммит: `git commit -m "feat(definition): implement textDocument/definition with cross-file support"`
-- [ ] 3.1.10 Пуш: `git push origin master`
-- [ ] 3.1.11 Суммаризация: Описание перехода к определению
-- [ ] 3.1.12 Переход к 3.2 и исполнению TODOs
+- [x] 3.1.8 Отметка выполнения в TODO.md (поставить ✅ в 3.1.1-3.1.6)
+- [x] 3.1.9 Коммит: `git commit -m "feat(definition): implement textDocument/definition with cross-file support"`
+- [x] 3.1.10 Пуш: `git push origin master`
+- [x] 3.1.11 Суммаризация: Описание перехода к определению
+- [x] 3.1.12 Переход к 3.2 и исполнению TODOs
 
 ### 3.2 Реализация поиска использований (textDocument/references)
-- [ ] **3.2.1 Анализ задачи**: Изучение LSP references, проектирование ReferencesHandler. **Использовать**: context7 MCP для документации ReferenceParams
-- [ ] 3.2.2 Создание `src/handlers/references.py` с `ReferencesHandler`
+- [x] **3.2.1 Анализ задачи**: Изучение LSP references, проектирование ReferencesHandler. **Использовать**: context7 MCP для документации ReferenceParams
+- [x] 3.2.2 Создание `src/handlers/references.py` с `ReferencesHandler`
 - [x] 3.2.3 Реализация получения символа под курсором
 - [x] 3.2.4 Реализация поиска всех использований в Symbol Table
 - [x] 3.2.5 Реализация кросс-файлового поиска использований
@@ -348,10 +348,10 @@
 - [x] **4.1.1 Анализ задачи**: Изучение MATLAB code style, проектирование FormattingHandler. **Использовать**: DuckDuckGo MCP для поиска MATLAB code style guidelines, z_ai MCP для генерации форматтера
 - [x] 4.1.2 Создание `src/handlers/formatting.py` с `FormattingHandler`
 - [ ] 4.1.3 Реализация отступов (config.indentSize)
-- [ ] 4.1.4 Реализация выравнивания end ключевых слов
-- [ ] 4.1.5 Реализация форматирования операторов и пробелов
-- [ ] 4.1.6 Регистрация хендлера в `FeatureManager`
-- [ ] 4.1.7 Тест: Проверка форматирования .m файла
+- [x] 4.1.4 Реализация выравнивания end ключевых слов
+- [x] 4.1.5 Реализация форматирования операторов и пробелов
+- [x] 4.1.6 Регистрация хендлера в `FeatureManager`
+- [x] 4.1.7 Тест: Проверка форматирования .m файла
 - [x] 4.1.8 Отметка выполнения в TODO.md (поставить ✅ в 4.1.1-4.1.6)
 - [x] 4.1.9 Коммит: `git commit -m "feat(formatting): implement textDocument/formatting with configurable style"`
 - [x] 4.1.10 Пуш: `git push origin master`
@@ -373,10 +373,10 @@
 - [x] 4.2.12 Переход к 4.3 и исполнению TODOs
 
 ### 4.3 Настройка pre-commit хуков
-- [ ] **4.3.1 Анализ задачи**: Изучение pre-commit, планировка хуков для автоматизации quality checks. **Использовать**: context7 MCP для документации pre-commit
-- [ ] 4.3.2 Создание `.pre-commit-config.yaml` с хуками
-- [ ] 4.3.3 Добавление хука black для форматирования
-- [ ] 4.3.4 Добавление хука isort для сортировки импортов
+- [x] **4.3.1 Анализ задачи**: Изучение pre-commit, планировка хуков для автоматизации quality checks. **Использовать**: context7 MCP для документации pre-commit
+- [x] 4.3.2 Создание `.pre-commit-config.yaml` с хуками
+- [x] 4.3.3 Добавление хука black для форматирования
+- [x] 4.3.4 Добавление хука isort для сортировки импортов
 - [ ] 4.3.5 Добавление хука flake8 для линтинга
 - [x] 4.3.6 Добавление хука mypy для type checking
 - [x] 4.3.7 Тест: Установка хуков `pre-commit install` и проверка коммита
