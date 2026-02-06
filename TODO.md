@@ -96,13 +96,13 @@
 - [ ] 1.7.11 Переход к 1.8 и исполнение TODOs
 
 ### 1.8 Реализация диагностики ошибок (textDocument/publishDiagnostics)
-- [ ] **1.8.1 Анализ задачи**: Изучение LSP диагностических типов, проектирование конвертации mlint вывода в LSP Diagnostic. **Использовать**: context7 MCP для документации lsprotocol Diagnostic types
-- [ ] 1.8.2 Создание `src/handlers/diagnostics.py` с `DiagnosticsHandler`
-- [ ] 1.8.3 Реализация хендлера `textDocument/didOpen` для публикации диагностики при открытии файла
-- [ ] 1.8.4 Реализация хендлера `textDocument/didChange` для обновления диагностики при изменениях
-- [ ] 1.8.5 Конвертация mlint вывода в LSP Diagnostic с severity levels
-- [ ] 1.8.6 Интеграция с `MlintAnalyzer` для анализа файлов
-- [ ] 1.8.7 Тест: Проверка публикации диагностики для `for_tests/test_lsp_detailed.m`
+- [x] **1.8.1 Анализ задачи**: Изучение LSP диагностических типов, проектирование конвертации mlint вывода в LSP Diagnostic. **Использовать**: context7 MCP для документации lsprotocol Diagnostic types
+- [x] 1.8.2 Создание `src/handlers/diagnostics.py` с `DiagnosticsHandler`
+- [x] 1.8.3 Реализация хендлера `textDocument/didOpen` для публикации диагностики при открытии файла
+- [x] 1.8.4 Реализация хендлера `textDocument/didChange` для обновления диагностики при изменениях
+- [x] 1.8.5 Конвертация mlint вывода в LSP Diagnostic с severity levels
+- [x] 1.8.6 Интеграция с `MlintAnalyzer` для анализа файлов
+- [x] 1.8.7 Тест: Проверка публикации диагностики для `for_tests/test_lsp_detailed.m`
 - [ ] 1.8.8 Отметка выполнения в TODO.md (поставить ✅ в 1.8.1-1.8.6)
 - [ ] 1.8.9 Коммит: `git commit -m "feat(diagnostics): implement textDocument/publishDiagnostics"`
 - [ ] 1.8.10 Пуш: `git push origin master`
