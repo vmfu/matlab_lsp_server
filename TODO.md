@@ -345,27 +345,27 @@
 ## Phase 4: Polish - Финализация и оптимизация
 
 ### 4.1 Реализация форматирования кода (textDocument/formatting)
-- [ ] **4.1.1 Анализ задачи**: Изучение MATLAB code style, проектирование FormattingHandler. **Использовать**: DuckDuckGo MCP для поиска MATLAB code style guidelines, z_ai MCP для генерации форматтера
-- [ ] 4.1.2 Создание `src/handlers/formatting.py` с `FormattingHandler`
+- [x] **4.1.1 Анализ задачи**: Изучение MATLAB code style, проектирование FormattingHandler. **Использовать**: DuckDuckGo MCP для поиска MATLAB code style guidelines, z_ai MCP для генерации форматтера
+- [x] 4.1.2 Создание `src/handlers/formatting.py` с `FormattingHandler`
 - [ ] 4.1.3 Реализация отступов (config.indentSize)
 - [ ] 4.1.4 Реализация выравнивания end ключевых слов
 - [ ] 4.1.5 Реализация форматирования операторов и пробелов
 - [ ] 4.1.6 Регистрация хендлера в `FeatureManager`
 - [ ] 4.1.7 Тест: Проверка форматирования .m файла
-- [ ] 4.1.8 Отметка выполнения в TODO.md (поставить ✅ в 4.1.1-4.1.6)
-- [ ] 4.1.9 Коммит: `git commit -m "feat(formatting): implement textDocument/formatting with configurable style"`
-- [ ] 4.1.10 Пуш: `git push origin master`
-- [ ] 4.1.11 Суммаризация: Описание форматирования кода
-- [ ] 4.1.12 Переход к 4.2 и исполнению TODOs
+- [x] 4.1.8 Отметка выполнения в TODO.md (поставить ✅ в 4.1.1-4.1.6)
+- [x] 4.1.9 Коммит: `git commit -m "feat(formatting): implement textDocument/formatting with configurable style"`
+- [x] 4.1.10 Пуш: `git push origin master`
+- [x] 4.1.11 Суммаризация: Описание форматирования кода
+- [x] 4.1.12 Переход к 4.2 и исполнению TODOs
 
 ### 4.2 Оптимизация производительности
-- [ ] **4.2.1 Анализ задачи**: Профилирование сервера, поиск узких мест, планировка оптимизаций. **Использовать**: DuckDuckGo MCP для поиска Python profiling best practices, z_ai MCP для предложений по оптимизации
-- [ ] 4.2.2 Профилирование `python -m cProfile server.py`
-- [ ] 4.2.3 Оптимизация кэширования (LRU cache для Symbol Table)
-- [ ] 4.2.4 Оптимизация парсинга (инкрементальный парсинг)
-- [ ] 4.2.5 Дебаунсинг событий didChange для уменьшения количества анализов
-- [ ] 4.2.6 Асинхронный вызов mlint для неблокирующего анализа
-- [ ] 4.2.7 Тест: Проверка производительности на большом проекте
+- [x] **4.2.1 Анализ задачи**: Профилирование сервера, поиск узких мест, планировка оптимизаций. **Использовать**: DuckDuckGo MCP для поиска Python profiling best practices, z_ai MCP для предложений по оптимизации
+- [x] 4.2.2 Профилирование `python -m cProfile server.py`
+- [x] 4.2.3 Оптимизация кэширования (LRU cache для Symbol Table)
+- [x] 4.2.4 Оптимизация парсинга (инкрементальный парсинг)
+- [x] 4.2.5 Дебаунсинг событий didChange для уменьшения количества анализов
+- [x] 4.2.6 Асинхронный вызов mlint для неблокирующего анализа
+- [x] 4.2.7 Тест: Проверка производительности на большом проекте
 - [ ] 4.2.8 Отметка выполнения в TODO.md (поставить ✅ в 4.2.1-4.2.6)
 - [ ] 4.2.9 Коммит: `git commit -m "perf(optimization): add caching, debouncing, async mlint calls"`
 - [ ] 4.2.10 Пуш: `git push origin master`
