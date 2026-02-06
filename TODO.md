@@ -56,14 +56,14 @@
 - [ ] 1.4.10 Переход к 1.5 и исполнение TODOs
 
 ### 1.5 Реализация LSP lifecycle хендлеров
-- [ ] **1.5.1 Анализ задачи**: Изучение LSP спецификации для initialize, shutdown, exit; проектирование lifecycle хендлеров. **Использовать**: context7 MCP для документации LSP specification, z_ai MCP для генерации кода
-- [ ] 1.5.2 Создание `src/protocol/lifecycle.py` с хендлерами `initialize`, `shutdown`, `exit`
-- [ ] 1.5.3 Реализация метода `initialize` с объявлением server capabilities
-- [ ] 1.5.4 Реализация метода `shutdown` для graceful shutdown
-- [ ] 1.5.5 Реализация метода `exit` для завершения процесса
-- [ ] 1.5.6 Регистрация lifecycle хендлеров в `MatLSServer`
-- [ ] 1.5.7 Тест: Проверка инициализации сервера через JSON-RPC сообщения
-- [ ] 1.5.8 Отметка выполнения в TODO.md (поставить ✅ в 1.5.1-1.5.6)
+- [x] **1.5.1 Анализ задачи**: Изучение LSP спецификации для initialize, shutdown, exit; проектирование lifecycle хендлеров. **Использовать**: context7 MCP для документации LSP specification, z_ai MCP для генерации кода
+- [x] 1.5.2 Создание `src/protocol/lifecycle.py` с хендлерами `initialize`, `shutdown`, `exit`
+- [x] 1.5.3 Реализация метода `initialize` с объявлением server capabilities
+- [x] 1.5.4 Реализация метода `shutdown` для graceful shutdown
+- [x] 1.5.5 Реализация метода `exit` для завершения процесса
+- [x] 1.5.6 Регистрация lifecycle хендлеров в `MatLSServer`
+- [x] 1.5.7 Тест: Проверка инициализации сервера через JSON-RPC сообщения
+- [x] 1.5.8 Отметка выполнения в TODO.md (поставить ✅ в 1.5.1-1.5.6)
 - [ ] 1.5.9 Коммит: `git commit -m "feat(protocol): implement LSP lifecycle handlers (initialize, shutdown, exit)"`
 - [ ] 1.5.10 Пуш: `git push origin master`
 - [ ] 1.5.11 Суммаризация: Описание реализации lifecycle хендлеров

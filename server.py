@@ -11,6 +11,7 @@ import sys
 
 from pygls.server import LanguageServer
 
+from src.protocol.lifecycle import register_lifecycle_handlers
 from src.utils.logging import get_logger, setup_logging
 
 __version__ = "0.1.0"
@@ -33,8 +34,9 @@ class MatLSServer(LanguageServer):
     async def initialize_process(self):
         """Initialize the server and register LSP capabilities."""
         logger.info("Initializing MATLAB LSP Server")
-        # TODO: Register handlers and capabilities
-        pass
+        # Register lifecycle handlers (initialize, shutdown, exit)
+        register_lifecycle_handlers(self)
+        logger.info("Lifecycle handlers registered")
 
 
 def create_parser() -> argparse.ArgumentParser:
