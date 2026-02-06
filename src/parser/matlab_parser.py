@@ -18,6 +18,7 @@ from .models import (
     BUILTIN_FUNCTIONS,
     MATLAB_KEYWORDS,
 )
+from ..utils.symbol_table import SymbolTable, get_symbol_table
 
 from ..utils.logging import get_logger
 
@@ -81,7 +82,7 @@ class MatlabParser:
         re.DOTALL | re.MULTILINE
     )
 
-    def __init__(self):
+    def __init__(self, symbol_table: SymbolTable = None):
         """Initialize parser."""
         self._nesting_level = 0  # Track function/class nesting
         self._current_function = None  # Track current function
@@ -89,13 +90,17 @@ class MatlabParser:
         self._function_stack = []  # Stack of functions for nesting
         self._class_stack = []  # Stack of classes for nesting
 
-    def parse_file(self, file_path: str, file_uri: str) -> ParseResult:
+        # Get or create symbol table
+        self._symbol_table = symbol_table if symbol_table else get_symbol_table()
+
+    def parse_file(self, file_path: str, file_uri: str, use_cache: bool = True) -> ParseResult:
         """
-        Parse a MATLAB file.
+        Parse a MATLAB file and update symbol table.
 
         Args:
             file_path (str): Local path to file
             file_uri (str): URI of file
+            use_cache (bool): Whether to use cache (default True)
 
         Returns:
             ParseResult: Parsing result with extracted elements
@@ -116,7 +121,22 @@ class MatlabParser:
             )
 
         # Parse content
-        return self.parse_content(content, file_uri, file_path)
+        result = self.parse_content(content, file_uri, file_path)
+
+        # Update symbol table if parsing succeeded
+        if not result.errors:
+            try:
+                self._symbol_table.update_from_parse_result(
+                    uri=file_uri,
+                    content=content,
+                    parse_result=result,
+                )
+                logger.info(f"Updated symbol table for {file_path}")
+            except Exception as e:
+                logger.error(f"Error updating symbol table: {e}")
+                result.errors.append({"error": f"Failed to update symbol table: {e}"})
+
+        return result
 
     def parse_content(
         self,
