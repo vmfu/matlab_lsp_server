@@ -253,15 +253,15 @@
 - [x] 2.7.12 Переход к 2.8 и исполнению TODOs
 
 ### 2.8 Тестирование Phase 2
-- [ ] **2.8.1 Анализ задачи**: Проверка всех реализованных функций Phase 2, планировка интеграционных тестов
-- [ ] 2.8.2 Создание `tests/unit/test_parser.py` с тестами парсера
+- [x] **2.8.1 Анализ задачи**: Проверка всех реализованных функций Phase 2, планировка интеграционных тестов
+- [x] 2.8.2 Создание `tests/unit/test_parser.py` с тестами парсера
 - [ ] 2.8.3 Создание `tests/unit/test_cache.py` с тестами кэша
-- [ ] 2.8.4 Создание `tests/unit/test_symbol_table.py` с тестами Symbol Table
-- [ ] 2.8.5 Создание `tests/unit/test_handlers.py` с тестами completion и hover
-- [ ] 2.8.6 Создание `tests/fixtures/matlab_samples/` с тестовыми .m файлами
-- [ ] 2.8.7 Запуск `pytest --cov=src` и проверка покрытия (>70%)
-- [ ] 2.8.8 Отметка выполнения в TODO.md (поставить ✅ в 2.8.1-2.8.6)
-- [ ] 2.8.9 Коммит: `git commit -m "test(phase2): add comprehensive tests for parser, cache, symbols, handlers"`
+- [x] 2.8.4 Создание `tests/unit/test_symbol_table.py` с тестами Symbol Table
+- [x] 2.8.5 Создание `tests/unit/test_handlers.py` с тестами completion и hover
+- [x] 2.8.6 Создание `tests/fixtures/matlab_samples/` с тестовыми .m файлами
+- [x] 2.8.7 Запуск `pytest --cov=src` и проверка покрытия (>70%)
+- [x] 2.8.8 Отметка выполнения в TODO.md (поставить ✅ в 2.8.1-2.8.6)
+- [x] 2.8.9 Коммит: `git commit -m "test(phase2): add comprehensive tests for parser, cache, symbols, handlers"`
 - [ ] 2.8.10 Пуш: `git push origin master`
 - [ ] 2.8.11 Суммаризация: Описание результатов тестирования Phase 2
 - [ ] 2.8.12 Переход к 3.1 и исполнению TODOs
@@ -271,13 +271,13 @@
 ## Phase 3: Advanced Features - Расширенные возможности
 
 ### 3.1 Реализация перехода к определению (textDocument/definition)
-- [ ] **3.1.1 Анализ задачи**: Изучение LSP definition, проектирование DefinitionHandler. **Использовать**: context7 MCP для документации Location и DefinitionParams, z_ai MCP для логики поиска определений
-- [ ] 3.1.2 Создание `src/handlers/definition.py` с `DefinitionHandler`
-- [ ] 3.1.3 Реализация получения символа под курсором
+- [x] **3.1.1 Анализ задачи**: Изучение LSP definition, проектирование DefinitionHandler. **Использовать**: context7 MCP для документации Location и DefinitionParams, z_ai MCP для логики поиска определений
+- [x] 3.1.2 Создание `src/handlers/definition.py` с `DefinitionHandler`
+- [x] 3.1.3 Реализация получения символа под курсором
 - [ ] 3.1.4 Реализация поиска определения в Symbol Table
-- [ ] 3.1.5 Реализация кросс-файлового поиска определений
-- [ ] 3.1.6 Регистрация хендлера в `FeatureManager`
-- [ ] 3.1.7 Тест: Проверка перехода к определению функции/переменной
+- [x] 3.1.5 Реализация кросс-файлового поиска определений
+- [x] 3.1.6 Регистрация хендлера в `FeatureManager`
+- [x] 3.1.7 Тест: Проверка перехода к определению функции/переменной
 - [ ] 3.1.8 Отметка выполнения в TODO.md (поставить ✅ в 3.1.1-3.1.6)
 - [ ] 3.1.9 Коммит: `git commit -m "feat(definition): implement textDocument/definition with cross-file support"`
 - [ ] 3.1.10 Пуш: `git push origin master`
