@@ -210,7 +210,7 @@
 - [x] 2.4.12 Переход к 2.5 и исполнению TODOs
 
 ### 2.5 Реализация автодополнения кода (textDocument/completion)
-- [ ] **2.5.1 Анализ задачи**: Изучение LSP completion items, проектирование CompletionHandler. **Использовать**: context7 MCP для документации CompletionItem и CompletionParams, z_ai MCP для генерации логики ранжирования
+- [x] **2.5.1 Анализ задачи**: Изучение LSP completion items, проектирование CompletionHandler. **Использовать**: context7 MCP для документации CompletionItem и CompletionParams, z_ai MCP для генерации логики ранжирования
 - [ ] 2.5.2 Создание `src/handlers/completion.py` с `CompletionHandler`
 - [ ] 2.5.3 Реализация получения контекста курсора
 - [ ] 2.5.4 Реализация фильтрации кандидатов из Symbol Table
@@ -231,8 +231,8 @@
 - [ ] 2.6.4 Реализация извлечения документации из комментариев
 - [ ] 2.6.5 Реализация форматирования вывода с Markdown
 - [ ] 2.6.6 Регистрация хендлера в `FeatureManager`
-- [ ] 2.6.7 Тест: Проверка hover для функций и переменных
-- [ ] 2.6.8 Отметка выполнения в TODO.md (поставить ✅ в 2.6.1-2.6.6)
+- [x] 2.6.7 Тест: Проверка hover для функций и переменных
+- [x] 2.6.8 Отметка выполнения в TODO.md (поставить ✅ в 2.6.1-2.6.6)
 - [ ] 2.6.9 Коммит: `git commit -m "feat(hover): implement textDocument/hover with Markdown documentation"`
 - [ ] 2.6.10 Пуш: `git push origin master`
 - [ ] 2.6.11 Суммаризация: Описание реализации hover
