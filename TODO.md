@@ -287,17 +287,17 @@
 ### 3.2 Реализация поиска использований (textDocument/references)
 - [ ] **3.2.1 Анализ задачи**: Изучение LSP references, проектирование ReferencesHandler. **Использовать**: context7 MCP для документации ReferenceParams
 - [ ] 3.2.2 Создание `src/handlers/references.py` с `ReferencesHandler`
-- [ ] 3.2.3 Реализация получения символа под курсором
-- [ ] 3.2.4 Реализация поиска всех использований в Symbol Table
-- [ ] 3.2.5 Реализация кросс-файлового поиска использований
-- [ ] 3.2.6 Фильтрация по `includeDeclaration` параметру
-- [ ] 3.2.7 Регистрация хендлера в `FeatureManager`
-- [ ] 3.2.8 Тест: Проверка поиска использований функции
-- [ ] 3.2.9 Отметка выполнения в TODO.md (поставить ✅ в 3.2.1-3.2.7)
-- [ ] 3.2.10 Коммит: `git commit -m "feat(references): implement textDocument/references with includeDeclaration"`
-- [ ] 3.2.11 Пуш: `git push origin master`
-- [ ] 3.2.12 Суммаризация: Описание поиска использований
-- [ ] 3.2.13 Переход к 3.3 и исполнению TODOs
+- [x] 3.2.3 Реализация получения символа под курсором
+- [x] 3.2.4 Реализация поиска всех использований в Symbol Table
+- [x] 3.2.5 Реализация кросс-файлового поиска использований
+- [x] 3.2.6 Фильтрация по `includeDeclaration` параметру
+- [x] 3.2.7 Регистрация хендлера в `FeatureManager`
+- [x] 3.2.8 Тест: Проверка поиска использований функции
+- [x] 3.2.9 Отметка выполнения в TODO.md (поставить ✅ в 3.2.1-3.2.7)
+- [x] 3.2.10 Коммит: `git commit -m "feat(references): implement textDocument/references with includeDeclaration"`
+- [x] 3.2.11 Пуш: `git push origin master`
+- [x] 3.2.12 Суммаризация: Описание поиска использований
+- [x] 3.2.13 Переход к 3.3 и исполнению TODOs
 
 ### 3.3 Реализация быстрых исправлений (textDocument/codeAction)
 - [ ] **3.3.1 Анализ задачи**: Изучение LSP codeAction, проектирование CodeActionHandler для исправления mlint ошибок. **Использовать**: context7 MCP для документации CodeAction и CodeActionParams, z_ai MCP для логики генерации исправлений
