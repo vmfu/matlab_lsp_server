@@ -300,24 +300,24 @@
 - [x] 3.2.13 Переход к 3.3 и исполнению TODOs
 
 ### 3.3 Реализация быстрых исправлений (textDocument/codeAction)
-- [ ] **3.3.1 Анализ задачи**: Изучение LSP codeAction, проектирование CodeActionHandler для исправления mlint ошибок. **Использовать**: context7 MCP для документации CodeAction и CodeActionParams, z_ai MCP для логики генерации исправлений
-- [ ] 3.3.2 Создание `src/handlers/code_action.py` с `CodeActionHandler`
-- [ ] 3.3.3 Реализация анализа диагностики для определения исправимых ошибок
-- [ ] 3.3.4 Реализация генерации CodeAction для исправлений
-- [ ] 3.3.5 Интеграция с mlint для получения исправлений (через `-fix` флаг)
-- [ ] 3.3.6 Регистрация хендлера в `FeatureManager`
-- [ ] 3.3.7 Тест: Проверка быстрых исправлений для простых ошибок
-- [ ] 3.3.8 Отметка выполнения в TODO.md (поставить ✅ в 3.3.1-3.3.6)
-- [ ] 3.3.9 Коммит: `git commit -m "feat(codeAction): implement textDocument/codeAction with mlint fix suggestions"`
-- [ ] 3.3.10 Пуш: `git push origin master`
-- [ ] 3.3.11 Суммаризация: Описание быстрых исправлений
-- [ ] 3.3.12 Переход к 3.4 и исполнению TODOs
+- [x] **3.3.1 Анализ задачи**: Изучение LSP codeAction, проектирование CodeActionHandler для исправления mlint ошибок. **Использовать**: context7 MCP для документации CodeAction и CodeActionParams, z_ai MCP для логики генерации исправлений
+- [x] 3.3.2 Создание `src/handlers/code_action.py` с `CodeActionHandler`
+- [x] 3.3.3 Реализация анализа диагностики для определения исправимых ошибок
+- [x] 3.3.4 Реализация генерации CodeAction для исправлений
+- [x] 3.3.5 Интеграция с mlint для получения исправлений (через `-fix` флаг)
+- [x] 3.3.6 Регистрация хендлера в `FeatureManager`
+- [x] 3.3.7 Тест: Проверка быстрых исправлений для простых ошибок
+- [x] 3.3.8 Отметка выполнения в TODO.md (поставить ✅ в 3.3.1-3.3.6)
+- [x] 3.3.9 Коммит: `git commit -m "feat(codeAction): implement textDocument/codeAction with mlint fix suggestions"`
+- [x] 3.3.10 Пуш: `git push origin master`
+- [x] 3.3.11 Суммаризация: Описание быстрых исправлений
+- [x] 3.3.12 Переход к 3.4 и исполнению TODOs
 
 ### 3.4 Реализация поиска символов проекта (workspace/symbol)
-- [ ] **3.4.1 Анализ задачи**: Изучение LSP workspace symbol, проектирование WorkspaceSymbolHandler. **Использовать**: context7 MCP для документации WorkspaceSymbolParams и SymbolInformation
-- [ ] 3.4.2 Создание `src/handlers/workspace_symbol.py` с `WorkspaceSymbolHandler`
-- [ ] 3.4.3 Реализация поиска символов по запросу (fuzzy matching)
-- [ ] 3.4.4 Реализация фильтрации по типу символа (Function, Variable, Class, etc.)
+- [x] **3.4.1 Анализ задачи**: Изучение LSP workspace symbol, проектирование WorkspaceSymbolHandler. **Использовать**: context7 MCP для документации WorkspaceSymbolParams и SymbolInformation
+- [x] 3.4.2 Создание `src/handlers/workspace_symbol.py` с `WorkspaceSymbolHandler`
+- [x] 3.4.3 Реализация поиска символов по запросу (fuzzy matching)
+- [x] 3.4.4 Реализация фильтрации по типу символа (Function, Variable, Class, etc.)
 - [ ] 3.4.5 Оптимизация поиска с индексацией
 - [ ] 3.4.6 Регистрация хендлера в `FeatureManager`
 - [ ] 3.4.7 Тест: Проверка поиска символов по имени во всем проекте
