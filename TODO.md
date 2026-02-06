@@ -107,15 +107,15 @@
 - [x] 1.8.9 Коммит: `git commit -m "feat(diagnostics): implement textDocument/publishDiagnostics"`
 - [ ] 1.8.10 Пуш: `git push origin master`
 - [ ] 1.8.11 Суммаризация: Описание реализации диагностики
-- [ ] 1.8.12 Переход к 1.9 и исполнение TODOs
+- [x] 1.8.12 Переход к 1.9 и исполнение TODOs
 
 ### 1.9 Реализация синхронизации документов (textDocument/didOpen/didClose/didChange)
-- [ ] **1.9.1 Анализ задачи**: Изучение LSP document sync, проектирование хранения открытых документов в памяти. **Использовать**: context7 MCP для документации DidOpenTextDocumentParams, DidChangeTextDocumentParams
-- [ ] 1.9.2 Реализация `textDocument/didOpen` для открытия файла
-- [ ] 1.9.3 Реализация `textDocument/didClose` для закрытия файла
-- [ ] 1.9.4 Реализация `textDocument/didChange` для отслеживания изменений
-- [ ] 1.9.5 Создание `DocumentStore` для хранения содержимого документов
-- [ ] 1.9.6 Интеграция с diagnostics для триггера анализа при изменениях
+- [x] **1.9.1 Анализ задачи**: Изучение LSP document sync, проектирование хранения открытых документов в памяти. **Использовать**: context7 MCP для документации DidOpenTextDocumentParams, DidChangeTextDocumentParams
+- [x] 1.9.2 Реализация `textDocument/didOpen` для открытия файла
+- [x] 1.9.3 Реализация `textDocument/didClose` для закрытия файла
+- [x] 1.9.4 Реализация `textDocument/didChange` для отслеживания изменений
+- [x] 1.9.5 Создание `DocumentStore` для хранения содержимого документов
+- [x] 1.9.6 Интеграция с diagnostics для триггера анализа при изменениях
 - [ ] 1.9.7 Тест: Проверка синхронизации при открытии/изменении/закрытии файлов
 - [ ] 1.9.8 Отметка выполнения в TODO.md (поставить ✅ в 1.9.1-1.9.6)
 - [ ] 1.9.9 Коммит: `git commit -m "feat(sync): implement textDocument synchronization (didOpen, didClose, didChange)"`
@@ -125,14 +125,14 @@
 
 ### 1.10 Настройка pytest и базовых тестов
 - [ ] **1.10.1 Анализ задачи**: Изучение pytest, конфигурация для async тестов, планирование тестовой структуры. **Использовать**: context7 MCP для документации pytest и pytest-asyncio
-- [ ] 1.10.2 Создание `tests/conftest.py` с pytest fixtures
-- [ ] 1.10.3 Создание `tests/unit/test_config.py` для тестов ConfigManager
-- [ ] 1.10.4 Создание `tests/unit/test_analyzer.py` для тестов MlintAnalyzer
-- [ ] 1.10.5 Создание `tests/integration/test_server.py` для тестов инициализации сервера
-- [ ] 1.10.6 Настройка `.coveragerc` для контроля покрытия кода
-- [ ] 1.10.7 Тест: Запуск `pytest --cov=src` и проверка покрытия
-- [ ] 1.10.8 Отметка выполнения в TODO.md (поставить ✅ в 1.10.1-1.10.6)
-- [ ] 1.10.9 Коммит: `git commit -m "test(pytest): setup pytest framework and basic unit/integration tests"`
+- [x] 1.10.2 Создание `tests/conftest.py` с pytest fixtures
+- [x] 1.10.3 Создание `tests/unit/test_config.py` для тестов ConfigManager
+- [x] 1.10.4 Создание `tests/unit/test_analyzer.py` для тестов MlintAnalyzer
+- [x] 1.10.5 Создание `tests/integration/test_server.py` для тестов инициализации сервера
+- [x] 1.10.6 Настройка `.coveragerc` для контроля покрытия кода
+- [x] 1.10.7 Тест: Запуск `pytest --cov=src` и проверка покрытия
+- [x] 1.10.8 Отметка выполнения в TODO.md (поставить ✅ в 1.10.1-1.10.6)
+- [x] 1.10.9 Коммит: `git commit -m "test(pytest): setup pytest framework and basic unit/integration tests"`
 - [ ] 1.10.10 Пуш: `git push origin master`
 - [ ] 1.10.11 Суммаризация: Описание настроенного тестового фреймворка
 - [ ] 1.10.12 Переход к 1.11 и исполнение TODOs
