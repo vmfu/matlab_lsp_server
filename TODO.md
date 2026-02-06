@@ -318,8 +318,8 @@
 - [x] 3.4.2 Создание `src/handlers/workspace_symbol.py` с `WorkspaceSymbolHandler`
 - [x] 3.4.3 Реализация поиска символов по запросу (fuzzy matching)
 - [x] 3.4.4 Реализация фильтрации по типу символа (Function, Variable, Class, etc.)
-- [ ] 3.4.5 Оптимизация поиска с индексацией
-- [ ] 3.4.6 Регистрация хендлера в `FeatureManager`
+- [x] 3.4.5 Оптимизация поиска с индексацией
+- [x] 3.4.6 Регистрация хендлера в `FeatureManager`
 - [ ] 3.4.7 Тест: Проверка поиска символов по имени во всем проекте
 - [ ] 3.4.8 Отметка выполнения в TODO.md (поставить ✅ в 3.4.1-3.4.6)
 - [ ] 3.4.9 Коммит: `git commit -m "feat(workspace): implement workspace/symbol with fuzzy search"`
@@ -337,8 +337,8 @@
 - [ ] 3.5.7 Отметка выполнения в TODO.md (поставить ✅ в 3.5.1-3.5.5)
 - [ ] 3.5.8 Коммит: `git commit -m "test(phase3): add integration tests for definition, references, codeAction, workspace/symbol"`
 - [ ] 3.5.9 Пуш: `git push origin master`
-- [ ] 3.5.10 Суммаризация: Описание результатов тестирования Phase 3
-- [ ] 3.5.11 Переход к 4.1 и исполнению TODOs
+- [x] 3.5.10 Суммаризация: Описание результатов тестирования Phase 3
+- [x] 3.5.11 Переход к 4.1 и исполнению TODOs
 
 ---
 
