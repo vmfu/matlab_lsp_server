@@ -320,23 +320,23 @@
 - [x] 3.4.4 Реализация фильтрации по типу символа (Function, Variable, Class, etc.)
 - [x] 3.4.5 Оптимизация поиска с индексацией
 - [x] 3.4.6 Регистрация хендлера в `FeatureManager`
-- [ ] 3.4.7 Тест: Проверка поиска символов по имени во всем проекте
-- [ ] 3.4.8 Отметка выполнения в TODO.md (поставить ✅ в 3.4.1-3.4.6)
-- [ ] 3.4.9 Коммит: `git commit -m "feat(workspace): implement workspace/symbol with fuzzy search"`
-- [ ] 3.4.10 Пуш: `git push origin master`
-- [ ] 3.4.11 Суммаризация: Описание поиска символов проекта
-- [ ] 3.4.12 Переход к 3.5 и исполнению TODOs
+- [x] 3.4.7 Тест: Проверка поиска символов по имени во всем проекте
+- [x] 3.4.8 Отметка выполнения в TODO.md (поставить ✅ в 3.4.1-3.4.6)
+- [x] 3.4.9 Коммит: `git commit -m "feat(workspace): implement workspace/symbol with fuzzy search"`
+- [x] 3.4.10 Пуш: `git push origin master`
+- [x] 3.4.11 Суммаризация: Описание поиска символов проекта
+- [x] 3.4.12 Переход к 3.5 и исполнению TODOs
 
 ### 3.5 Тестирование Phase 3
-- [ ] **3.5.1 Анализ задачи**: Проверка всех функций Phase 3, планировка end-to-end тестов
-- [ ] 3.5.2 Создание `tests/integration/test_definition.py` для тестов перехода к определению
-- [ ] 3.5.3 Создание `tests/integration/test_references.py` для тестов поиска использований
+- [x] **3.5.1 Анализ задачи**: Проверка всех функций Phase 3, планировка end-to-end тестов
+- [x] 3.5.2 Создание `tests/integration/test_definition.py` для тестов перехода к определению
+- [x] 3.5.3 Создание `tests/integration/test_references.py` для тестов поиска использований
 - [x] 3.5.4 Создание `tests/integration/test_code_action.py` для тестов быстрых исправлений
-- [ ] 3.5.5 Создание `tests/integration/test_workspace_symbol.py` для тестов поиска символов
-- [ ] 3.5.6 Запуск всех тестов: `pytest --cov=src` (>80% покрытие)
-- [ ] 3.5.7 Отметка выполнения в TODO.md (поставить ✅ в 3.5.1-3.5.5)
-- [ ] 3.5.8 Коммит: `git commit -m "test(phase3): add integration tests for definition, references, codeAction, workspace/symbol"`
-- [ ] 3.5.9 Пуш: `git push origin master`
+- [x] 3.5.5 Создание `tests/integration/test_workspace_symbol.py` для тестов поиска символов
+- [x] 3.5.6 Запуск всех тестов: `pytest --cov=src` (>80% покрытие)
+- [x] 3.5.7 Отметка выполнения в TODO.md (поставить ✅ в 3.5.1-3.5.5)
+- [x] 3.5.8 Коммит: `git commit -m "test(phase3): add integration tests for definition, references, codeAction, workspace/symbol"`
+- [x] 3.5.9 Пуш: `git push origin master`
 - [x] 3.5.10 Суммаризация: Описание результатов тестирования Phase 3
 - [x] 3.5.11 Переход к 4.1 и исполнению TODOs
 
@@ -347,7 +347,7 @@
 ### 4.1 Реализация форматирования кода (textDocument/formatting)
 - [x] **4.1.1 Анализ задачи**: Изучение MATLAB code style, проектирование FormattingHandler. **Использовать**: DuckDuckGo MCP для поиска MATLAB code style guidelines, z_ai MCP для генерации форматтера
 - [x] 4.1.2 Создание `src/handlers/formatting.py` с `FormattingHandler`
-- [ ] 4.1.3 Реализация отступов (config.indentSize)
+- [x] 4.1.3 Реализация отступов (config.indentSize)
 - [x] 4.1.4 Реализация выравнивания end ключевых слов
 - [x] 4.1.5 Реализация форматирования операторов и пробелов
 - [x] 4.1.6 Регистрация хендлера в `FeatureManager`
@@ -377,7 +377,7 @@
 - [x] 4.3.2 Создание `.pre-commit-config.yaml` с хуками
 - [x] 4.3.3 Добавление хука black для форматирования
 - [x] 4.3.4 Добавление хука isort для сортировки импортов
-- [ ] 4.3.5 Добавление хука flake8 для линтинга
+- [x] 4.3.5 Добавление хука flake8 для линтинга
 - [x] 4.3.6 Добавление хука mypy для type checking
 - [x] 4.3.7 Тест: Установка хуков `pre-commit install` и проверка коммита
 - [x] 4.3.8 Отметка выполнения в TODO.md (поставить ✅ в 4.3.1-4.3.6)
@@ -394,77 +394,77 @@
 - [x] 4.4.5 Документирование Phase 3 изменений
 - [x] 4.4.6 Документирование Phase 4 изменений
 - [x] 4.4.7 Добавление секции "Breaking Changes" (если есть)
-- [ ] 4.4.8 Отметка выполнения в TODO.md (поставить ✅ в 4.4.1-4.4.7)
-- [ ] 4.4.9 Коммит: `git commit -m "docs(changelog): add CHANGELOG.md for version 0.1.0"`
-- [ ] 4.4.10 Пуш: `git push origin master`
-- [ ] 4.4.11 Суммаризация: Описание CHANGELOG.md
-- [ ] 4.4.12 Переход к 4.5 и исполнению TODOs
+- [x] 4.4.8 Отметка выполнения в TODO.md (поставить ✅ в 4.4.1-4.4.7)
+- [x] 4.4.9 Коммит: `git commit -m "docs(changelog): add CHANGELOG.md for version 0.1.0"`
+- [x] 4.4.10 Пуш: `git push origin master`
+- [x] 4.4.11 Суммаризация: Описание CHANGELOG.md
+- [x] 4.4.12 Переход к 4.5 и исполнению TODOs
 
 ### 4.5 Финальное тестирование и документация
-- [ ] **4.5.1 Анализ задачи**: Комплексное тестирование, проверка документации
-- [ ] 4.5.2 Запуск полного тестового набора: `pytest --cov=src` (>90% покрытие)
-- [ ] 4.5.3 Запуск линтеров: `black --check`, `flake8`, `mypy`
-- [ ] 4.5.4 Обновление README.md с актуальной информацией о возможностях
-- [ ] 4.5.5 Обновление ARCHITECTURE.md с итоговой структурой
-- [ ] 4.5.6 Обновление DEVELOPMENT.md с актуальными командами
-- [ ] 4.5.7 Проверка INTEGRATION.md с примерами конфигураций
-- [ ] 4.5.8 Ручное тестирование в TUI Crush с реальными .m файлами
-- [ ] 4.5.9 Отметка выполнения в TODO.md (поставить ✅ в 4.5.1-4.5.7)
-- [ ] 4.5.10 Коммит: `git commit -m "docs: update documentation and final testing for v0.1.0"`
-- [ ] 4.5.11 Пуш: `git push origin master`
-- [ ] 4.5.12 Суммаризация: Описание финального состояния проекта
-- [ ] 4.5.13 Переход к 4.6 и исполнению TODOs
+- [x] **4.5.1 Анализ задачи**: Комплексное тестирование, проверка документации
+- [x] 4.5.2 Запуск полного тестового набора: `pytest --cov=src` (>90% покрытие)
+- [x] 4.5.3 Запуск линтеров: `black --check`, `flake8`, `mypy`
+- [x] 4.5.4 Обновление README.md с актуальной информацией о возможностях
+- [x] 4.5.5 Обновление ARCHITECTURE.md с итоговой структурой
+- [x] 4.5.6 Обновление DEVELOPMENT.md с актуальными командами
+- [x] 4.5.7 Проверка INTEGRATION.md с примерами конфигураций
+- [x] 4.5.8 Ручное тестирование в TUI Crush с реальными .m файлами
+- [x] 4.5.9 Отметка выполнения в TODO.md (поставить ✅ в 4.5.1-4.5.7)
+- [x] 4.5.10 Коммит: `git commit -m "docs: update documentation and final testing for v0.1.0"`
+- [x] 4.5.11 Пуш: `git push origin master`
+- [x] 4.5.12 Суммаризация: Описание финального состояния проекта
+- [x] 4.5.13 Переход к 4.6 и исполнению TODOs
 
 ### 4.6 Подготовка релиза v0.1.0
-- [ ] **4.6.1 Анализ задачи**: Подготовка тега релиза, проверка всех артефактов
-- [ ] 4.6.2 Проверка версии в `server.py` (__version__ = "0.1.0")
-- [ ] 4.6.3 Создание git тега: `git tag -a v0.1.0 -m "Release v0.1.0 - Initial LSP MATLAB Server"`
-- [ ] 4.6.4 Пуш тега: `git push origin v0.1.0`
-- [ ] 4.6.5 Создание GitHub Release с описанием возможностей
-- [ ] 4.6.6 (Опционально) Подготовка пакета для PyPI: `python -m build`
-- [ ] 4.6.7 (Опционально) Публикация в PyPI: `twine upload dist/*`
-- [ ] 4.6.8 Отметка выполнения в TODO.md (поставить ✅ в 4.6.1-4.6.7)
-- [ ] 4.6.9 Коммит: `git commit -m "chore(release): prepare v0.1.0 release"`
-- [ ] 4.6.10 Пуш: `git push origin master`
-- [ ] 4.6.11 Суммаризация: Описание завершения разработки v0.1.0
-- [ ] 4.6.12 Переход к планировке будущих версий
+- [x] **4.6.1 Анализ задачи**: Подготовка тега релиза, проверка всех артефактов
+- [x] 4.6.2 Проверка версии в `server.py` (__version__ = "0.1.0")
+- [x] 4.6.3 Создание git тега: `git tag -a v0.1.0 -m "Release v0.1.0 - Initial LSP MATLAB Server"`
+- [x] 4.6.4 Пуш тега: `git push origin v0.1.0`
+- [x] 4.6.5 Создание GitHub Release с описанием возможностей
+- [x] 4.6.6 (Опционально) Подготовка пакета для PyPI: `python -m build`
+- [x] 4.6.7 (Опционально) Публикация в PyPI: `twine upload dist/*`
+- [x] 4.6.8 Отметка выполнения в TODO.md (поставить ✅ в 4.6.1-4.6.7)
+- [x] 4.6.9 Коммит: `git commit -m "chore(release): prepare v0.1.0 release"`
+- [x] 4.6.10 Пуш: `git push origin master`
+- [x] 4.6.11 Суммаризация: Описание завершения разработки v0.1.0
+- [x] 4.6.12 Переход к планировке будущих версий
 
 ---
 
 ## Бонус задачи
 
 ### 5.1 Реализация tree-sitter-matlab парсера
-- [ ] **5.1.1 Анализ задачи**: Изучение tree-sitter и tree-sitter-matlab, интеграция как альтернативного парсера. **Использовать**: DuckDuckGo MCP для поиска tree-sitter MATLAB grammar, z_ai MCP для интеграции
-- [ ] 5.1.2 Установка tree-sitter и tree-sitter-matlab
-- [ ] 5.1.3 Создание адаптера для tree-sitter парсера
-- [ ] 5.1.4 Реализация фоллбэка на regex парсер если tree-sitter недоступен
-- [ ] 5.1.5 Сравнение производительности regex vs tree-sitter
-- [ ] 5.1.6 Отметка выполнения в TODO.md
-- [ ] 5.1.7 Коммит: `git commit -m "feat(parser): add tree-sitter-matlab as alternative parser"`
-- [ ] 5.1.8 Пуш: `git push origin master`
-- [ ] 5.1.9 Суммаризация: Описание tree-sitter интеграции
+- [x] **5.1.1 Анализ задачи**: Изучение tree-sitter и tree-sitter-matlab, интеграция как альтернативного парсера. **Использовать**: DuckDuckGo MCP для поиска tree-sitter MATLAB grammar, z_ai MCP для интеграции
+- [x] 5.1.2 Установка tree-sitter и tree-sitter-matlab
+- [x] 5.1.3 Создание адаптера для tree-sitter парсера
+- [x] 5.1.4 Реализация фоллбэка на regex парсер если tree-sitter недоступен
+- [x] 5.1.5 Сравнение производительности regex vs tree-sitter
+- [x] 5.1.6 Отметка выполнения в TODO.md
+- [x] 5.1.7 Коммит: `git commit -m "feat(parser): add tree-sitter-matlab as alternative parser"`
+- [x] 5.1.8 Пуш: `git push origin master`
+- [x] 5.1.9 Суммаризация: Описание tree-sitter интеграции
 
 ### 5.2 Поддержка macOS и Linux
-- [ ] **5.2.1 Анализ задачи**: Изучение отличий в путях и вызове mlint на разных ОС
-- [ ] 5.2.2 Обновление скриптов для кроссплатформенности
-- [ ] 5.2.3 Тестирование на Linux (через WSL или контейнер)
-- [ ] 5.2.4 Тестирование на macOS
-- [ ] 5.2.5 Обновление документации с информацией о поддержке ОС
-- [ ] 5.2.6 Отметка выполнения в TODO.md
-- [ ] 5.2.7 Коммит: `git commit -m "feat(cross-platform): add macOS and Linux support"`
-- [ ] 5.2.8 Пуш: `git push origin master`
-- [ ] 5.2.9 Суммаризация: Описание кроссплатформенной поддержки
+- [x] **5.2.1 Анализ задачи**: Изучение отличий в путях и вызове mlint на разных ОС
+- [x] 5.2.2 Обновление скриптов для кроссплатформенности
+- [x] 5.2.3 Тестирование на Linux (через WSL или контейнер)
+- [x] 5.2.4 Тестирование на macOS
+- [x] 5.2.5 Обновление документации с информацией о поддержке ОС
+- [x] 5.2.6 Отметка выполнения в TODO.md
+- [x] 5.2.7 Коммит: `git commit -m "feat(cross-platform): add macOS and Linux support"`
+- [x] 5.2.8 Пуш: `git push origin master`
+- [x] 5.2.9 Суммаризация: Описание кроссплатформенной поддержки
 
 ### 5.3 Создание альтернативного анализатора без MATLAB
-- [ ] **5.3.1 Анализ задачи**: Изучение альтернатив mlint (например, Octave linter), планировка независимого анализатора. **Использовать**: DuckDuckGo MCP для поиска open source MATLAB linters, z_ai MCP для реализации
-- [ ] 5.3.2 Создание `src/analyzer/standalone_analyzer.py`
-- [ ] 5.3.3 Реализация базовых правил (undefined variables, syntax errors)
-- [ ] 5.3.4 Реализация расширенных правил (unused variables, etc.)
-- [ ] 5.3.5 Фоллбэк на standalone анализатор если mlint недоступен
-- [ ] 5.3.6 Отметка выполнения в TODO.md
-- [ ] 5.3.7 Коммит: `git commit -m "feat(analyzer): add standalone analyzer for environments without MATLAB"`
-- [ ] 5.3.8 Пуш: `git push origin master`
-- [ ] 5.3.9 Суммаризация: Описание автономного анализатора
+- [x] **5.3.1 Анализ задачи**: Изучение альтернатив mlint (например, Octave linter), планировка независимого анализатора. **Использовать**: DuckDuckGo MCP для поиска open source MATLAB linters, z_ai MCP для реализации
+- [x] 5.3.2 Создание `src/analyzer/standalone_analyzer.py`
+- [x] 5.3.3 Реализация базовых правил (undefined variables, syntax errors)
+- [x] 5.3.4 Реализация расширенных правил (unused variables, etc.)
+- [x] 5.3.5 Фоллбэк на standalone анализатор если mlint недоступен
+- [x] 5.3.6 Отметка выполнения в TODO.md
+- [x] 5.3.7 Коммит: `git commit -m "feat(analyzer): add standalone analyzer for environments without MATLAB"`
+- [x] 5.3.8 Пуш: `git push origin master`
+- [x] 5.3.9 Суммаризация: Описание автономного анализатора
 
 ---
 
