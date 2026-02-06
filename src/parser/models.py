@@ -109,12 +109,13 @@ class ParseResult:
     Attributes:
         file_uri (str): URI of the parsed file
         file_path (str): Local path to the parsed file
-        functions (List[FunctionInfo]): List of function definitions
-        variables (List[VariableInfo]): List of variable declarations
+        functions (List[FunctionInfo]): List of function definitions (top-level and nested)
+        variables (List[VariableInfo]): List of variable declarations (global only)
         classes (List[ClassInfo]): List of class definitions
         comments (List[CommentInfo]): List of comments
         errors (List[Dict]): List of parsing errors
         raw_content (str): Raw file content
+        function_tree (Dict[str, List[str]]): Function hierarchy (parent -> children)
     """
     file_uri: str
     file_path: str
@@ -124,6 +125,7 @@ class ParseResult:
     comments: List[CommentInfo] = field(default_factory=list)
     errors: List[Dict[str, Any]] = field(default_factory=list)
     raw_content: str = ""
+    function_tree: Dict[str, List[str]] = field(default_factory=dict)  # Parent -> children
 
 
 # Built-in MATLAB functions and keywords

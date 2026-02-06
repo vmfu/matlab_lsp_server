@@ -176,3 +176,36 @@ def test_parser_module_imports():
     assert FunctionInfo is not None
     assert VariableInfo is not None
     assert ParseResult is not None
+
+
+def test_parse_classdef():
+    """Test parsing class definition."""
+    parser = MatlabParser()
+
+    # Create test file
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.m', delete=False) as f:
+        f.write(
+            "classdef MyClass\n"
+            "    properties\n"
+            "        Property1\n"
+            "    methods\n"
+            "        function method1(obj)\n"
+            "            m = obj;\n"
+            "        end\n"
+            "end\n"
+        )
+        file_path = f.name
+
+    try:
+        # Parse file
+        result = parser.parse_file(file_path, "file:///test.m")
+
+        # Check results
+        assert len(result.classes) == 1
+        assert result.classes[0].name == "MyClass"
+        # Note: Properties and methods extraction is basic
+        assert 'Property1' in result.classes[0].properties
+        # The method should appear in functions list, not in class
+        assert len([f for f in result.functions if f.name == 'method1']) >= 1
+    finally:
+        os.unlink(file_path)

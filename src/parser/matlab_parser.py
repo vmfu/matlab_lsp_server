@@ -51,13 +51,25 @@ class MatlabParser:
         re.MULTILINE
     )
 
-    CLASS_PATTERN = re.compile(
+    CLASSDEF_PATTERN = re.compile(
         r'^\s*classdef\s+(\w+)\s*\b',
         re.MULTILINE
     )
 
-    # Comment pattern - matches code before %, then comment
-    # Handles: "code; comment" or "code % comment" or "% comment"
+    PROPERTY_PATTERN = re.compile(
+        r'^\s*properties',
+        re.MULTILINE | re.IGNORECASE
+    )
+
+    METHOD_PATTERN = re.compile(
+        r'^\s*function\s+'
+        r'(?:(\w+)\s*=\s*)?'  # Output args
+        r'(\w+)\s*'  # Method name
+        r'\(([^)]*)\)'  # Input args
+        r'\s*$',
+        re.MULTILINE
+    )
+
     COMMENT_PATTERN = re.compile(
         r'^(.*?)(?:;|%)([^%].*)$',  # Code before ; or %, then comment (not %)
         re.MULTILINE
@@ -74,7 +86,8 @@ class MatlabParser:
         self._nesting_level = 0  # Track function/class nesting
         self._current_function = None  # Track current function
         self._current_class = None  # Track current class
-        self._in_block_comment = False  # Track if in block comment
+        self._function_stack = []  # Stack of functions for nesting
+        self._class_stack = []  # Stack of classes for nesting
 
     def parse_file(self, file_path: str, file_uri: str) -> ParseResult:
         """
@@ -126,13 +139,16 @@ class MatlabParser:
         functions: List[FunctionInfo] = []
         variables: List[VariableInfo] = []
         comments: List[CommentInfo] = []
+        classes: List[ClassInfo] = []
         errors: List[Dict] = []
 
         # Reset state
         self._nesting_level = 0
         self._current_function = None
         self._current_class = None
-        self._in_block_comment = False
+        self._function_stack = []
+        self._class_stack = []
+        function_tree: Dict[str, List[str]] = {}
 
         # First, extract all block comments from entire content
         block_comments = self._extract_block_comments(content)
@@ -160,43 +176,81 @@ class MatlabParser:
                 if not line.strip():
                     continue
 
+            # Check for class definition
+            class_match = self._extract_classdef(line, original_line_num)
+            if class_match:
+                classes.append(class_match)
+                self._class_stack.append(class_match)
+                self._current_class = class_match
+                self._nesting_level += 1
+                continue
+
             # Check for function definition
             function_match = self._extract_function(line, original_line_num)
             if function_match:
                 functions.append(function_match)
-                if self._nesting_level == 0:
+
+                # Set parent class if in class
+                if self._current_class:
+                    function_match.parent_class = self._current_class.name
+
+                # Set parent function if nested
+                if self._current_function:
+                    function_match.is_nested = True
+                    function_match.parent_function = self._current_function.name
+
+                # Update function tree
+                if self._current_function:
+                    parent_name = self._current_function.name
+                    if parent_name not in function_tree:
+                        function_tree[parent_name] = []
+                    function_tree[parent_name].append(function_match.name)
+
+                self._function_stack.append(function_match)
+                if self._nesting_level == 0 or not self._current_class:
                     self._current_function = function_match
                 self._nesting_level += 1
                 continue
 
-            # Check for class definition
-            class_match = self._extract_class(line, original_line_num)
-            if class_match:
-                # Classes not supported in basic parser yet
-                errors.append({
-                    "line": original_line_num,
-                    "warning": "Class definitions not fully supported"
-                })
+            # Check for properties (inside class)
+            if self._current_class:
+                prop_match = self._extract_property(line, original_line_num)
+                if prop_match:
+                    self._current_class.properties.append(prop_match)
                 continue
 
-            # Check for function end
+            # Check for end statement
             if self._extract_end(line):
                 if self._nesting_level > 0:
                     self._nesting_level -= 1
-                    if self._nesting_level == 0:
+
+                    # If exiting class
+                    if self._class_stack and self._nesting_level == len(self._class_stack) - 1:
+                        self._current_class = self._class_stack[-1] if self._class_stack else None
+                    elif self._nesting_level == 0:
+                        self._current_class = None
+
+                    # If exiting function
+                    if self._function_stack and self._nesting_level == len(self._function_stack) - 1:
+                        self._current_function = self._function_stack[-1]
+                    elif self._nesting_level == 0:
                         self._current_function = None
+
                 continue
 
             # Check for variable declaration
             if self._nesting_level == 0 or self._current_function:
                 var_match = self._extract_variable(line, original_line_num)
                 if var_match:
-                    variables.append(var_match)
+                    # Only add global/top-level variables
+                    if self._nesting_level == 0 or var_match.is_global or var_match.is_persistent:
+                        variables.append(var_match)
 
         logger.info(
             f"Parsed {len(functions)} functions, "
             f"{len(variables)} variables, "
-            f"{len(comments)} comments"
+            f"{len(comments)} comments, "
+            f"{len(classes)} classes"
         )
 
         return ParseResult(
@@ -204,10 +258,11 @@ class MatlabParser:
             file_path=file_path,
             functions=functions,
             variables=variables,
-            classes=[],  # Not implemented yet
+            classes=classes,
             comments=comments,
             errors=errors,
             raw_content=content,
+            function_tree=function_tree,
         )
 
     def _extract_function(
@@ -217,6 +272,11 @@ class MatlabParser:
     ) -> Optional[FunctionInfo]:
         """Extract function definition from line."""
         match = self.FUNCTION_PATTERN.match(line)
+        if not match:
+            # Try method pattern (for classes)
+            if self._current_class:
+                match = self.METHOD_PATTERN.match(line)
+
         if not match:
             return None
 
@@ -246,9 +306,44 @@ class MatlabParser:
             column=name_pos + 1,
             input_args=input_args,
             output_args=output_args,
-            is_nested=self._nesting_level > 0,
-            parent_function=self._current_function.name if self._current_function else None,
+            is_nested=False,
+            parent_function=None,
         )
+
+    def _extract_classdef(
+        self,
+        line: str,
+        line_num: int
+    ) -> Optional[ClassInfo]:
+        """Extract class definition from line."""
+        match = self.CLASSDEF_PATTERN.match(line)
+        if not match:
+            return None
+
+        name = match.group(1)
+        name_pos = line.find(name)
+        if name_pos == -1:
+            name_pos = 0
+
+        return ClassInfo(
+            name=name,
+            line=line_num,
+            column=name_pos + 1,
+            properties=[],
+            methods=[],
+        )
+
+    def _extract_property(
+        self,
+        line: str,
+        line_num: int
+    ) -> Optional[str]:
+        """Extract property name from line."""
+        # Simple pattern: property name (no type yet)
+        match = re.match(r'^\s*(\w+)', line)
+        if match:
+            return match.group(1)
+        return None
 
     def _extract_variable(
         self,
@@ -279,60 +374,6 @@ class MatlabParser:
             is_global=is_global,
             is_persistent=is_persistent,
         )
-
-    def _extract_class(
-        self,
-        line: str,
-        line_num: int
-    ) -> Optional[ClassInfo]:
-        """Extract class definition from line."""
-        match = self.CLASS_PATTERN.match(line)
-        if not match:
-            return None
-
-        name = match.group(1)
-        name_pos = line.find(name)
-        if name_pos == -1:
-            name_pos = 0
-
-        return ClassInfo(
-            name=name,
-            line=line_num,
-            column=name_pos + 1,
-        )
-
-    def _extract_end(self, line: str) -> bool:
-        """Check if line is an end statement."""
-        match = self.FUNCTION_END_PATTERN.match(line)
-        return match is not None
-
-    def _extract_comment(
-        self,
-        line: str,
-        line_num: int
-    ) -> Optional[CommentInfo]:
-        """Extract comment from line."""
-        # First check for block comments %{ ... }%
-        block_match = self.BLOCK_COMMENT_PATTERN.search(line)
-        if block_match:
-            return CommentInfo(
-                text=block_match.group(1),
-                line=line_num,
-                column=line.find('%') + 1,
-                is_block=True,
-            )
-
-        # Check for line comments %
-        match = self.COMMENT_PATTERN.match(line)
-        if match and match.group(1).strip():  # Only if there's code before %
-            return CommentInfo(
-                text=match.group(2).strip(),
-                line=line_num,
-                column=line.find('%') + 1,
-                is_block=False,
-            )
-
-        return None
 
     def _extract_block_comments(
         self,
@@ -407,6 +448,11 @@ class MatlabParser:
                 )
 
         return None
+
+    def _extract_end(self, line: str) -> bool:
+        """Check if line is an end statement."""
+        match = self.FUNCTION_END_PATTERN.match(line)
+        return match is not None
 
     def is_builtin_function(self, name: str) -> bool:
         """Check if name is a built-in MATLAB function."""
