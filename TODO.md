@@ -84,14 +84,14 @@
 
 ### 1.7 Интеграция с mlint - базовая анализаторная система
 - [ ] **1.7.1 Анализ задачи**: Изучение mlint.exe, его аргументов и формата вывода; проектирование `MlintAnalyzer`. **Использовать**: DuckDuckGo MCP для поиска документации mlint, z_ai MCP для генерации парсера вывода
-- [ ] 1.7.2 Создание `src/analyzer/base_analyzer.py` с абстрактным `BaseAnalyzer`
-- [ ] 1.7.3 Создание `src/analyzer/mlint_analyzer.py` с `MlintAnalyzer`
-- [ ] 1.7.4 Реализация вызова mlint.exe через subprocess
-- [ ] 1.7.5 Реализация парсинга вывода mlint в структурированный формат
-- [ ] 1.7.6 Тест: Проверка анализа тестового .m файла с `mlint.bat`
-- [ ] 1.7.7 Отметка выполнения в TODO.md (поставить ✅ в 1.7.1-1.7.5)
-- [ ] 1.7.8 Коммит: `git commit -m "feat(analyzer): implement MlintAnalyzer with subprocess integration"`
-- [ ] 1.7.9 Пуш: `git push origin master`
+- [x] 1.7.2 Создание `src/analyzer/base_analyzer.py` с абстрактным `BaseAnalyzer`
+- [x] 1.7.3 Создание `src/analyzer/mlint_analyzer.py` с `MlintAnalyzer`
+- [x] 1.7.4 Реализация вызова mlint.exe через subprocess
+- [x] 1.7.5 Реализация парсинга вывода mlint в структурированный формат
+- [x] 1.7.6 Тест: Проверка анализа тестового .m файла с `mlint.bat`
+- [x] 1.7.7 Отметка выполнения в TODO.md (поставить ✅ в 1.7.1-1.7.5)
+- [x] 1.7.8 Коммит: `git commit -m "feat(analyzer): implement MlintAnalyzer with subprocess integration"`
+- [x] 1.7.9 Пуш: `git push origin master`
 - [ ] 1.7.10 Суммаризация: Описание интеграции с mlint
 - [ ] 1.7.11 Переход к 1.8 и исполнение TODOs
 
