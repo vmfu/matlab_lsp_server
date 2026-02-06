@@ -103,8 +103,8 @@
 - [x] 1.8.5 Конвертация mlint вывода в LSP Diagnostic с severity levels
 - [x] 1.8.6 Интеграция с `MlintAnalyzer` для анализа файлов
 - [x] 1.8.7 Тест: Проверка публикации диагностики для `for_tests/test_lsp_detailed.m`
-- [ ] 1.8.8 Отметка выполнения в TODO.md (поставить ✅ в 1.8.1-1.8.6)
-- [ ] 1.8.9 Коммит: `git commit -m "feat(diagnostics): implement textDocument/publishDiagnostics"`
+- [x] 1.8.8 Отметка выполнения в TODO.md (поставить ✅ в 1.8.1-1.8.6)
+- [x] 1.8.9 Коммит: `git commit -m "feat(diagnostics): implement textDocument/publishDiagnostics"`
 - [ ] 1.8.10 Пуш: `git push origin master`
 - [ ] 1.8.11 Суммаризация: Описание реализации диагностики
 - [ ] 1.8.12 Переход к 1.9 и исполнение TODOs
