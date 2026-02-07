@@ -7,6 +7,9 @@ This module implements LSP document synchronization methods:
 - textDocument/didChange
 """
 
+from pathlib import Path
+from urllib.parse import urlparse, unquote
+
 from lsprotocol.types import (
     DidChangeTextDocumentParams,
     DidCloseTextDocumentParams,
@@ -133,9 +136,20 @@ def register_document_sync_handlers(
         Returns:
             str: Local file path
         """
-        # Remove "file:///" prefix and decode URL encoding
-        if uri.startswith("file:///"):
-            return uri[8:].replace("/", "\\")
+        # Parse URI
+        parsed = urlparse(uri)
+
+        # Handle file:/// URIs
+        if parsed.scheme == "file":
+            # Get the path and decode URL encoding
+            path = unquote(parsed.path)
+
+            # Remove leading slash on Windows (file:///C:/path -> C:/path)
+            if path.startswith("/") and len(path) > 2 and path[2] == ":":
+                path = path[1:]
+
+            return str(Path(path))
+
         return uri
 
 

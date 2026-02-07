@@ -5,6 +5,7 @@ This module provides integration with MATLAB's Code Analyzer (mlint.exe).
 """
 
 import os
+import platform
 import re
 import subprocess
 from pathlib import Path
@@ -37,7 +38,7 @@ class MlintAnalyzer(BaseAnalyzer):
 
         Args:
             matlab_path (str): Path to MATLAB installation directory
-                              (e.g., "C:\\Program Files\\MATLAB\\R2023b")
+                              (e.g., "C:/Program Files/MATLAB/R2023b")
         """
         super().__init__(matlab_path=matlab_path)
         self.mlint_path = self._find_mlint_path()
@@ -72,20 +73,73 @@ class MlintAnalyzer(BaseAnalyzer):
         if mlint_in_path:
             return mlint_in_path
 
-        # Search in common installation paths
-        common_paths = [
-            "C:\\Program Files\\MATLAB",
-            "C:\\Program Files (x86)\\MATLAB",
-            "H:\\Program Files\\MATLAB",
-        ]
+        # Search in common installation paths (platform-specific)
+        if platform.system() == "Windows":
+            common_paths = [
+                Path("C:/Program Files/MATLAB"),
+                Path("C:/Program Files (x86)/MATLAB"),
+                Path("H:/Program Files/MATLAB"),
+            ]
+        elif platform.system() == "Darwin":  # macOS
+            common_paths = [
+                Path("/Applications/MATLAB_R*.app"),
+            ]
+        else:  # Linux and others
+            common_paths = [
+                Path("/usr/local/MATLAB"),
+                Path("/opt/MATLAB"),
+                Path.home() / "MATLAB",
+            ]
 
         for base in common_paths:
-            if os.path.exists(base):
-                for root, dirs, files in os.walk(base):
-                    if "mlint.exe" in files:
-                        return str(Path(root) / "mlint.exe")
+            # Handle glob patterns for macOS versions
+            if "*" in str(base):
+                import glob as glob_module
 
-        logger.warning("mlint.exe not found in any location")
+                matches = glob_module.glob(str(base))
+                for match in sorted(matches, reverse=True):
+                    # Try newest version first
+                    mlint_path = self._find_mlint_in_dir(Path(match))
+                    if mlint_path:
+                        return mlint_path
+            elif base.exists():
+                mlint_path = self._find_mlint_in_dir(base)
+                if mlint_path:
+                    return mlint_path
+
+        logger.warning("mlint not found in any location")
+        return None
+
+    def _find_mlint_in_dir(
+        self, base_dir: Path
+    ) -> Optional[str]:
+        """Find mlint in a directory tree.
+
+        Args:
+            base_dir: Base directory to search
+
+        Returns:
+            Path to mlint executable or None
+        """
+        # Platform-specific mlint binary names
+        if platform.system() == "Windows":
+            mlint_names = ["mlint.exe", "mlint.bat"]
+        else:
+            mlint_names = ["mlint"]
+
+        for root, dirs, files in os.walk(base_dir):
+            # Look in bin directories first
+            if "bin" in root:
+                for mlint_name in mlint_names:
+                    if mlint_name in files:
+                        return str(Path(root) / mlint_name)
+
+        # If not found in bin, search all directories
+        for root, dirs, files in os.walk(base_dir):
+            for mlint_name in mlint_names:
+                if mlint_name in files:
+                    return str(Path(root) / mlint_name)
+
         return None
 
     def _find_in_path(self, executable: str) -> Optional[str]:
