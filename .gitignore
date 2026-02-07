@@ -38,3 +38,28 @@ htmlcov/
 # Temporary files
 *.tmp
 *.temp
+*.bak
+
+# Agent and task files (development notes)
+AGENTS.md
+TODO.md
+TODO_final.md
+*TODO*.md
+*AGENTS*.md
+
+# Root-level test and debug scripts (not in tests/)
+test_*.py
+*_client.py
+*_fix.py
+*_simple.py
+
+# Manual test directories
+m_files/
+for_tests/
+
+# User-specific configuration files
+start_crush.bat
+.crush.json
+
+# Debug directory
+debug/
