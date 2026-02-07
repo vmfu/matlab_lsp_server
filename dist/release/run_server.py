@@ -2,28 +2,37 @@
 """
 LSP MATLAB Server - Launcher Script
 
-This script starts the LSP MATLAB Server with proper configuration.
+This script starts LSP MATLAB Server with proper configuration.
 """
 
 import sys
 import os
 
 # Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+script_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.join(script_dir, 'src')
+sys.path.insert(0, src_dir)
 
-from src.server import __version__
+# Import server
+from server import __version__
 
 def main():
-    """Main entry point for LSP MATLAB Server."""
+    """Main entry point for LSP MATLAB Server launcher."""
     print(f"LSP MATLAB Server v{__version__}")
+
+    # Check command line arguments
+    if len(sys.argv) > 1:
+        if '--version' in sys.argv or '-v' in sys.argv:
+            print(f"Version: {__version__}")
+            print(f"Python: {sys.version}")
+            sys.exit(0)
+
     print("Starting Language Server...")
     print("Use --stdio for stdio mode (recommended)")
     print("Use --tcp <port> for TCP mode")
 
-    # Import server
-    from src.server import start_server
-
-    # Start server
+    # Import and run server
+    from server import start_server
     start_server()
 
 if __name__ == "__main__":
