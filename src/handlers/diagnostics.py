@@ -5,8 +5,9 @@ This module handles textDocument/publishDiagnostics notifications
 to publish analysis results to the LSP client.
 """
 
-from typing import List, Dict, Any
-from lsprotocol.types import Diagnostic, DiagnosticSeverity
+from typing import Any, Dict, List
+
+from lsprotocol.types import Diagnostic, DiagnosticSeverity, Position, Range
 from pygls.server import LanguageServer
 
 from ..analyzer.base_analyzer import BaseAnalyzer, DiagnosticResult
@@ -16,7 +17,7 @@ logger = get_logger(__name__)
 
 
 def mlint_result_to_lsp_diagnostics(
-    result: DiagnosticResult
+    result: DiagnosticResult,
 ) -> List[Diagnostic]:
     """
     Convert MlintAnalyzer result to LSP Diagnostic objects.
@@ -36,20 +37,24 @@ def mlint_result_to_lsp_diagnostics(
             "warning": DiagnosticSeverity.Warning,
             "info": DiagnosticSeverity.Information,
         }
-        severity = severity_map.get(diag_dict["severity"], DiagnosticSeverity.Warning)
+        severity = severity_map.get(
+            diag_dict["severity"], DiagnosticSeverity.Warning
+        )
+
+        # Create LSP Range
+        line = max(0, diag_dict["line"] - 1)  # LSP is 0-based
+        column = (
+            max(0, diag_dict["column"] - 1) if diag_dict["column"] > 0 else 0
+        )
+
+        diagnostic_range = Range(
+            start=Position(line=line, character=column),
+            end=Position(line=line, character=column + 1),
+        )
 
         # Create LSP Diagnostic
         diagnostic = Diagnostic(
-            range={
-                "start": {
-                    "line": diag_dict["line"] - 1,  # LSP is 0-based
-                    "character": diag_dict["column"] - 1,
-                },
-                "end": {
-                    "line": diag_dict["line"] - 1,
-                    "character": diag_dict["column"],  # End after message
-                },
-            },
+            range=diagnostic_range,
             message=diag_dict["message"],
             severity=severity,
             code=diag_dict["code"],
@@ -57,7 +62,9 @@ def mlint_result_to_lsp_diagnostics(
         )
         diagnostics.append(diagnostic)
 
-    logger.debug(f"Converted {len(result.diagnostics)} diagnostics to LSP format")
+    logger.debug(
+        f"Converted {len(result.diagnostics)} diagnostics to LSP format"
+    )
     return diagnostics
 
 
@@ -86,14 +93,11 @@ def publish_diagnostics(
         lsp_diagnostics = mlint_result_to_lsp_diagnostics(result)
 
         # Publish to client
-        server.lsp.publish_diagnostics(
-            params={
-                "uri": file_uri,
-                "diagnostics": lsp_diagnostics,
-            }
-        )
+        server.publish_diagnostics(file_uri, lsp_diagnostics)
 
-        logger.info(f"Published {len(lsp_diagnostics)} diagnostics for {file_path}")
+        logger.info(
+            f"Published {len(lsp_diagnostics)} diagnostics for {file_path}"
+        )
 
     except FileNotFoundError:
         logger.warning(f"File not found, skipping diagnostics: {file_path}")

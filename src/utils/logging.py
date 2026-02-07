@@ -6,7 +6,6 @@ from typing import Optional
 
 import colorlog
 
-
 # Default log format with colors
 LOG_FORMAT = (
     '%(log_color)s%(levelname)-8s%(reset)s '

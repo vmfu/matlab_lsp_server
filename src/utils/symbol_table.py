@@ -6,8 +6,8 @@ completion, go-to-definition, etc.
 """
 
 import hashlib
-from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional
 
 from .logging import get_logger
 

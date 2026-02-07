@@ -5,8 +5,8 @@ This module provides abstract base class for all code analyzers.
 """
 
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any
 from dataclasses import dataclass
+from typing import Any, Dict, List
 
 from ..utils.logging import get_logger
 

@@ -2,19 +2,19 @@
 Custom Language Server for MATLAB with configuration via initialized notification.
 """
 
-from pygls.server import LanguageServer
 from lsprotocol.types import (
+    InitializedParams,
     InitializeParams,
     InitializeResult,
-    InitializedParams,
 )
+from pygls.server import LanguageServer
 
-from src.utils.logging import get_logger
-from src.utils.document_store import DocumentStore
-from src.features.feature_manager import FeatureManager
 from src.analyzer.mlint_analyzer import MlintAnalyzer
+from src.features.feature_manager import FeatureManager
 from src.protocol import document_sync
 from src.protocol.lifecycle import register_lifecycle_handlers
+from src.utils.document_store import DocumentStore
+from src.utils.logging import get_logger
 
 logger = get_logger(__name__)
 

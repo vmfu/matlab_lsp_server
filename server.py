@@ -9,34 +9,14 @@ import argparse
 import logging
 import sys
 
-from pygls.server import LanguageServer
-
-from src.protocol.lifecycle import register_lifecycle_handlers
+from src.matlab_server import MatLSServer
 from src.utils.logging import get_logger, setup_logging
 
 __version__ = "0.1.0"
-__all__ = ["MatLSServer", "main"]
+__all__ = ["main"]
 
 # Global logger
 logger = get_logger(__name__)
-
-
-class MatLSServer(LanguageServer):
-    """MATLAB Language Server.
-
-    Extends pygls LanguageServer to provide MATLAB-specific language
-    features.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    async def initialize_process(self):
-        """Initialize the server and register LSP capabilities."""
-        logger.info("Initializing MATLAB LSP Server")
-        # Register lifecycle handlers (initialize, shutdown, exit)
-        register_lifecycle_handlers(self)
-        logger.info("Lifecycle handlers registered")
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -57,45 +37,41 @@ Examples:
 
   # Show version
   python server.py --version
-        """
+        """,
     )
 
     parser.add_argument(
         "--stdio",
         action="store_true",
-        help="Run in stdio mode (communicate via stdin/stdout)"
+        help="Run in stdio mode (communicate via stdin/stdout)",
     )
 
     parser.add_argument(
-        "--tcp",
-        action="store_true",
-        help="Run in TCP mode (for debugging)"
+        "--tcp", action="store_true", help="Run in TCP mode (for debugging)"
     )
 
     parser.add_argument(
         "--port",
         type=int,
         default=4389,
-        help="Port for TCP mode (default: 4389)"
+        help="Port for TCP mode (default: 4389)",
     )
 
     parser.add_argument(
         "--host",
         type=str,
         default="127.0.0.1",
-        help="Host for TCP mode (default: 127.0.0.1)"
+        help="Host for TCP mode (default: 127.0.0.1)",
     )
 
     parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Enable verbose logging"
+        "-v", "--verbose", action="store_true", help="Enable verbose logging"
     )
 
     parser.add_argument(
         "--version",
         action="version",
-        version=f"MATLAB LSP Server v{__version__}"
+        version=f"MATLAB LSP Server v{__version__}",
     )
 
     return parser
@@ -121,10 +97,10 @@ def main() -> int:
         return 1
 
     # Create server instance
-    server = MatLSServer(
-        "matlab-lsp",
-        __version__
-    )
+    # (uses custom MatLSServer with overridden lsp_initialize)
+    server = MatLSServer("matlab-lsp", __version__)
+
+    logger.info("Custom MatLSServer instance created")
 
     # Run server
     try:
@@ -132,10 +108,7 @@ def main() -> int:
             logger.debug("Starting in stdio mode")
             server.start_io()
         elif args.tcp:
-            logger.info(
-                f"Starting TCP mode on "
-                f"{args.host}:{args.port}"
-            )
+            logger.info(f"Starting TCP mode on " f"{args.host}:{args.port}")
             server.start_tcp(args.host, args.port)
 
         return 0

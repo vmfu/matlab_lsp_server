@@ -4,14 +4,14 @@ Mlint Analyzer for MATLAB code.
 This module provides integration with MATLAB's Code Analyzer (mlint.exe).
 """
 
-import subprocess
 import os
 import re
+import subprocess
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
 
-from .base_analyzer import BaseAnalyzer, DiagnosticResult
 from ..utils.logging import get_logger
+from .base_analyzer import BaseAnalyzer, DiagnosticResult
 
 logger = get_logger(__name__)
 
@@ -26,14 +26,11 @@ class MlintAnalyzer(BaseAnalyzer):
     # Regex patterns to parse mlint output
     # Pattern 1: "L line (ID): message" (with -id flag)
     # Pattern 2: "L line: message" (simple format)
+    # Note: The ID part can be like "C 5-10" or "FNDEF"
     MLINT_PATTERN_WITH_ID = re.compile(
-        r'^L\s+(\d+)\s+\((\w+)\)\s*:\s*(.+)$',
-        re.MULTILINE
+        r"^L\s+(\d+)\s+\(([^)]+)\)\s*:\s*(.+)$", re.MULTILINE
     )
-    MLINT_PATTERN_SIMPLE = re.compile(
-        r'^L\s+(\d+)\s*:\s*(.+)$',
-        re.MULTILINE
-    )
+    MLINT_PATTERN_SIMPLE = re.compile(r"^L\s+(\d+)\s*:\s*(.+)$", re.MULTILINE)
 
     def __init__(self, matlab_path: str = None):
         """Initialize MlintAnalyzer.
@@ -136,26 +133,21 @@ class MlintAnalyzer(BaseAnalyzer):
         logger.debug(f"Analyzing file: {file_path}")
 
         # Run mlint
-        try:
-            result = subprocess.run(
-                [self.mlint_path, file_path, "-id", "-severity"],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-            output = result.stdout + result.stderr
-        except subprocess.CalledProcessError as e:
-            # mlint returns non-zero if issues found, this is expected
-            output = e.stdout + e.stderr
+        # mlint returns non-zero if issues are found - this is expected
+        # Don't use check=True to avoid CalledProcessError
+        result = subprocess.run(
+            [self.mlint_path, file_path, "-id", "-severity", "2"],
+            capture_output=True,
+            text=True,
+        )
+        # Mlint outputs diagnostics to stderr
+        output = result.stderr if result.stderr else result.stdout
 
         # Parse output
         diagnostics = self._parse_output(output)
 
         logger.debug(f"Found {len(diagnostics)} diagnostics")
-        return DiagnosticResult(
-            file_uri=file_uri,
-            diagnostics=diagnostics
-        )
+        return DiagnosticResult(file_uri=file_uri, diagnostics=diagnostics)
 
     def _parse_output(self, output: str) -> List[Dict[str, any]]:
         """
@@ -169,9 +161,12 @@ class MlintAnalyzer(BaseAnalyzer):
         """
         diagnostics = []
 
-        for line in output.split('\n'):
+        for line in output.split("\n"):
             line = line.strip()
             if not line:
+                continue
+            # Skip mlint header lines (e.g., "========== path/to/file.m ==========")
+            if line.startswith("=========="):
                 continue
 
             # Try to match patterns
@@ -183,8 +178,9 @@ class MlintAnalyzer(BaseAnalyzer):
             match = self.MLINT_PATTERN_WITH_ID.match(line)
             if match:
                 line_num = int(match.group(1))
-                msg_id = match.group(2) if match.group(2) else ""
+                msg_id_from_match = match.group(2) if match.group(2) else ""
                 message = match.group(3)
+                msg_id = msg_id_from_match
             else:
                 # Try simple pattern: "L line: message"
                 match = self.MLINT_PATTERN_SIMPLE.match(line)
@@ -231,7 +227,9 @@ class MlintAnalyzer(BaseAnalyzer):
 
         if any(msg_id_upper.startswith(prefix) for prefix in error_prefixes):
             return "error"
-        elif any(msg_id_upper.startswith(prefix) for prefix in warning_prefixes):
+        elif any(
+            msg_id_upper.startswith(prefix) for prefix in warning_prefixes
+        ):
             return "warning"
         elif any(msg_id_upper.startswith(prefix) for prefix in info_prefixes):
             return "info"

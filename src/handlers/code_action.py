@@ -5,7 +5,8 @@ This module implements textDocument/codeAction to provide
 quick fixes for MATLAB code issues.
 """
 
-from typing import Optional, List
+from typing import List, Optional
+
 from lsprotocol.types import (
     CodeAction,
     CodeActionKind,

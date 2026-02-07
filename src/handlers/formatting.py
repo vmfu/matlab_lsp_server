@@ -6,9 +6,10 @@ code formatting functionality for MATLAB files.
 """
 
 from typing import List
+
 from lsprotocol.types import (
-    TextEdit,
     DocumentFormattingOptions,
+    TextEdit,
 )
 from pygls.server import LanguageServer
 

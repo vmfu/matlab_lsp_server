@@ -5,8 +5,8 @@ This module provides a document store to manage
 open documents and their contents.
 """
 
-from typing import Dict, Optional
 from dataclasses import dataclass, field
+from typing import Dict, Optional
 
 from ..utils.logging import get_logger
 

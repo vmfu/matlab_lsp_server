@@ -5,7 +5,8 @@ This module implements textDocument/references to provide
 find-all-references functionality for MATLAB symbols.
 """
 
-from typing import Optional, List
+from typing import List, Optional
+
 from lsprotocol.types import (
     Location,
     Position,
@@ -13,8 +14,8 @@ from lsprotocol.types import (
 )
 from pygls.server import LanguageServer
 
-from ..utils.symbol_table import SymbolTable, Symbol, get_symbol_table
 from ..utils.logging import get_logger
+from ..utils.symbol_table import Symbol, SymbolTable, get_symbol_table
 
 logger = get_logger(__name__)
 

@@ -5,7 +5,8 @@ This module implements textDocument/documentSymbol to provide
 hierarchical document structure (outline) for MATLAB files.
 """
 
-from typing import List, Dict, Any
+from typing import Any, Dict, List
+
 from lsprotocol.types import (
     DocumentSymbol,
     SymbolInformation,
@@ -13,9 +14,9 @@ from lsprotocol.types import (
 )
 from pygls.server import LanguageServer
 
-from ..utils.symbol_table import SymbolTable, Symbol, get_symbol_table
-from ..parser.models import ParseResult, ClassInfo, FunctionInfo
+from ..parser.models import ClassInfo, FunctionInfo, ParseResult
 from ..utils.logging import get_logger
+from ..utils.symbol_table import Symbol, SymbolTable, get_symbol_table
 
 logger = get_logger(__name__)
 

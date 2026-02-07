@@ -6,19 +6,19 @@ LSP server capabilities.
 """
 
 from lsprotocol.types import (
-    ServerCapabilities,
-    TextDocumentSyncOptions,
-    TextDocumentSyncKind,
-    CompletionOptions,
-    HoverOptions,
-    DocumentSymbolOptions,
-    SignatureHelpOptions,
-    DefinitionOptions,
-    ReferenceOptions,
     CodeActionOptions,
-    DocumentFormattingOptions,
-    WorkspaceSymbolOptions,
     CodeLensOptions,
+    CompletionOptions,
+    DefinitionOptions,
+    DocumentFormattingOptions,
+    DocumentSymbolOptions,
+    HoverOptions,
+    ReferenceOptions,
+    ServerCapabilities,
+    SignatureHelpOptions,
+    TextDocumentSyncKind,
+    TextDocumentSyncOptions,
+    WorkspaceSymbolOptions,
 )
 
 from ..utils.logging import get_logger

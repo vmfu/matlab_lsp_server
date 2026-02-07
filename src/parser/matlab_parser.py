@@ -6,21 +6,20 @@ to extract functions, variables, classes, and comments.
 """
 
 import re
-from typing import List, Optional, Dict
 from pathlib import Path
-
-from .models import (
-    FunctionInfo,
-    VariableInfo,
-    ClassInfo,
-    CommentInfo,
-    ParseResult,
-    BUILTIN_FUNCTIONS,
-    MATLAB_KEYWORDS,
-)
-from ..utils.symbol_table import SymbolTable, get_symbol_table
+from typing import Dict, List, Optional
 
 from ..utils.logging import get_logger
+from ..utils.symbol_table import SymbolTable, get_symbol_table
+from .models import (
+    BUILTIN_FUNCTIONS,
+    MATLAB_KEYWORDS,
+    ClassInfo,
+    CommentInfo,
+    FunctionInfo,
+    ParseResult,
+    VariableInfo,
+)
 
 logger = get_logger(__name__)
 

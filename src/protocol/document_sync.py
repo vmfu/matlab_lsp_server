@@ -8,15 +8,15 @@ This module implements LSP document synchronization methods:
 """
 
 from lsprotocol.types import (
-    DidOpenTextDocumentParams,
-    DidCloseTextDocumentParams,
     DidChangeTextDocumentParams,
+    DidCloseTextDocumentParams,
+    DidOpenTextDocumentParams,
 )
 from pygls.server import LanguageServer
 
-from ..utils.document_store import DocumentStore, Document
-from ..handlers.diagnostics import publish_diagnostics
 from ..analyzer.mlint_analyzer import MlintAnalyzer
+from ..handlers.diagnostics import publish_diagnostics
+from ..utils.document_store import DocumentStore
 from ..utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -108,7 +108,7 @@ def register_document_sync_handlers(
         new_content = current_doc.content
         for change in params.content_changes:
             # Extract text range and new text
-            if change.range:
+            if hasattr(change, "range") and change.range:
                 # Partial change - replace range with new text
                 # For simplicity, just append the new text
                 # A proper implementation would handle range replacement
@@ -164,13 +164,28 @@ def _trigger_analysis_with_debounce(
         publish_diagnostics(server, uri, mlint_analyzer, file_path)
 
     # Cancel any existing task and schedule new one
-    if hasattr(_trigger_analysis_with_debounce, '_task'):
+    if hasattr(_trigger_analysis_with_debounce, "_task"):
         try:
             _trigger_analysis_with_debounce._task.cancel()
         except Exception:
             pass
 
+    async def debounced_analyze():
+        await asyncio.sleep(debounce_ms / 1000)
+        await analyze_task()
+
     _trigger_analysis_with_debounce._task = asyncio.create_task(
-        asyncio.sleep(debounce_ms / 1000),
-        analyze_task()
+        debounced_analyze()
     )
+
+
+def update_analyzer(analyzer: MlintAnalyzer) -> None:
+    """
+    Update the analyzer used by document sync handlers.
+
+    Args:
+        analyzer (MlintAnalyzer): New analyzer instance
+    """
+    global mlint_analyzer
+    mlint_analyzer = analyzer
+    logger.info(f"Document sync analyzer updated to: {analyzer.get_name()}")

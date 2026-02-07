@@ -6,8 +6,8 @@ LRU caching and debouncing for LSP operations.
 """
 
 import time
-from typing import Callable, Any, Dict, Optional
 from functools import wraps
+from typing import Any, Callable, Dict, Optional
 
 from .logging import get_logger
 
