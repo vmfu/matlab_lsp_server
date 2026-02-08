@@ -62,7 +62,6 @@ class MlintAnalyzer(BaseAnalyzer):
                 possible_paths = [
                     matlab_dir / "bin" / "win64" / "mlint.exe",
                     matlab_dir / "bin" / "mlint.exe",
-                    matlab_dir / "bin" / "mlint.bat",
                 ]
                 for path in possible_paths:
                     if path.exists():
@@ -137,7 +136,7 @@ class MlintAnalyzer(BaseAnalyzer):
         Returns:
             Path to mlint.exe or None
         """
-        mlint_names = ["mlint.exe", "mlint"] if platform.system() != "Windows" else ["mlint.exe", "mlint.bat"]
+        mlint_names = ["mlint.exe"]
 
         for path_dir in os.environ.get("PATH", "").split(os.pathsep):
             base_dir = Path(path_dir)
@@ -169,11 +168,8 @@ class MlintAnalyzer(BaseAnalyzer):
         Returns:
             Path to mlint executable or None
         """
-        # Platform-specific mlint binary names
-        if platform.system() == "Windows":
-            mlint_names = ["mlint.exe", "mlint.bat"]
-        else:
-            mlint_names = ["mlint"]
+        # mlint binary name
+        mlint_names = ["mlint.exe"] if platform.system() == "Windows" else ["mlint"]
 
         for root, dirs, files in os.walk(base_dir):
             # Look in bin directories first

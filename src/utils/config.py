@@ -348,7 +348,7 @@ def _find_mlint_in_path_recursive() -> Optional[str]:
     Returns:
         Path to mlint.exe or None
     """
-    mlint_names = ["mlint.exe", "mlint"] if platform.system() != "Windows" else ["mlint.exe", "mlint.bat"]
+    mlint_names = ["mlint.exe"] if platform.system() == "Windows" else ["mlint"]
 
     for path_dir in os.environ.get("PATH", "").split(os.pathsep):
         base_dir = Path(path_dir)
@@ -436,11 +436,8 @@ def _find_mlint_in_dir(base_dir: Path) -> Optional[str]:
     Returns:
         Path to mlint executable or None
     """
-    # Platform-specific mlint binary names
-    if platform.system() == "Windows":
-        mlint_names = ["mlint.exe", "mlint.bat"]
-    else:
-        mlint_names = ["mlint"]
+    # mlint binary name
+    mlint_names = ["mlint.exe"] if platform.system() == "Windows" else ["mlint"]
 
     # Search in bin directories first (faster)
     for root, dirs, files in os.walk(base_dir):
