@@ -182,6 +182,19 @@ cp .matlab-lsprc.json.example .matlab-lsprc.json
 
 Then edit `.matlab-lsprc.json` with your settings:
 
+**What happens if `matlabPath` stays empty?**
+- Server starts normally without errors
+- Basic LSP features work (completion, hover, go to definition, etc.)
+- Diagnostics from MATLAB's mlint analyzer will be unavailable
+- Server tries to find MATLAB in standard locations
+- Server logs a warning: "MlintAnalyzer is NOT available!"
+
+**To enable full diagnostics:**
+1. Set `matlabPath` in `.matlab-lsprc.json`
+2. Or set `MATLAB_PATH` environment variable
+3. Or ensure MATLAB is in system PATH
+
+
 ```json
 {
   "matlabPath": "C:/Program Files/MATLAB/R2023b",

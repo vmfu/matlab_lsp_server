@@ -282,6 +282,12 @@ async def test_server_initialization():
 ### MATLAB Dependency
 - **MATLAB R2020b or newer is required** for mlint functionality
 - The `mlint.exe` path must be configured correctly
+- **Empty `matlabPath` is acceptable** - server will:
+  - Start normally without errors
+  - Provide all basic LSP features (completion, hover, etc.)
+  - Skip mlint-based diagnostics
+  - Log warning: `"MlintAnalyzer is NOT available!"`
+  - Try to find MATLAB in standard paths
 - Without MATLAB, the server will have limited/no diagnostics functionality
 - Future versions may include an alternative analyzer without MATLAB dependency
 

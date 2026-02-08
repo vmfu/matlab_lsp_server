@@ -352,6 +352,31 @@ Then edit `.matlab-lsprc.json`:
 | `cache.enabled` | boolean | true | Enable caching |
 | `cache.maxSize` | integer | 1000 | Max cache entries |
 
+### Behavior Without MATLAB
+
+If `matlabPath` is not configured or left empty:
+
+**What works:**
+- ✅ All basic LSP features (completion, hover, go to definition)
+- ✅ Symbol extraction and code navigation
+- ✅ Syntax highlighting (provided by editor)
+- ✅ Document symbols and workspace symbols
+
+**What doesn't work:**
+- ❌ MATLAB mlint diagnostics (error/warning checking)
+- ❌ Advanced code analysis from MATLAB
+
+**How mlint is located:**
+1. Checks configured `matlabPath` in `.matlab-lsprc.json`
+2. Checks `MATLAB_PATH` environment variable
+3. Searches in system PATH
+4. Checks standard installation paths:
+   - Windows: `C:/Program Files/MATLAB`, `H:/Program Files/MATLAB`
+   - macOS: `/Applications/MATLAB_R*.app`
+   - Linux: `/usr/local/MATLAB`, `/opt/MATLAB`
+
+If mlint is not found, server logs: `"MlintAnalyzer is NOT available!"`
+
 ### Environment Variables
 
 ```bash

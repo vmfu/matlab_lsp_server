@@ -67,8 +67,9 @@ def register_document_sync_handlers(
         # Add to document store
         document_store.add_document(uri, file_path, content)
 
-        # Trigger analysis
-        publish_diagnostics(server, uri, mlint_analyzer, file_path)
+        # Trigger analysis (only if analyzer is available)
+        if mlint_analyzer.is_available():
+            publish_diagnostics(server, uri, mlint_analyzer, file_path)
 
     @server.feature("textDocument/didClose")
     async def did_close(params: DidCloseTextDocumentParams) -> None:
@@ -175,7 +176,8 @@ def _trigger_analysis_with_debounce(
 
     async def analyze_task():
         logger.debug(f"Triggering analysis for: {file_path}")
-        publish_diagnostics(server, uri, mlint_analyzer, file_path)
+        if mlint_analyzer.is_available():
+            publish_diagnostics(server, uri, mlint_analyzer, file_path)
 
     # Cancel any existing task and schedule new one
     if hasattr(_trigger_analysis_with_debounce, "_task"):
