@@ -8,8 +8,8 @@ to extract functions, variables, classes, and comments.
 import re
 from typing import Dict, List, Optional
 
-from ..utils.logging import get_logger
-from ..utils.symbol_table import SymbolTable, get_symbol_table
+from matlab_lsp_server.utils.logging import get_logger
+from matlab_lsp_server.utils.symbol_table import SymbolTable, get_symbol_table
 from .models import (
     BUILTIN_FUNCTIONS,
     MATLAB_KEYWORDS,

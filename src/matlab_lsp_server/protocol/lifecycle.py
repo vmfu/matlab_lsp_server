@@ -10,14 +10,13 @@ from typing import Any
 from lsprotocol.types import (
     InitializeParams,
     InitializeResult,
-    InitializeResultServerInfoType,
 )
-from pygls.server import LanguageServer
+from pygls.lsp.server import LanguageServer
 
-from src.analyzer.mlint_analyzer import MlintAnalyzer
-from src.features.feature_manager import FeatureManager
-from src.utils.document_store import DocumentStore
-from src.utils.logging import get_logger
+from matlab_lsp_server.analyzer.mlint_analyzer import MlintAnalyzer
+from matlab_lsp_server.features.feature_manager import FeatureManager
+from matlab_lsp_server.utils.document_store import DocumentStore
+from matlab_lsp_server.utils.logging import get_logger
 
 # Import document sync handlers
 from . import document_sync
@@ -145,10 +144,10 @@ def register_lifecycle_handlers(server: LanguageServer) -> None:
         logger.info("Server capabilities configured")
         result = InitializeResult(
             capabilities=capabilities,
-            server_info=InitializeResultServerInfoType(
-                name="matlab-lsp",
-                version="0.1.0",
-            ),
+            server_info={
+                "name": "matlab-lsp",
+                "version": "0.2.0"
+            },
         )
         logger.info(f"Returning initialize result: {result}")
         return result

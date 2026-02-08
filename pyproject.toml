@@ -51,7 +51,7 @@ dev = [
 ]
 
 [project.scripts]
-matlab-lsp = "src.server:main"
+matlab-lsp = "matlab_lsp_server.server:main"
 
 [project.urls]
 Homepage = "https://github.com/vmfu/matlab_lsp_server"
@@ -60,8 +60,7 @@ Repository = "https://github.com/vmfu/matlab_lsp_server.git"
 Issues = "https://github.com/vmfu/matlab_lsp_server/issues"
 
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["src*"]
+where = ["src"]
 
 [tool.black]
 line-length = 79

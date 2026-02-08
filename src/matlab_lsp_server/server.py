@@ -11,9 +11,9 @@ import sys
 
 from pathlib import Path
 
-from src.matlab_server import MatLSServer
-from src.utils.config import ensure_config_exists
-from src.utils.logging import get_logger, setup_logging
+from matlab_lsp_server.matlab_server import MatLSServer
+from matlab_lsp_server.utils.config import ensure_config_exists
+from matlab_lsp_server.utils.logging import get_logger, setup_logging
 
 __version__ = "0.2.0"
 __all__ = ["main"]

@@ -8,10 +8,10 @@ to publish analysis results to the LSP client.
 from typing import List
 
 from lsprotocol.types import Diagnostic, DiagnosticSeverity, Position, Range
-from pygls.server import LanguageServer
+from pygls.lsp.server import LanguageServer
 
-from ..analyzer.base_analyzer import BaseAnalyzer, DiagnosticResult
-from ..utils.logging import get_logger
+from matlab_lsp_server.analyzer.base_analyzer import BaseAnalyzer, DiagnosticResult
+from matlab_lsp_server.utils.logging import get_logger
 
 logger = get_logger(__name__)
 

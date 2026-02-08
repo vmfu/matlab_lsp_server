@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from pygls.server import LanguageServer
+from pygls.lsp.server import LanguageServer
 
 
 class BaseHandler(ABC):

@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
-from ..utils.logging import get_logger
+from matlab_lsp_server.utils.logging import get_logger
 
 logger = get_logger(__name__)
 

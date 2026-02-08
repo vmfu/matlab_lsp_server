@@ -15,7 +15,7 @@ from lsprotocol.types import (
     WorkspaceSymbolOptions,
 )
 
-from ..utils.logging import get_logger
+from matlab_lsp_server.utils.logging import get_logger
 
 logger = get_logger(__name__)
 

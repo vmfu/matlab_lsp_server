@@ -11,7 +11,7 @@ import subprocess
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from ..utils.logging import get_logger
+from matlab_lsp_server.utils.logging import get_logger
 from .base_analyzer import BaseAnalyzer, DiagnosticResult
 
 logger = get_logger(__name__)

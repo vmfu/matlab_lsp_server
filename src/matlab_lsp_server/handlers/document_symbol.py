@@ -8,10 +8,10 @@ hierarchical document structure (outline) for MATLAB files.
 from typing import List, Optional
 
 from lsprotocol.types import DocumentSymbol, Position, Range, SymbolKind
-from pygls.server import LanguageServer
+from pygls.lsp.server import LanguageServer
 
-from ..utils.logging import get_logger
-from ..utils.symbol_table import Symbol, SymbolTable, get_symbol_table
+from matlab_lsp_server.utils.logging import get_logger
+from matlab_lsp_server.utils.symbol_table import Symbol, SymbolTable, get_symbol_table
 
 logger = get_logger(__name__)
 

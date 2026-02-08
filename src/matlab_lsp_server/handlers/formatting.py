@@ -8,9 +8,9 @@ code formatting functionality for MATLAB files.
 from typing import List, Optional
 
 from lsprotocol.types import FormattingOptions, Position, Range, TextEdit
-from pygls.server import LanguageServer
+from pygls.lsp.server import LanguageServer
 
-from ..utils.logging import get_logger
+from matlab_lsp_server.utils.logging import get_logger
 
 logger = get_logger(__name__)
 

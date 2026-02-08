@@ -15,12 +15,12 @@ from lsprotocol.types import (
     DidCloseTextDocumentParams,
     DidOpenTextDocumentParams,
 )
-from pygls.server import LanguageServer
+from pygls.lsp.server import LanguageServer
 
-from ..analyzer.mlint_analyzer import MlintAnalyzer
-from ..handlers.diagnostics import publish_diagnostics
-from ..utils.document_store import DocumentStore
-from ..utils.logging import get_logger
+from matlab_lsp_server.analyzer.mlint_analyzer import MlintAnalyzer
+from matlab_lsp_server.handlers.diagnostics import publish_diagnostics
+from matlab_lsp_server.utils.document_store import DocumentStore
+from matlab_lsp_server.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
