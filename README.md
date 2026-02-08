@@ -14,6 +14,31 @@ pip install matlab-lsp-server
 
 That's it! The server is now ready to use.
 
+### Command-Line Options
+
+```bash
+# Run in stdio mode (for LSP clients)
+python -m matlab_lsp --stdio
+
+# Run in TCP mode (for debugging)
+python -m matlab_lsp --tcp --port 4389
+
+# Enable verbose logging
+python -m matlab_lsp --stdio --verbose
+
+# Disable automatic config creation
+python -m matlab_lsp --stdio --no-init-config
+```
+
+**Options:**
+- `--stdio` - Run in stdio mode (default for LSP clients)
+- `--tcp` - Run in TCP mode (for debugging)
+- `--port PORT` - Port for TCP mode (default: 4389)
+- `--host HOST` - Host for TCP mode (default: 127.0.0.1)
+- `-v, --verbose` - Enable verbose logging
+- `--no-init-config` - Disable automatic `.matlab-lsprc.json` creation
+- `--version` - Show version information
+
 ---
 
 ## Why This Over Official MathWorks LSP?
@@ -152,6 +177,8 @@ Copy the example configuration file to your project root:
 ```bash
 cp .matlab-lsprc.json.example .matlab-lsprc.json
 ```
+
+**Note:** The server automatically creates `.matlab-lsprc.json` with default settings on first run if it doesn't exist. You can skip this step and edit the auto-generated file later.
 
 Then edit `.matlab-lsprc.json` with your settings:
 

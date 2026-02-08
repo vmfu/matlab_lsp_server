@@ -39,6 +39,9 @@ python server.py --tcp --port 4389
 # Run with verbose logging
 python server.py --stdio --verbose
 
+# Disable automatic config creation
+python server.py --stdio --no-init-config
+
 # Show version
 python server.py --version
 ```
@@ -191,7 +194,7 @@ class YourFeatureHandler(BaseHandler):
 ```
 
 ### Configuration Pattern
-Configuration is stored in `.matlab-lsprc.json`:
+The server automatically creates `.matlab-lsprc.json` with default settings on first run. Configuration is stored in `.matlab-lsprc.json`:
 ```json
 {
   "matlabPath": "C:\\Program Files\\MATLAB\\R2023b\\bin\\win64",
@@ -294,9 +297,11 @@ async def test_server_initialization():
 
 ### Configuration Priority
 Configuration resolution order:
-1. `.matlab-lsprc.json` in project root
+1. `.matlab-lsprc.json` in project root (auto-created on first run)
 2. Environment variables (`MATLAB_PATH`)
 3. Default values
+
+**Note:** The server automatically creates `.matlab-lsprc.json` with default settings if it doesn't exist. Use `--no-init-config` flag to disable this behavior.
 
 ### File Extension Association
 - MATLAB files use `.m` extension

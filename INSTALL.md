@@ -290,7 +290,17 @@ Then edit `.matlab-lsprc.json`:
 
 ## Configuration
 
-### Configuration File
+### Automatic Configuration
+
+The server automatically creates `.matlab-lsprc.json` with default settings on first run if it doesn't exist. You can start using the server immediately and edit the auto-generated configuration file later.
+
+To disable automatic configuration, use `--no-init-config` flag:
+
+```bash
+python -m matlab_lsp --stdio --no-init-config
+```
+
+### Manual Configuration
 
 Copy the example configuration file to your project root:
 

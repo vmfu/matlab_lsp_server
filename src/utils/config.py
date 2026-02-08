@@ -248,3 +248,59 @@ class ConfigManager:
             Cache settings
         """
         return self.settings.cache
+
+
+def create_default_config(config_path: Path | None = None) -> Path:
+    """Create default .matlab-lsprc.json configuration file.
+
+    Args:
+        config_path: Path where to create config file (default: CWD/.matlab-lsprc.json)
+
+    Returns:
+        Path to created config file
+    """
+    if config_path is None:
+        config_path = Path.cwd() / ".matlab-lsprc.json"
+
+    if config_path.exists():
+        return config_path
+
+    default_config = {
+        "matlabPath": "",
+        "maxDiagnostics": 100,
+        "diagnosticRules": {
+            "all": True,
+            "unusedVariable": True,
+            "missingSemicolon": False,
+        },
+        "formatting": {"indentSize": 4, "insertSpaces": True},
+        "completion": {"enableSnippets": True, "maxSuggestions": 50},
+        "cache": {"enabled": True, "maxSize": 1000},
+    }
+
+    config_path.write_text(
+        json.dumps(default_config, indent=2), encoding="utf-8"
+    )
+    return config_path
+
+
+def ensure_config_exists(
+    config_path: Path | None = None, silent: bool = False
+) -> bool:
+    """Ensure configuration file exists, create default if missing.
+
+    Args:
+        config_path: Path to config file (default: CWD/.matlab-lsprc.json)
+        silent: If True, don't log messages
+
+    Returns:
+        True if config was created, False if already existed
+    """
+    if config_path is None:
+        config_path = Path.cwd() / ".matlab-lsprc.json"
+
+    if config_path.exists():
+        return False
+
+    create_default_config(config_path)
+    return True

@@ -9,7 +9,10 @@ import argparse
 import logging
 import sys
 
+from pathlib import Path
+
 from src.matlab_server import MatLSServer
+from src.utils.config import ensure_config_exists
 from src.utils.logging import get_logger, setup_logging
 
 __version__ = "0.1.0"
@@ -69,6 +72,12 @@ Examples:
     )
 
     parser.add_argument(
+        "--no-init-config",
+        action="store_true",
+        help="Disable automatic config file creation",
+    )
+
+    parser.add_argument(
         "--version",
         action="version",
         version=f"MATLAB LSP Server v{__version__}",
@@ -86,6 +95,16 @@ def main() -> int:
     log_level = logging.DEBUG if args.verbose else logging.INFO
     setup_logging(level=log_level)
     logger.info(f"MATLAB LSP Server v{__version__} starting...")
+
+    # Create default config if not exists
+    if not args.no_init_config:
+        config_path = Path.cwd() / ".matlab-lsprc.json"
+        config_created = ensure_config_exists(config_path)
+        if config_created:
+            logger.info(
+                f"Created default config at {config_path}. "
+                "Edit to set matlabPath for full diagnostics."
+            )
 
     # Validate arguments
     if not args.stdio and not args.tcp:
