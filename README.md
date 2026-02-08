@@ -4,6 +4,8 @@ A lightweight, fast, and cross-platform Language Server Protocol (LSP) implement
 
 **Version:** 0.2.0 | **License:** MIT | **Python:** 3.10+
 
+📖 **[See INTEGRATION.md](INTEGRATION.md) for detailed editor configuration guides and advanced options.**
+
 ---
 
 ## Quick Install
@@ -13,6 +15,8 @@ pip install matlab-lsp-server
 ```
 
 That's it! The server is now ready to use.
+
+*For detailed editor integration guides and advanced configuration, see [INTEGRATION.md](INTEGRATION.md).*
 
 ### Command-Line Options
 
@@ -141,6 +145,8 @@ require('lspconfig').matlab_lsp.setup({
 - **In-Memory Index** - Quick project-wide symbol search
 - **Async Operations** - Non-blocking diagnostics and analysis
 
+*For complete feature documentation and configuration options, see [INTEGRATION.md](INTEGRATION.md).*
+
 ---
 
 ## Quick Start
@@ -217,6 +223,8 @@ Open any `.m` file in your editor. The LSP server will automatically start and p
 - Hover documentation
 - Go-to-definition
 - And more!
+
+*For more editor configurations (Emacs, Vim, OpenCode, cclsp), see [INTEGRATION.md](INTEGRATION.md).*
 
 ---
 
@@ -387,6 +395,8 @@ python -m matlab_lsp --stdio --verbose
 # Or from source
 python server.py --stdio --verbose
 ```
+
+*For more troubleshooting tips and configuration options, see [INTEGRATION.md](INTEGRATION.md).*
 
 ---
 
