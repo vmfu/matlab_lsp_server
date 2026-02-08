@@ -15,7 +15,7 @@ from src.matlab_server import MatLSServer
 from src.utils.config import ensure_config_exists
 from src.utils.logging import get_logger, setup_logging
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __all__ = ["main"]
 
 # Global logger
