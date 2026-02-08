@@ -2,18 +2,12 @@
 Unit tests for FeatureManager.
 """
 
-import pytest
 from lsprotocol.types import (
-    ServerCapabilities,
-    TextDocumentSyncOptions,
-    CompletionOptions,
-    HoverOptions,
-    DocumentSymbolOptions,
-    SignatureHelpOptions,
-    DefinitionOptions,
-    ReferenceOptions,
     CodeActionOptions,
-    DocumentFormattingOptions,
+    CompletionOptions,
+    ServerCapabilities,
+    SignatureHelpOptions,
+    TextDocumentSyncOptions,
     WorkspaceSymbolOptions,
 )
 
@@ -78,8 +72,12 @@ def test_signature_help_provider_configured():
 
     # Verify signature help provider is configured
     assert capabilities.signature_help_provider is not None
-    assert isinstance(capabilities.signature_help_provider, SignatureHelpOptions)
-    assert capabilities.signature_help_provider.trigger_characters == ["(", ","]
+    assert isinstance(
+        capabilities.signature_help_provider, SignatureHelpOptions
+    )
+    assert (
+        capabilities.signature_help_provider.trigger_characters == ["(", ","]
+    )
     assert capabilities.signature_help_provider.retrigger_characters == [")"]
 
 
@@ -110,7 +108,9 @@ def test_code_action_provider_configured():
     assert capabilities.code_action_provider is not None
     assert isinstance(capabilities.code_action_provider, CodeActionOptions)
     expected_kinds = ["quickfix", "refactor", "source"]
-    assert capabilities.code_action_provider.code_action_kinds == expected_kinds
+    assert (
+        capabilities.code_action_provider.code_action_kinds == expected_kinds
+    )
 
 
 def test_document_formatting_provider_enabled():
@@ -129,7 +129,11 @@ def test_workspace_symbol_provider_configured():
 
     # Verify workspace symbol provider is configured
     assert capabilities.workspace_symbol_provider is not None
-    assert isinstance(capabilities.workspace_symbol_provider, WorkspaceSymbolOptions)
+    assert (
+        isinstance(
+            capabilities.workspace_symbol_provider, WorkspaceSymbolOptions
+        )
+    )
 
 
 def test_get_capabilities_returns_server_capabilities():

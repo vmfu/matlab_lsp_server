@@ -5,16 +5,11 @@ This module implements textDocument/codeAction to provide
 quick fixes for MATLAB code issues.
 """
 
-from typing import List, Optional
+from typing import List
 
-from lsprotocol.types import (
-    CodeAction,
-    CodeActionKind,
-    Diagnostic,
-)
+from lsprotocol.types import CodeAction, CodeActionKind, Diagnostic
 from pygls.server import LanguageServer
 
-from ..analyzer.base_analyzer import DiagnosticResult
 from ..utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -54,10 +49,10 @@ class CodeActionHandler:
         # Create quick fixes for each diagnostic
         for diagnostic in diagnostics:
             # Skip if diagnostic doesn't have suggestions
-            if not hasattr(diagnostic, 'data') or not diagnostic.data:
+            if not hasattr(diagnostic, "data") or not diagnostic.data:
                 continue
 
-            quick_fixes = diagnostic.data.get('quickFixes', [])
+            quick_fixes = diagnostic.data.get("quickFixes", [])
 
             for fix in quick_fixes:
                 # Create code action
@@ -72,9 +67,7 @@ class CodeActionHandler:
         return code_actions
 
     def _create_code_action(
-        self,
-        diagnostic: Diagnostic,
-        fix: dict
+        self, diagnostic: Diagnostic, fix: dict
     ) -> CodeAction:
         """
         Create a CodeAction from diagnostic and fix suggestion.
@@ -87,7 +80,7 @@ class CodeActionHandler:
             CodeAction: Code action object
         """
         # Create title
-        title = fix.get('title', f'Fix: {diagnostic.message}')
+        title = fix.get("title", f"Fix: {diagnostic.message}")
 
         # Create code action
         action = CodeAction(
@@ -98,14 +91,13 @@ class CodeActionHandler:
         )
 
         # Add edit if available
-        if 'edit' in fix:
-            action.edit = fix['edit']
+        if "edit" in fix:
+            action.edit = fix["edit"]
 
         return action
 
     def generate_quick_fixes_from_diagnostic(
-        self,
-        diagnostic: Diagnostic
+        self, diagnostic: Diagnostic
     ) -> List[dict]:
         """
         Generate quick fix suggestions from a diagnostic.
@@ -121,40 +113,45 @@ class CodeActionHandler:
         fixes = []
 
         # Pattern 1: "Undefined function 'xxx'"
-        if 'undefined function' in message:
-            fixes.append({
-                'title': 'Create function stub',
-                'edit': None,  # Would need to generate code
-            })
+        if "undefined function" in message:
+            fixes.append(
+                {
+                    "title": "Create function stub",
+                    "edit": None,  # Would need to generate code
+                }
+            )
 
         # Pattern 2: "Missing semicolon"
-        if 'semicolon' in message:
-            fixes.append({
-                'title': 'Add semicolon',
-                'edit': None,  # Would need to add semicolon
-            })
+        if "semicolon" in message:
+            fixes.append(
+                {
+                    "title": "Add semicolon",
+                    "edit": None,  # Would need to add semicolon
+                }
+            )
 
         # Pattern 3: "Variable 'xxx' may be unused"
-        if 'unused' in message:
-            fixes.append({
-                'title': 'Remove variable',
-                'edit': None,  # Would need to remove line
-            })
+        if "unused" in message:
+            fixes.append(
+                {
+                    "title": "Remove variable",
+                    "edit": None,  # Would need to remove line
+                }
+            )
 
         # Pattern 4: "End of input"
-        if 'end of input' in message:
-            fixes.append({
-                'title': 'Add end statement',
-                'edit': None,  # Would need to add end
-            })
+        if "end of input" in message:
+            fixes.append(
+                {
+                    "title": "Add end statement",
+                    "edit": None,  # Would need to add end
+                }
+            )
 
         return fixes
 
     def apply_code_action(
-        self,
-        server: LanguageServer,
-        file_uri: str,
-        action: CodeAction
+        self, server: LanguageServer, file_uri: str, action: CodeAction
     ) -> None:
         """
         Apply a code action to the file.
@@ -165,17 +162,21 @@ class CodeActionHandler:
             action (CodeAction): Code action to apply
         """
         logger.debug(
-            f"Applying code action for {file_uri}: "
-            f"{action.title}"
+            f"Applying code action for {file_uri}: " f"{action.title}"
         )
 
         # Apply the edit
         if action.edit:
             # Would need to implement WorkspaceEdit application
             # For now, just log
+            document_changes = (
+                action.edit.document_changes
+                if action.edit.document_changes
+                else []
+            )
             logger.info(
                 f"Applying edit to {file_uri}: "
-                f"{len(action.edit.get('documentChanges', []))} changes"
+                f"{len(document_changes)} changes"
             )
 
 

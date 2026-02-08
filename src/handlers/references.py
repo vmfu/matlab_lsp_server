@@ -7,11 +7,7 @@ find-all-references functionality for MATLAB symbols.
 
 from typing import List, Optional
 
-from lsprotocol.types import (
-    Location,
-    Position,
-    Range,
-)
+from lsprotocol.types import Location, Position, Range
 from pygls.server import LanguageServer
 
 from ..utils.logging import get_logger
@@ -23,13 +19,15 @@ logger = get_logger(__name__)
 class ReferencesHandler:
     """Handler for find-all-references in MATLAB LSP server."""
 
-    def __init__(self, symbol_table: SymbolTable = None):
+    def __init__(self, symbol_table: Optional[SymbolTable] = None):
         """Initialize references handler.
 
         Args:
             symbol_table (SymbolTable): Symbol table instance
         """
-        self._symbol_table = symbol_table if symbol_table else get_symbol_table()
+        self._symbol_table = (
+            symbol_table if symbol_table else get_symbol_table()
+        )
         logger.debug("ReferencesHandler initialized")
 
     def provide_references(
@@ -37,7 +35,7 @@ class ReferencesHandler:
         server: LanguageServer,
         file_uri: str,
         position: Position,
-        include_declaration: bool = True
+        include_declaration: bool = True,
     ) -> List[Location]:
         """
         Provide all reference locations for a symbol.
@@ -76,11 +74,12 @@ class ReferencesHandler:
         # Search for all symbols with matching name
         all_symbols = self._symbol_table.get_all_symbols()
         matching_symbols = [
-            s for s in all_symbols
-            if s.name.lower() == word.lower()
+            s for s in all_symbols if s.name.lower() == word.lower()
         ]
 
-        logger.debug(f"Found {len(matching_symbols)} symbols matching '{word}'")
+        logger.debug(
+            f"Found {len(matching_symbols)} symbols matching '{word}'"
+        )
 
         # Create locations for all matches
         locations = [self._create_location(s) for s in matching_symbols]
@@ -88,8 +87,9 @@ class ReferencesHandler:
         # Filter out declaration if needed
         if not include_declaration:
             # Keep only symbols that are not in the same file/position
-            # This is simplified - should actually check if symbol is definition
-            # For now, we keep all except the first (which is likely definition)
+            # This is simplified - should actually check if symbol
+            # is definition. For now, we keep all except the first
+            # (which is likely definition)
             if len(locations) > 0:
                 locations = locations[1:]
 
@@ -98,9 +98,7 @@ class ReferencesHandler:
         return locations
 
     def _extract_word_at_position(
-        self,
-        symbols: list,
-        position: Position
+        self, symbols: List[Symbol], position: Position
     ) -> Optional[str]:
         """
         Extract word at cursor position.

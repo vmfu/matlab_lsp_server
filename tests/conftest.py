@@ -4,17 +4,17 @@ Pytest configuration and fixtures for MATLAB LSP Server.
 This module provides common fixtures for testing LSP server components.
 """
 
-import pytest
-import tempfile
 import asyncio
+import tempfile
 from pathlib import Path
 
+import pytest
 from pygls.server import LanguageServer
-from src.protocol.lifecycle import register_lifecycle_handlers
-from src.protocol.document_sync import register_document_sync_handlers
-from src.utils.document_store import DocumentStore
+
 from src.analyzer.mlint_analyzer import MlintAnalyzer
-from src.handlers.diagnostics import publish_diagnostics
+from src.protocol.document_sync import register_document_sync_handlers
+from src.protocol.lifecycle import register_lifecycle_handlers
+from src.utils.document_store import DocumentStore
 
 
 @pytest.fixture
@@ -65,7 +65,7 @@ def temp_m_file():
         Path: Path to temporary .m file
     """
     fd, path = tempfile.mkstemp(suffix=".m", text=True, delete=False)
-    with open(fd, 'w') as f:
+    with open(fd, "w") as f:
         f.write("function test_function()\nend")
     return Path(path)
 
@@ -79,12 +79,8 @@ def temp_matlab_file():
         Path: Path to temporary .m file with MATLAB code
     """
     fd, path = tempfile.mkstemp(suffix=".m", text=True, delete=False)
-    with open(fd, 'w') as f:
-        f.write(
-            "function [x, y] = add(x, y)\n"
-            "    result = x + y;\n"
-            "end"
-        )
+    with open(fd, "w") as f:
+        f.write("function [x, y] = add(x, y)\n" "    result = x + y;\n" "end")
     return Path(path)
 
 

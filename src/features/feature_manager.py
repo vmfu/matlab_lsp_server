@@ -7,13 +7,7 @@ LSP server capabilities.
 
 from lsprotocol.types import (
     CodeActionOptions,
-    CodeLensOptions,
     CompletionOptions,
-    DefinitionOptions,
-    DocumentFormattingOptions,
-    DocumentSymbolOptions,
-    HoverOptions,
-    ReferenceOptions,
     ServerCapabilities,
     SignatureHelpOptions,
     TextDocumentSyncKind,
@@ -31,7 +25,7 @@ class FeatureManager:
 
     def __init__(self):
         """Initialize FeatureManager with default capabilities."""
-        self._capabilities = ServerCapabilities()
+        self._capabilities: ServerCapabilities = ServerCapabilities()
 
         # Configure default features
         self._configure_text_document_sync()
@@ -138,7 +132,9 @@ class FeatureManager:
     def _configure_workspace_symbols(self, enable: bool = True):
         """Configure workspace symbols feature."""
         if enable:
-            self._capabilities.workspace_symbol_provider = WorkspaceSymbolOptions()
+            self._capabilities.workspace_symbol_provider = (
+                WorkspaceSymbolOptions()
+            )
             logger.debug("Workspace symbol provider enabled")
         else:
             self._capabilities.workspace_symbol_provider = None

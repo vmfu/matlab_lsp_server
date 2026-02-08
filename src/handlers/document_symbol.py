@@ -5,16 +5,11 @@ This module implements textDocument/documentSymbol to provide
 hierarchical document structure (outline) for MATLAB files.
 """
 
-from typing import Any, Dict, List
+from typing import List, Optional
 
-from lsprotocol.types import (
-    DocumentSymbol,
-    SymbolInformation,
-    SymbolKind,
-)
+from lsprotocol.types import DocumentSymbol, Position, Range, SymbolKind
 from pygls.server import LanguageServer
 
-from ..parser.models import ClassInfo, FunctionInfo, ParseResult
 from ..utils.logging import get_logger
 from ..utils.symbol_table import Symbol, SymbolTable, get_symbol_table
 
@@ -24,13 +19,15 @@ logger = get_logger(__name__)
 class DocumentSymbolHandler:
     """Handler for document symbols in MATLAB LSP server."""
 
-    def __init__(self, symbol_table: SymbolTable = None):
+    def __init__(self, symbol_table: Optional[SymbolTable] = None):
         """Initialize document symbol handler.
 
         Args:
             symbol_table (SymbolTable): Symbol table instance
         """
-        self._symbol_table = symbol_table if symbol_table else get_symbol_table()
+        self._symbol_table = (
+            symbol_table if symbol_table else get_symbol_table()
+        )
         logger.debug("DocumentSymbolHandler initialized")
 
     def provide_document_symbols(
@@ -61,8 +58,7 @@ class DocumentSymbolHandler:
         return document_symbols
 
     def _create_document_symbols(
-        self,
-        symbols: List[Symbol]
+        self, symbols: List[Symbol]
     ) -> List[DocumentSymbol]:
         """
         Create hierarchical document symbols from symbol list.
@@ -102,8 +98,6 @@ class DocumentSymbolHandler:
         # Add standalone functions (not nested, not in class)
         for func in functions:
             # Function is standalone if it's not in a class scope
-            # and doesn't have a parent function in its scope
-            is_nested = func.scope and func.scope != "global" and func.scope != ""
             is_in_class = any(c.name == func.scope for c in classes)
 
             if not is_in_class:
@@ -143,7 +137,7 @@ class DocumentSymbolHandler:
         line: int,
         column: int,
         selection_text: str,
-        children: List[DocumentSymbol] = None
+        children: Optional[List[DocumentSymbol]] = None,
     ) -> DocumentSymbol:
         """
         Create a DocumentSymbol with proper range.
@@ -161,16 +155,16 @@ class DocumentSymbolHandler:
             DocumentSymbol: Document symbol object
         """
         # Calculate range
-        range_obj = {
-            "start": {
-                "line": line - 1,  # LSP is 0-based
-                "character": column - 1,
-            },
-            "end": {
-                "line": line,  # Approximate
-                "character": column + len(name),
-            },
-        }
+        range_obj = Range(
+            start=Position(
+                line=line - 1,  # LSP is 0-based
+                character=column - 1,
+            ),
+            end=Position(
+                line=line,  # Approximate
+                character=column + len(name),
+            ),
+        )
 
         # Calculate selection range (same as range for now)
         selection_range_obj = range_obj
@@ -185,8 +179,7 @@ class DocumentSymbolHandler:
         )
 
     def _methods_to_document_symbols(
-        self,
-        methods: List[Symbol]
+        self, methods: List[Symbol]
     ) -> List[DocumentSymbol]:
         """
         Convert method symbols to DocumentSymbol list.
@@ -214,9 +207,7 @@ class DocumentSymbolHandler:
         return doc_symbols
 
     def _find_nested_functions(
-        self,
-        functions: List[Symbol],
-        parent_name: str
+        self, functions: List[Symbol], parent_name: str
     ) -> List[DocumentSymbol]:
         """
         Find nested functions for a parent function.
@@ -247,10 +238,7 @@ class DocumentSymbolHandler:
 
         return nested_symbols
 
-    def _map_symbol_kind_to_symbol_kind(
-        self,
-        symbol_kind: str
-    ) -> SymbolKind:
+    def _map_symbol_kind_to_symbol_kind(self, symbol_kind: str) -> SymbolKind:
         """Map symbol kind to LSP SymbolKind."""
         kind_map = {
             "function": SymbolKind.Function,

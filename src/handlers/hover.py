@@ -5,13 +5,9 @@ This module implements textDocument/hover to provide
 documentation and information about symbols at cursor position.
 """
 
-from typing import Optional
+from typing import List, Optional
 
-from lsprotocol.types import (
-    Hover,
-    MarkupKind,
-    Position,
-)
+from lsprotocol.types import Hover, Position, Range
 from pygls.server import LanguageServer
 
 from ..utils.logging import get_logger
@@ -23,13 +19,15 @@ logger = get_logger(__name__)
 class HoverHandler:
     """Handler for hover information in MATLAB LSP server."""
 
-    def __init__(self, symbol_table: SymbolTable = None):
+    def __init__(self, symbol_table: Optional[SymbolTable] = None):
         """Initialize hover handler.
 
         Args:
             symbol_table (SymbolTable): Symbol table instance
         """
-        self._symbol_table = symbol_table if symbol_table else get_symbol_table()
+        self._symbol_table = (
+            symbol_table if symbol_table else get_symbol_table()
+        )
         logger.debug("HoverHandler initialized")
 
     def provide_hover(
@@ -37,7 +35,7 @@ class HoverHandler:
         server: LanguageServer,
         file_uri: str,
         position: Position,
-        word: str = None
+        word: Optional[str] = None,
     ) -> Optional[Hover]:
         """
         Provide hover information for a position in file.
@@ -62,9 +60,7 @@ class HoverHandler:
 
         # Search for symbol in current file
         file_symbols = self._symbol_table.get_symbols_by_uri(file_uri)
-        symbol = self._find_symbol_at_position(
-            file_symbols, position, word
-        )
+        symbol = self._find_symbol_at_position(file_symbols, position, word)
 
         if not symbol:
             # Also search in all files for built-in functions
@@ -80,25 +76,25 @@ class HoverHandler:
 
         logger.debug(f"Hover information for '{word}': {symbol.kind}")
 
+        # Create range
+        range_obj = Range(
+            start=Position(
+                line=symbol.line - 1,  # LSP is 0-based
+                character=symbol.column - 1,
+            ),
+            end=Position(
+                line=symbol.line - 1,
+                character=symbol.column - 1 + len(symbol.name),
+            ),
+        )
+
         return Hover(
             contents=hover_content,
-            range={
-                "start": {
-                    "line": symbol.line - 1,  # LSP is 0-based
-                    "character": symbol.column - 1,
-                },
-                "end": {
-                    "line": symbol.line - 1,
-                    "character": symbol.column - 1 + len(symbol.name),
-                },
-            },
+            range=range_obj,
         )
 
     def _find_symbol_at_position(
-        self,
-        symbols: list,
-        position: Position,
-        word: str
+        self, symbols: List[Symbol], position: Position, word: str
     ) -> Optional[Symbol]:
         """
         Find symbol at specific position.
@@ -128,9 +124,7 @@ class HoverHandler:
         return None
 
     def _find_symbol_by_name(
-        self,
-        symbols: list,
-        name: str
+        self, symbols: List[Symbol], name: str
     ) -> Optional[Symbol]:
         """
         Find symbol by name (case-insensitive).

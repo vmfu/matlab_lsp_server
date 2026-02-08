@@ -8,7 +8,7 @@ This module implements LSP document synchronization methods:
 """
 
 from pathlib import Path
-from urllib.parse import urlparse, unquote
+from urllib.parse import unquote, urlparse
 
 from lsprotocol.types import (
     DidChangeTextDocumentParams,
@@ -188,7 +188,7 @@ def _trigger_analysis_with_debounce(
         await asyncio.sleep(debounce_ms / 1000)
         await analyze_task()
 
-    _trigger_analysis_with_debounce._task = asyncio.create_task(
+    _trigger_analysis_with_debounce._task = asyncio.create_task(  # type: ignore[attr-defined]
         debounced_analyze()
     )
 

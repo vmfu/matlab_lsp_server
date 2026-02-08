@@ -6,11 +6,11 @@ This script creates a distribution package for LSP MATLAB Server v0.1.0.
 """
 
 import os
-import sys
 import shutil
-import subprocess
-from pathlib import Path
+import sys
 from datetime import datetime
+from pathlib import Path
+
 
 def create_release_package():
     """Create release package for distribution."""
@@ -47,15 +47,20 @@ def create_release_package():
 
         # Copy all files and directories
         for item in release_dir.iterdir():
-            if item.name.startswith('.'):
+            if item.name.startswith("."):
                 continue  # Skip hidden files
-            if item.name == '__pycache__':
+            if item.name == "__pycache__":
                 continue  # Skip cache
 
             dest = temp_dir / item.name
             if item.is_dir():
-                shutil.copytree(item, dest,
-                              ignore=shutil.ignore_patterns('.git', '__pycache__', '*.pyc'))
+                shutil.copytree(
+                    item,
+                    dest,
+                    ignore=shutil.ignore_patterns(
+                        ".git", "__pycache__", "*.pyc"
+                    ),
+                )
             else:
                 shutil.copy2(item, dest)
 
@@ -63,12 +68,13 @@ def create_release_package():
         print("Creating archive...")
 
         import tarfile
+
         with tarfile.open(tar_file, "w:gz") as tar:
             for root, dirs, files in os.walk(temp_dir):
                 for file in files:
-                    if file.startswith('.'):
+                    if file.startswith("."):
                         continue  # Skip hidden files
-                    if file.endswith('.pyc'):
+                    if file.endswith(".pyc"):
                         continue  # Skip .pyc files
 
                     fullpath = os.path.join(root, file)
@@ -92,12 +98,13 @@ def create_release_package():
             print("Creating archive...")
 
             import zipfile
-            with zipfile.ZipFile(zip_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
+
+            with zipfile.ZipFile(zip_file, "w", zipfile.ZIP_DEFLATED) as zipf:
                 for root, dirs, files in os.walk(temp_dir):
                     for file in files:
-                        if file.startswith('.'):
+                        if file.startswith("."):
                             continue  # Skip hidden files
-                        if file.endswith('.pyc'):
+                        if file.endswith(".pyc"):
                             continue  # Skip .pyc files
 
                         fullpath = os.path.join(root, file)
@@ -109,7 +116,7 @@ def create_release_package():
             print(f"  Size: {file_size_kb:.2f} KB")
         else:
             # Fallback for older Python versions
-            print(f"  Skipping .zip (requires Python 3.7+)")
+            print("  Skipping .zip (requires Python 3.7+)")
 
         # Create checksums
         print("\nCreating checksums...")
@@ -117,9 +124,10 @@ def create_release_package():
         if tar_file.exists():
             # MD5 checksum (for compatibility)
             import hashlib
+
             md5_hash = hashlib.md5()
-            with open(tar_file, 'rb') as f:
-                for chunk in iter(lambda: f.read(4096), b''):
+            with open(tar_file, "rb") as f:
+                for chunk in iter(lambda: f.read(4096), b""):
                     if not chunk:
                         break
                     md5_hash.update(chunk)
@@ -128,8 +136,8 @@ def create_release_package():
 
             # SHA256 checksum
             sha256_hash = hashlib.sha256()
-            with open(tar_file, 'rb') as f:
-                for chunk in iter(lambda: f.read(4096), b''):
+            with open(tar_file, "rb") as f:
+                for chunk in iter(lambda: f.read(4096), b""):
                     if not chunk:
                         break
                     sha256_hash.update(chunk)
@@ -137,8 +145,10 @@ def create_release_package():
             print(f"SHA256 ({tar_file.name}): {sha256_checksum}")
 
         # Create checksum file
-        checksum_file = output_dir / f"{package_name}_{timestamp}.checksums.txt"
-        with open(checksum_file, 'w') as f:
+        checksum_file = (
+            output_dir / f"{package_name}_{timestamp}.checksums.txt"
+        )
+        with open(checksum_file, "w") as f:
             f.write(f"LSP MATLAB Server v{version} - Checksums\n")
             f.write(f"Generated: {datetime.now().isoformat()}\n\n")
 
@@ -150,8 +160,8 @@ def create_release_package():
             if zip_file.exists():
                 # Also create checksums for .zip
                 md5_zip = hashlib.md5()
-                with open(zip_file, 'rb') as f:
-                    for chunk in iter(lambda: f.read(4096), b''):
+                with open(zip_file, "rb") as f:
+                    for chunk in iter(lambda: f.read(4096), b""):
                         if not chunk:
                             break
                         md5_zip.update(chunk)
@@ -163,10 +173,12 @@ def create_release_package():
         # Create release notes
         print("\nCreating release notes...")
 
-        notes_file = output_dir / f"{package_name}_{timestamp}.RELEASE_NOTES.txt"
-        with open(notes_file, 'w') as f:
+        notes_file = (
+            output_dir / f"{package_name}_{timestamp}.RELEASE_NOTES.txt"
+        )
+        with open(notes_file, "w") as f:
             f.write(f"LSP MATLAB Server v{version} - Release Notes\n")
-            f.write(f"=" * 40 + "\n")
+            f.write("=" * 40 + "\n")
             f.write(f"Release Date: {datetime.now().strftime('%Y-%m-%d')}\n\n")
 
             f.write("Package Contents:\n")
@@ -207,7 +219,9 @@ def create_release_package():
             f.write("Installation:\n")
             f.write("-" * 40 + "\n")
             f.write("1. Navigate to dist/release directory\n")
-            f.write("2. Install dependencies: pip install -r requirements.txt\n")
+            f.write(
+                "2. Install dependencies: pip install -r requirements.txt\n"
+            )
             f.write("3. Run server: python run_server.py --stdio\n")
             f.write("-" * 40 + "\n")
 
@@ -215,7 +229,10 @@ def create_release_package():
             f.write("-" * 40 + "\n")
             f.write("- Python 3.10 or higher\n")
             f.write("- 4GB RAM recommended\n")
-            f.write("- Modern IDE with LSP support (VS Code 1.60+, JetBrains 2022+)\n")
+            f.write(
+                "- Modern IDE with LSP support (VS Code 1.60+, "
+                "JetBrains 2022+)\n"
+            )
             f.write("-" * 40 + "\n")
 
             f.write("For detailed installation instructions, see INSTALL.md\n")
@@ -224,19 +241,22 @@ def create_release_package():
         print(f"OK Release notes file: {notes_file}")
 
         # Summary
-        print("\n" + "=" * 60)
+        print(f"\n{('=' * 60)}")
         print("Release Package Creation Summary")
         print("=" * 60)
         print(f"Version: {version}")
         print(f"Release Directory: {release_dir}")
         print(f"Output Directory: {output_dir}")
-        print(f"\nPackages Created:")
+        print("\nPackages Created:")
         print(f"  1. {tar_file.name}")
         print(f"  2. {zip_file.name if zip_file.exists() else 'N/A'}")
-        print(f"\nAdditional Files:")
+        print("\nAdditional Files:")
         print(f"  1. {checksum_file.name}")
         print(f"  2. {notes_file.name}")
-        print(f"\nTotal Package Size: ~{(tar_file.stat().st_size + (zip_file.stat().st_size if zip_file.exists() else 0)) / 1024 / 1024:.2f} MB")
+        tar_size = tar_file.stat().st_size
+        zip_size = zip_file.stat().st_size if zip_file.exists() else 0
+        total_mb = (tar_size + zip_size) / 1024 / 1024
+        print(f"\nTotal Package Size: ~{total_mb:.2f} MB")
         print("=" * 60)
 
         print("\nOK Release package creation successful!")
@@ -245,6 +265,7 @@ def create_release_package():
     except Exception as e:
         print(f"\nERROR Error creating release package: {str(e)}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     create_release_package()

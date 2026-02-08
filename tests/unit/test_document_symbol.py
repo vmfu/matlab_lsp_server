@@ -2,8 +2,6 @@
 Unit tests for Document Symbol Handler.
 """
 
-import pytest
-from lsprotocol.types import Position
 from pygls.server import LanguageServer
 
 from src.handlers.document_symbol import DocumentSymbolHandler, get_document_symbol_handler
@@ -141,10 +139,7 @@ def test_get_document_symbol_handler():
 
 def test_document_symbol_handler_module_imports():
     """Test that document symbol handler module can be imported."""
-    from src.handlers.document_symbol import (
-        DocumentSymbolHandler,
-        get_document_symbol_handler,
-    )
+    from src.handlers.document_symbol import DocumentSymbolHandler, get_document_symbol_handler
 
     assert DocumentSymbolHandler is not None
     assert get_document_symbol_handler is not None

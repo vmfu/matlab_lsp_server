@@ -6,7 +6,6 @@ to extract functions, variables, classes, and comments.
 """
 
 import re
-from pathlib import Path
 from typing import Dict, List, Optional
 
 from ..utils.logging import get_logger
@@ -29,70 +28,68 @@ class MatlabParser:
 
     # Regex patterns for MATLAB code
     FUNCTION_PATTERN = re.compile(
-        r'^\s*function\s+'
-        r'(?:(\w+)\s*=\s*)?'  # Output args [out1, out2] =
-        r'(\w+)\s*'  # Function name
-        r'\(([^)]*)\)'  # Input args (arg1, arg2)
-        r'\s*$',
-        re.MULTILINE
+        r"^\s*function\s+"
+        r"(?:(\w+)\s*=\s*)?"  # Output args [out1, out2] =
+        r"(\w+)\s*"  # Function name
+        r"\(([^)]*)\)"  # Input args (arg1, arg2)
+        r"\s*$",
+        re.MULTILINE,
     )
 
     FUNCTION_END_PATTERN = re.compile(
-        r'^\s*end\s*($|%\s*\w+\s*$)',
-        re.MULTILINE
+        r"^\s*end\s*($|%\s*\w+\s*$)", re.MULTILINE
     )
 
     VARIABLE_PATTERN = re.compile(
-        r'^\s*'
-        r'(?:(global|persistent)\s+)?'  # Variable modifiers
-        r'(\w+)\s*'  # Variable name
-        r'(?:=\s*.+)?'  # Assignment (optional)
-        r'\s*(?:;.*)?$',
-        re.MULTILINE
+        r"^\s*"
+        r"(?:(global|persistent)\s+)?"  # Variable modifiers
+        r"(\w+)\s*"  # Variable name
+        r"(?:=\s*.+)?"  # Assignment (optional)
+        r"\s*(?:;.*)?$",
+        re.MULTILINE,
     )
 
-    CLASSDEF_PATTERN = re.compile(
-        r'^\s*classdef\s+(\w+)\s*\b',
-        re.MULTILINE
-    )
+    CLASSDEF_PATTERN = re.compile(r"^\s*classdef\s+(\w+)\s*\b", re.MULTILINE)
 
     PROPERTY_PATTERN = re.compile(
-        r'^\s*properties',
-        re.MULTILINE | re.IGNORECASE
+        r"^\s*properties", re.MULTILINE | re.IGNORECASE
     )
 
     METHOD_PATTERN = re.compile(
-        r'^\s*function\s+'
-        r'(?:(\w+)\s*=\s*)?'  # Output args
-        r'(\w+)\s*'  # Method name
-        r'\(([^)]*)\)'  # Input args
-        r'\s*$',
-        re.MULTILINE
+        r"^\s*function\s+"
+        r"(?:(\w+)\s*=\s*)?"  # Output args
+        r"(\w+)\s*"  # Method name
+        r"\(([^)]*)\)"  # Input args
+        r"\s*$",
+        re.MULTILINE,
     )
 
     COMMENT_PATTERN = re.compile(
-        r'^(.*?)(?:;|%)([^%].*)$',  # Code before ; or %, then comment (not %)
-        re.MULTILINE
+        r"^(.*?)(?:;|%)([^%].*)$",  # Code before ; or %, then comment (not %)
+        re.MULTILINE,
     )
 
     # Block comment pattern - matches entire block
     BLOCK_COMMENT_PATTERN = re.compile(
-        r'%\s*\{\s*(.*?)\s*\}%',
-        re.DOTALL | re.MULTILINE
+        r"%\s*\{\s*(.*?)\s*\}%", re.DOTALL | re.MULTILINE
     )
 
-    def __init__(self, symbol_table: SymbolTable = None):
+    def __init__(self, symbol_table: Optional[SymbolTable] = None):
         """Initialize parser."""
         self._nesting_level = 0  # Track function/class nesting
-        self._current_function = None  # Track current function
-        self._current_class = None  # Track current class
-        self._function_stack = []  # Stack of functions for nesting
-        self._class_stack = []  # Stack of classes for nesting
+        self._current_function: Optional[FunctionInfo] = None
+        self._current_class: Optional[ClassInfo] = None
+        self._function_stack: List[FunctionInfo] = []
+        self._class_stack: List[ClassInfo] = []
 
         # Get or create symbol table
-        self._symbol_table = symbol_table if symbol_table else get_symbol_table()
+        self._symbol_table = (
+            symbol_table if symbol_table else get_symbol_table()
+        )
 
-    def parse_file(self, file_path: str, file_uri: str, use_cache: bool = True) -> ParseResult:
+    def parse_file(
+        self, file_path: str, file_uri: str, use_cache: bool = True
+    ) -> ParseResult:
         """
         Parse a MATLAB file and update symbol table.
 
@@ -108,7 +105,7 @@ class MatlabParser:
 
         # Read file content
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
         except Exception as e:
             logger.error(f"Error reading file {file_path}: {e}")
@@ -116,7 +113,7 @@ class MatlabParser:
                 file_uri=file_uri,
                 file_path=file_path,
                 raw_content="",
-                errors=[{"error": f"Failed to read file: {e}"}]
+                errors=[{"error": f"Failed to read file: {e}"}],
             )
 
         # Parse content
@@ -133,15 +130,14 @@ class MatlabParser:
                 logger.info(f"Updated symbol table for {file_path}")
             except Exception as e:
                 logger.error(f"Error updating symbol table: {e}")
-                result.errors.append({"error": f"Failed to update symbol table: {e}"})
+                result.errors.append(
+                    {"error": f"Failed to update symbol table: {e}"}
+                )
 
         return result
 
     def parse_content(
-        self,
-        content: str,
-        file_uri: str,
-        file_path: str
+        self, content: str, file_uri: str, file_path: str
     ) -> ParseResult:
         """
         Parse MATLAB code content.
@@ -154,7 +150,6 @@ class MatlabParser:
         Returns:
             ParseResult: Parsing result with extracted elements
         """
-        lines = content.split('\n')
         functions: List[FunctionInfo] = []
         variables: List[VariableInfo] = []
         comments: List[CommentInfo] = []
@@ -175,12 +170,14 @@ class MatlabParser:
             comments.append(block_comment)
 
         # Remove block comments from content for further parsing
-        content_without_blocks = self.BLOCK_COMMENT_PATTERN.sub('', content)
-        lines_without_blocks = content_without_blocks.split('\n')
+        content_without_blocks = self.BLOCK_COMMENT_PATTERN.sub("", content)
+        lines_without_blocks = content_without_blocks.split("\n")
 
         for line_num, line in enumerate(lines_without_blocks, 1):
             # Map line number back to original (including removed lines)
-            original_line_num = line_num  # Simplified - not accurate but works for now
+            original_line_num = (
+                line_num  # Simplified - not accurate but works for now
+            )
 
             # Skip empty lines
             if not line.strip():
@@ -191,7 +188,7 @@ class MatlabParser:
             if comment:
                 comments.append(comment)
                 # Remove comment from line for further parsing
-                line = line[:comment.column - 1]
+                line = line[: comment.column - 1]
                 if not line.strip():
                     continue
 
@@ -216,7 +213,9 @@ class MatlabParser:
                 # Set parent function if nested
                 if self._current_function:
                     function_match.is_nested = True
-                    function_match.parent_function = self._current_function.name
+                    function_match.parent_function = (
+                        self._current_function.name
+                    )
 
                 # Update function tree
                 if self._current_function:
@@ -244,13 +243,24 @@ class MatlabParser:
                     self._nesting_level -= 1
 
                     # If exiting class
-                    if self._class_stack and self._nesting_level == len(self._class_stack) - 1:
-                        self._current_class = self._class_stack[-1] if self._class_stack else None
+                    if (
+                        self._class_stack
+                        and self._nesting_level == len(self._class_stack) - 1
+                    ):
+                        self._current_class = (
+                            self._class_stack[-1]
+                            if self._class_stack
+                            else None
+                        )
                     elif self._nesting_level == 0:
                         self._current_class = None
 
                     # If exiting function
-                    if self._function_stack and self._nesting_level == len(self._function_stack) - 1:
+                    if (
+                        self._function_stack
+                        and self._nesting_level
+                        == len(self._function_stack) - 1
+                    ):
                         self._current_function = self._function_stack[-1]
                     elif self._nesting_level == 0:
                         self._current_function = None
@@ -262,7 +272,11 @@ class MatlabParser:
                 var_match = self._extract_variable(line, original_line_num)
                 if var_match:
                     # Only add global/top-level variables
-                    if self._nesting_level == 0 or var_match.is_global or var_match.is_persistent:
+                    if (
+                        self._nesting_level == 0
+                        or var_match.is_global
+                        or var_match.is_persistent
+                    ):
                         variables.append(var_match)
 
         logger.info(
@@ -285,9 +299,7 @@ class MatlabParser:
         )
 
     def _extract_function(
-        self,
-        line: str,
-        line_num: int
+        self, line: str, line_num: int
     ) -> Optional[FunctionInfo]:
         """Extract function definition from line."""
         match = self.FUNCTION_PATTERN.match(line)
@@ -307,12 +319,12 @@ class MatlabParser:
         # Parse outputs
         output_args = []
         if outputs:
-            output_args = [s.strip() for s in outputs.split(',')]
+            output_args = [s.strip() for s in outputs.split(",")]
 
         # Parse inputs
         input_args = []
         if inputs:
-            input_args = [s.strip() for s in inputs.split(',')]
+            input_args = [s.strip() for s in inputs.split(",")]
 
         # Find function name position
         name_pos = line.find(name)
@@ -330,9 +342,7 @@ class MatlabParser:
         )
 
     def _extract_classdef(
-        self,
-        line: str,
-        line_num: int
+        self, line: str, line_num: int
     ) -> Optional[ClassInfo]:
         """Extract class definition from line."""
         match = self.CLASSDEF_PATTERN.match(line)
@@ -352,22 +362,16 @@ class MatlabParser:
             methods=[],
         )
 
-    def _extract_property(
-        self,
-        line: str,
-        line_num: int
-    ) -> Optional[str]:
+    def _extract_property(self, line: str, line_num: int) -> Optional[str]:
         """Extract property name from line."""
         # Simple pattern: property name (no type yet)
-        match = re.match(r'^\s*(\w+)', line)
+        match = re.match(r"^\s*(\w+)", line)
         if match:
             return match.group(1)
         return None
 
     def _extract_variable(
-        self,
-        line: str,
-        line_num: int
+        self, line: str, line_num: int
     ) -> Optional[VariableInfo]:
         """Extract variable declaration from line."""
         match = self.VARIABLE_PATTERN.match(line)
@@ -383,8 +387,8 @@ class MatlabParser:
             name_pos = 0
 
         # Check for modifiers
-        is_global = modifiers and 'global' in modifiers
-        is_persistent = modifiers and 'persistent' in modifiers
+        is_global = bool(modifiers and "global" in modifiers)
+        is_persistent = bool(modifiers and "persistent" in modifiers)
 
         return VariableInfo(
             name=name,
@@ -394,10 +398,7 @@ class MatlabParser:
             is_persistent=is_persistent,
         )
 
-    def _extract_block_comments(
-        self,
-        content: str
-    ) -> List[CommentInfo]:
+    def _extract_block_comments(self, content: str) -> List[CommentInfo]:
         """Extract all block comments from content.
 
         Args:
@@ -410,32 +411,36 @@ class MatlabParser:
 
         for match in self.BLOCK_COMMENT_PATTERN.finditer(content):
             # Calculate line number (approximate)
-            content_before = content[:match.start()]
-            line_num = content_before.count('\n') + 1
+            content_before = content[: match.start()]
+            line_num = content_before.count("\n") + 1
 
             # Calculate column
-            line_start = content.rfind('\n', 0, match.start())
-            column = match.start() - line_start if line_start != -1 else match.start() + 1
+            line_start = content.rfind("\n", 0, match.start())
+            column = (
+                match.start() - line_start
+                if line_start != -1
+                else match.start() + 1
+            )
 
             # Calculate end line
-            content_with_block = content[:match.end()]
-            end_line = content_with_block.count('\n') + 1
+            content_with_block = content[: match.end()]
+            end_line = content_with_block.count("\n") + 1
 
-            block_comments.append(CommentInfo(
-                text=match.group(1).strip(),
-                line=line_num,
-                column=column,
-                is_block=True,
-                block_start_line=line_num,
-                block_end_line=end_line,
-            ))
+            block_comments.append(
+                CommentInfo(
+                    text=match.group(1).strip(),
+                    line=line_num,
+                    column=column,
+                    is_block=True,
+                    block_start_line=line_num,
+                    block_end_line=end_line,
+                )
+            )
 
         return block_comments
 
     def _extract_line_comment(
-        self,
-        line: str,
-        line_num: int
+        self, line: str, line_num: int
     ) -> Optional[CommentInfo]:
         """Extract line-level comment from line.
 
@@ -451,7 +456,6 @@ class MatlabParser:
         if match:
             # group(1) is code before ; or %
             # group(2) is comment content
-            code_before = match.group(1)
             comment_content = match.group(2)
 
             if comment_content.strip():

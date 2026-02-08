@@ -3,6 +3,7 @@ Unit tests for Base Analyzer.
 """
 
 import pytest
+
 from src.analyzer.base_analyzer import BaseAnalyzer, DiagnosticResult
 
 

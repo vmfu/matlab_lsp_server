@@ -2,7 +2,6 @@
 Unit tests for Formatting Handler.
 """
 
-import pytest
 from pygls.server import LanguageServer
 
 from src.handlers.formatting import FormattingHandler, get_formatting_handler
@@ -48,7 +47,9 @@ def test_format_matlab_code_with_tabs():
     code = "function test()\n\tx = 1;\nend"
 
     # Format with tabs
-    formatted = handler._format_matlab_code(code, indent_size=2, insert_spaces=False)
+    formatted = handler._format_matlab_code(
+        code, indent_size=2, insert_spaces=False
+    )
 
     # Should use tabs
     assert '\tx = 1;' in formatted
@@ -85,7 +86,7 @@ def test_provide_formatting_no_changes():
     content = "    function test()\n    end"
 
     # Provide formatting
-    edits = handler.provide_formatting(
+    _ = handler.provide_formatting(
         server=server,
         file_uri="file:///test.m",
         content=content,
@@ -118,10 +119,7 @@ def test_get_formatting_handler():
 
 def test_formatting_handler_module_imports():
     """Test that formatting handler module can be imported."""
-    from src.handlers.formatting import (
-        FormattingHandler,
-        get_formatting_handler,
-    )
+    from src.handlers.formatting import FormattingHandler, get_formatting_handler
 
     assert FormattingHandler is not None
     assert get_formatting_handler is not None

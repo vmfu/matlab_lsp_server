@@ -2,12 +2,8 @@
 Unit tests for Symbol Table.
 """
 
-import pytest
-from src.utils.symbol_table import (
-    SymbolTable,
-    Symbol,
-    get_symbol_table,
-)
+
+from src.utils.symbol_table import Symbol, SymbolTable, get_symbol_table
 
 
 def test_symbol_table_initialization():
@@ -116,7 +112,7 @@ def test_update_from_parse_result():
     table = SymbolTable()
 
     # Create mock parse result
-    from src.parser.models import ParseResult, FunctionInfo, ClassInfo
+    from src.parser.models import ClassInfo, FunctionInfo, ParseResult
 
     parse_result = ParseResult(
         file_uri="file:///test.m",
@@ -157,7 +153,8 @@ def test_update_from_parse_result():
     # Check symbols
     symbols = table.get_symbols_by_uri("file:///test.m")
 
-    # Should have: function "main", class "MyClass", method "method1", property "prop1"
+    # Should have: function "main", class "MyClass",
+    # method "method1", property "prop1"
     assert len(symbols) >= 3  # At least function and class
     function_names = [s.name for s in symbols if s.kind == "function"]
     assert "main" in function_names
@@ -199,11 +196,7 @@ def test_symbol_stats():
 
 def test_symbol_module_imports():
     """Test that symbol table module can be imported."""
-    from src.utils.symbol_table import (
-        SymbolTable,
-        Symbol,
-        get_symbol_table,
-    )
+    from src.utils.symbol_table import SymbolTable, get_symbol_table
 
     assert SymbolTable is not None
     assert Symbol is not None

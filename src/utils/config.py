@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
+from pydantic.fields import FieldInfo
 from pydantic_settings import (
     BaseSettings,
     PydanticBaseSettingsSource,
@@ -46,26 +47,26 @@ class JsonConfigSettingsSource(PydanticBaseSettingsSource):
 
     def __init__(self, settings_cls: type[BaseSettings]):
         super().__init__(settings_cls)
-        self.config_file_path: Path = Path.cwd() / '.matlab-lsprc.json'
+        self.config_file_path: Path = Path.cwd() / ".matlab-lsprc.json"
 
     def get_field_value(
         self,
+        field: FieldInfo,
         field_name: str,
-        field: Any,
     ) -> tuple[Any, str, bool]:
         """Get field value from JSON config file."""
         if not self.config_file_path.exists():
             return None, field_name, False
 
         try:
-            with open(self.config_file_path, 'r', encoding='utf-8') as f:
+            with open(self.config_file_path, "r", encoding="utf-8") as f:
                 config_data = json.load(f)
         except (json.JSONDecodeError, FileNotFoundError):
             return None, field_name, False
 
         # Handle nested configuration
         field_value = None
-        for key in ['diagnosticRules', 'formatting', 'completion', 'cache']:
+        for key in ["diagnosticRules", "formatting", "completion", "cache"]:
             if key in config_data and field_name in config_data[key]:
                 field_value = config_data[key][field_name]
                 break
@@ -110,44 +111,42 @@ class MatlabLspSettings(BaseSettings):
     """MATLAB LSP Server settings."""
 
     matlabPath: str = Field(
-        default="",
-        description="Path to MATLAB installation directory"
+        default="", description="Path to MATLAB installation directory"
     )
     maxDiagnostics: int = Field(
         default=100,
         ge=0,
         le=1000,
-        description="Maximum number of diagnostics to report"
+        description="Maximum number of diagnostics to report",
     )
     diagnosticRules: DiagnosticRules = Field(
         default_factory=DiagnosticRules,
-        description="Diagnostic rules configuration"
+        description="Diagnostic rules configuration",
     )
     formatting: FormattingConfig = Field(
         default_factory=FormattingConfig,
-        description="Code formatting configuration"
+        description="Code formatting configuration",
     )
     completion: CompletionConfig = Field(
         default_factory=CompletionConfig,
-        description="Code completion configuration"
+        description="Code completion configuration",
     )
     cache: CacheConfig = Field(
-        default_factory=CacheConfig,
-        description="Cache configuration"
+        default_factory=CacheConfig, description="Cache configuration"
     )
 
     model_config = SettingsConfigDict(
-        env_file_encoding='utf-8',
-        env_prefix='MATLAB_LSP_',
+        env_file_encoding="utf-8",
+        env_prefix="MATLAB_LSP_",
         case_sensitive=False,
     )
 
-    @field_validator('matlabPath', mode='after')
+    @field_validator("matlabPath", mode="after")
     @classmethod
     def validate_matlab_path(cls, v: str) -> str:
         """Validate MATLAB path exists."""
         if v and not Path(v).exists():
-            raise ValueError(f'MATLAB path does not exist: {v}')
+            raise ValueError(f"MATLAB path does not exist: {v}")
         return v
 
     @classmethod

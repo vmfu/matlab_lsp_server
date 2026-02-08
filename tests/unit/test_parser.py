@@ -2,16 +2,11 @@
 Unit tests for MATLAB Parser.
 """
 
-import pytest
-import tempfile
 import os
+import tempfile
 
 from src.parser.matlab_parser import MatlabParser
-from src.parser.models import (
-    FunctionInfo,
-    VariableInfo,
-    ParseResult,
-)
+from src.parser.models import FunctionInfo, ParseResult, VariableInfo
 
 
 def test_parser_initialization():
@@ -165,12 +160,7 @@ def test_is_builtin_function():
 
 def test_parser_module_imports():
     """Test that parser module can be imported."""
-    from src.parser.matlab_parser import MatlabParser, MatlabParser
-    from src.parser.models import (
-        FunctionInfo,
-        VariableInfo,
-        ParseResult,
-    )
+    from src.parser.matlab_parser import MatlabParser
 
     assert MatlabParser is not None
     assert FunctionInfo is not None

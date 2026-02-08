@@ -2,7 +2,6 @@
 Unit tests for Definition Handler.
 """
 
-import pytest
 from lsprotocol.types import Position
 from pygls.server import LanguageServer
 
@@ -127,10 +126,7 @@ def test_get_definition_handler():
 
 def test_definition_handler_module_imports():
     """Test that definition handler module can be imported."""
-    from src.handlers.definition import (
-        DefinitionHandler,
-        get_definition_handler,
-    )
+    from src.handlers.definition import DefinitionHandler, get_definition_handler
 
     assert DefinitionHandler is not None
     assert get_definition_handler is not None

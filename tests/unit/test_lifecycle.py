@@ -2,7 +2,6 @@
 Unit tests for LSP lifecycle handlers.
 """
 
-import pytest
 from pygls.server import LanguageServer
 
 from src.protocol.lifecycle import register_lifecycle_handlers

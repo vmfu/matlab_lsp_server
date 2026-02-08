@@ -5,7 +5,7 @@ This module provides a document store to manage
 open documents and their contents.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict, Optional
 
 from ..utils.logging import get_logger
@@ -23,6 +23,7 @@ class Document:
         content (str): Document text content
         version (int): Document version (for change tracking)
     """
+
     uri: str
     path: str
     content: str
@@ -90,7 +91,9 @@ class DocumentStore:
             return True
         return False
 
-    def update_document_content(self, uri: str, new_content: str) -> Optional[Document]:
+    def update_document_content(
+        self, uri: str, new_content: str
+    ) -> Optional[Document]:
         """
         Update document content and increment version.
 
@@ -105,7 +108,10 @@ class DocumentStore:
             document = self._documents[uri]
             document.content = new_content
             document.version += 1
-            logger.debug(f"Document content updated: {document.path} (v{document.version})")
+            logger.debug(
+                "Document content updated: "
+                f"{document.path} (v{document.version})"
+            )
             return document
         return None
 

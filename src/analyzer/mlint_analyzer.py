@@ -9,7 +9,7 @@ import platform
 import re
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from ..utils.logging import get_logger
 from .base_analyzer import BaseAnalyzer, DiagnosticResult
@@ -33,7 +33,7 @@ class MlintAnalyzer(BaseAnalyzer):
     )
     MLINT_PATTERN_SIMPLE = re.compile(r"^L\s+(\d+)\s*:\s*(.+)$", re.MULTILINE)
 
-    def __init__(self, matlab_path: str = None):
+    def __init__(self, matlab_path: Optional[str] = None):
         """Initialize MlintAnalyzer.
 
         Args:
@@ -110,9 +110,7 @@ class MlintAnalyzer(BaseAnalyzer):
         logger.warning("mlint not found in any location")
         return None
 
-    def _find_mlint_in_dir(
-        self, base_dir: Path
-    ) -> Optional[str]:
+    def _find_mlint_in_dir(self, base_dir: Path) -> Optional[str]:
         """Find mlint in a directory tree.
 
         Args:
@@ -184,6 +182,11 @@ class MlintAnalyzer(BaseAnalyzer):
         if not self.is_available():
             raise RuntimeError("mlint.exe is not available")
 
+        # Assert mlint_path is not None (mypy doesn't narrow type from is_available)
+        assert (
+            self.mlint_path is not None
+        ), "mlint_path should be set if is_available() is True"
+
         logger.debug(f"Analyzing file: {file_path}")
 
         # Run mlint
@@ -203,7 +206,7 @@ class MlintAnalyzer(BaseAnalyzer):
         logger.debug(f"Found {len(diagnostics)} diagnostics")
         return DiagnosticResult(file_uri=file_uri, diagnostics=diagnostics)
 
-    def _parse_output(self, output: str) -> List[Dict[str, any]]:
+    def _parse_output(self, output: str) -> List[Dict[str, Any]]:
         """
         Parse mlint output into structured diagnostics.
 
@@ -219,7 +222,8 @@ class MlintAnalyzer(BaseAnalyzer):
             line = line.strip()
             if not line:
                 continue
-            # Skip mlint header lines (e.g., "========== path/to/file.m ==========")
+            # Skip mlint header lines
+            # (e.g., "========== path/to/file.m ==========")
             if line.startswith("=========="):
                 continue
 

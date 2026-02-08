@@ -2,15 +2,15 @@
 
 import logging
 import sys
-from typing import Optional
+from typing import Optional, Union
 
 import colorlog
 
 # Default log format with colors
 LOG_FORMAT = (
-    '%(log_color)s%(levelname)-8s%(reset)s '
-    '%(blue)s%(name)s%(reset)s '
-    '%(message)s%(reset)s'
+    "%(log_color)s%(levelname)-8s%(reset)s "
+    "%(blue)s%(name)s%(reset)s "
+    "%(message)s%(reset)s"
 )
 
 # Default log level
@@ -18,11 +18,11 @@ DEFAULT_LOG_LEVEL = logging.INFO
 
 # Log colors for different levels
 LOG_COLORS = {
-    'DEBUG': 'cyan',
-    'INFO': 'green',
-    'WARNING': 'yellow',
-    'ERROR': 'red',
-    'CRITICAL': 'red,bg_white',
+    "DEBUG": "cyan",
+    "INFO": "green",
+    "WARNING": "yellow",
+    "ERROR": "red",
+    "CRITICAL": "red,bg_white",
 }
 
 
@@ -46,22 +46,24 @@ def setup_logging(
 
     handler = logging.StreamHandler(sys.stderr)
 
+    formatter: Union[logging.Formatter, colorlog.ColoredFormatter]
+
     if use_color:
         formatter = colorlog.ColoredFormatter(
             log_format or LOG_FORMAT,
             log_colors=LOG_COLORS,
             reset=True,
-            style='%',
+            style="%",
         )
     else:
         # Plain format for non-colored output
         plain_format = log_format or LOG_FORMAT
         # Remove color codes from format
-        plain_format = plain_format.replace('%(log_color)s', '')
-        plain_format = plain_format.replace('%(reset)s', '')
-        plain_format = plain_format.replace('%(blue)s', '')
-        plain_format = plain_format.replace('%(message_log_color)s', '')
-        formatter = logging.Formatter(plain_format, style='%')
+        plain_format = plain_format.replace("%(log_color)s", "")
+        plain_format = plain_format.replace("%(reset)s", "")
+        plain_format = plain_format.replace("%(blue)s", "")
+        plain_format = plain_format.replace("%(message_log_color)s", "")
+        formatter = logging.Formatter(plain_format, style="%")
 
     handler.setFormatter(formatter)
     root_logger.addHandler(handler)
@@ -103,11 +105,11 @@ def get_log_level(level_str: str) -> int:
         ValueError: If level_str is not a valid log level
     """
     level_map = {
-        'DEBUG': logging.DEBUG,
-        'INFO': logging.INFO,
-        'WARNING': logging.WARNING,
-        'ERROR': logging.ERROR,
-        'CRITICAL': logging.CRITICAL,
+        "DEBUG": logging.DEBUG,
+        "INFO": logging.INFO,
+        "WARNING": logging.WARNING,
+        "ERROR": logging.ERROR,
+        "CRITICAL": logging.CRITICAL,
     }
 
     level_str_upper = level_str.upper()

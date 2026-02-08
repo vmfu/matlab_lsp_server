@@ -2,15 +2,9 @@
 Unit tests for Performance Module.
 """
 
-import pytest
 import time
 
-from src.utils.performance import (
-    LRUCache,
-    Debouncer,
-    measure_time,
-    create_lru_symbol_table_cache,
-)
+from src.utils.performance import Debouncer, LRUCache, create_lru_symbol_table_cache, measure_time
 
 
 def test_lru_cache_initialization():
@@ -109,10 +103,10 @@ def test_create_lru_symbol_table_cache():
 def test_performance_module_imports():
     """Test that performance module can be imported."""
     from src.utils.performance import (
-        LRUCache,
         Debouncer,
-        measure_time,
+        LRUCache,
         create_lru_symbol_table_cache,
+        measure_time,
     )
 
     assert LRUCache is not None

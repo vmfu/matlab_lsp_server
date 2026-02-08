@@ -2,7 +2,6 @@
 Unit tests for Completion Handler.
 """
 
-import pytest
 from lsprotocol.types import CompletionItemKind
 from pygls.server import LanguageServer
 
@@ -121,10 +120,7 @@ def test_get_completion_handler():
 
 def test_completion_handler_module_imports():
     """Test that completion handler module can be imported."""
-    from src.handlers.completion import (
-        CompletionHandler,
-        get_completion_handler,
-    )
+    from src.handlers.completion import CompletionHandler, get_completion_handler
 
     assert CompletionHandler is not None
     assert get_completion_handler is not None

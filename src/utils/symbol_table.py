@@ -6,7 +6,7 @@ completion, go-to-definition, etc.
 """
 
 import hashlib
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 from .logging import get_logger
@@ -20,7 +20,9 @@ class Symbol:
 
     Attributes:
         name (str): Symbol name
-        kind (str): Symbol kind ("function", "variable", "class", "property", etc.)
+        kind (
+            str
+        ): Symbol kind ("function", "variable", "class", "property", etc.)
         uri (str): File URI where symbol is defined
         line (int): Line number where symbol is defined
         column (int): Column number where symbol is defined
@@ -29,6 +31,7 @@ class Symbol:
         is_global (bool): Whether symbol is globally accessible
         scope (str): Scope name (e.g., parent function name)
     """
+
     name: str
     kind: str  # "function", "variable", "class", "property"
     uri: str
@@ -72,7 +75,7 @@ class SymbolTable:
         detail: str = "",
         documentation: Optional[str] = None,
         is_global: bool = False,
-        scope: str = ""
+        scope: str = "",
     ) -> None:
         """
         Add a symbol to the table.
@@ -133,8 +136,7 @@ class SymbolTable:
 
         # Remove from name index (find and delete all matching)
         keys_to_remove = [
-            key for key in self._symbols.keys()
-            if key.startswith(uri + ":")
+            key for key in self._symbols.keys() if key.startswith(uri + ":")
         ]
         for key in keys_to_remove:
             del self._symbols[key]
@@ -159,10 +161,7 @@ class SymbolTable:
         return self._uri_to_symbols.get(uri, []).copy()
 
     def search_symbols(
-        self,
-        query: str,
-        uri: str = None,
-        kind: str = None
+        self, query: str, uri: Optional[str] = None, kind: Optional[str] = None
     ) -> List[Symbol]:
         """
         Search for symbols by name.
@@ -254,7 +253,9 @@ class SymbolTable:
                 detail=detail,
                 documentation=func.docstring,
                 is_global=not func.is_nested,
-                scope=func.parent_function if func.parent_function else "global",
+                scope=(
+                    func.parent_function if func.parent_function else "global"
+                ),
             )
 
         # Add classes
@@ -297,7 +298,8 @@ class SymbolTable:
                 name=prop,
                 kind=self.KIND_PROPERTY,
                 uri=uri,
-                line=cls.line + 1,  # Approximate (property section starts after classdef)
+                line=cls.line
+                + 1,  # Approximate (property section starts after classdef)
                 column=1,
                 detail=f"property {prop}",
                 documentation=None,
@@ -305,9 +307,11 @@ class SymbolTable:
                 scope=cls.name,
             )
 
-        logger.info(f"Updated symbol table for {uri}: "
-                    f"{len(parse_result.functions)} functions, "
-                    f"{len(parse_result.classes)} classes")
+        logger.info(
+            f"Updated symbol table for {uri}: "
+            f"{len(parse_result.functions)} functions, "
+            f"{len(parse_result.classes)} classes"
+        )
 
     def clear(self) -> None:
         """Clear all symbols."""
@@ -325,10 +329,13 @@ class SymbolTable:
             Dict[str, Any]: Statistics (total symbols, symbols by kind, etc.)
         """
         all_symbols = self.get_all_symbols()
-        stats = {
+        stats: Dict[str, Any] = {
             "total": len(all_symbols),
             "by_kind": {},
-            "by_uri": {uri: len(symbols) for uri, symbols in self._uri_to_symbols.items()},
+            "by_uri": {
+                uri: len(symbols)
+                for uri, symbols in self._uri_to_symbols.items()
+            },
         }
 
         # Count by kind
@@ -346,7 +353,7 @@ class SymbolTable:
 
     def _hash_content(self, content: str) -> str:
         """Generate hash of file content."""
-        return hashlib.md5(content.encode('utf-8')).hexdigest()
+        return hashlib.md5(content.encode("utf-8")).hexdigest()
 
 
 # Global symbol table instance

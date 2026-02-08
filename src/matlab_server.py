@@ -1,18 +1,19 @@
 """
-Custom Language Server for MATLAB with configuration via initialized notification.
+Custom Language Server for MATLAB with configuration via
+initialized notification.
 """
 
 from lsprotocol.types import (
     InitializedParams,
     InitializeParams,
     InitializeResult,
+    InitializeResultServerInfoType,
 )
 from pygls.server import LanguageServer
 
 from src.analyzer.mlint_analyzer import MlintAnalyzer
 from src.features.feature_manager import FeatureManager
 from src.protocol import document_sync
-from src.protocol.lifecycle import register_lifecycle_handlers
 from src.utils.document_store import DocumentStore
 from src.utils.logging import get_logger
 
@@ -42,19 +43,27 @@ class MatLSServer(LanguageServer):
         async def on_initialize(params: InitializeParams) -> InitializeResult:
             """Store initialization parameters for later use."""
             logger.info("=== STORING INITIALIZATION PARAMS ===")
+            client_name = (
+                params.client_info.name if params.client_info else "unknown"
+            )
+            client_version = (
+                params.client_info.version if params.client_info else "unknown"
+            )
             logger.info(
-                f"Initialize request from client: "
-                f"{params.client_info.name if params.client_info else 'unknown'} "
-                f"v{params.client_info.version if params.client_info else 'unknown'}"
+                "Initialize request from client: "
+                f"{client_name} v{client_version}"
             )
             self._init_params = params
 
             # Return default result (will be overwritten later if needed)
             from src.features.feature_manager import FeatureManager
+
             fm = FeatureManager()
             return InitializeResult(
                 capabilities=fm.get_capabilities(),
-                server_info={"name": "matlab-lsp", "version": "0.1.0"}
+                server_info=InitializeResultServerInfoType(
+                    name="matlab-lsp", version="0.1.0"
+                ),
             )
 
         # Handle initialized notification - this is called AFTER initialize
@@ -77,15 +86,26 @@ class MatLSServer(LanguageServer):
             if init_opts:
                 logger.debug(f"Initialization options: {init_opts}")
                 if isinstance(init_opts, dict):
-                    if 'matlab' in init_opts and isinstance(init_opts['matlab'], dict):
-                        matlab_path = init_opts['matlab'].get('matlabPath')
-                        logger.info(f"Found matlab path from nested config: {matlab_path}")
-                    elif 'matlabPath' in init_opts:
-                        matlab_path = init_opts.get('matlabPath')
-                        logger.info(f"Found matlab path from flat config: {matlab_path}")
-                    elif 'matlab_path' in init_opts:
-                        matlab_path = init_opts.get('matlab_path')
-                        logger.info(f"Found matlab path from matlab_path key: {matlab_path}")
+                    if "matlab" in init_opts and isinstance(
+                        init_opts["matlab"], dict
+                    ):
+                        matlab_path = init_opts["matlab"].get("matlabPath")
+                        logger.info(
+                            "Found matlab path from nested config: "
+                            f"{matlab_path}"
+                        )
+                    elif "matlabPath" in init_opts:
+                        matlab_path = init_opts.get("matlabPath")
+                        logger.info(
+                            "Found matlab path from flat config: "
+                            f"{matlab_path}"
+                        )
+                    elif "matlab_path" in init_opts:
+                        matlab_path = init_opts.get("matlab_path")
+                        logger.info(
+                            "Found matlab path from matlab_path key: "
+                            f"{matlab_path}"
+                        )
 
             logger.info(f"Extracted matlab_path: {matlab_path}")
 
@@ -94,11 +114,15 @@ class MatLSServer(LanguageServer):
             logger.info(f"MlintAnalyzer created with path: {matlab_path}")
 
             if self._mlint_analyzer.is_available():
-                logger.info(f"MlintAnalyzer is available at: {self._mlint_analyzer.mlint_path}")
+                logger.info(
+                    "MlintAnalyzer is available at: "
+                    f"{self._mlint_analyzer.mlint_path}"
+                )
             else:
                 logger.error(
-                    f"MlintAnalyzer is NOT available! "
-                    f"matlab_path={matlab_path}, mlint_path={self._mlint_analyzer.mlint_path}"
+                    "MlintAnalyzer is NOT available! "
+                    f"matlab_path={matlab_path}, "
+                    f"mlint_path={self._mlint_analyzer.mlint_path}"
                 )
 
             # Initialize feature manager

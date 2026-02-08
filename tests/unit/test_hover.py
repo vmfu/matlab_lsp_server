@@ -2,7 +2,6 @@
 Unit tests for Hover Handler.
 """
 
-import pytest
 from lsprotocol.types import Position
 from pygls.server import LanguageServer
 
@@ -145,10 +144,7 @@ def test_get_hover_handler():
 
 def test_hover_handler_module_imports():
     """Test that hover handler module can be imported."""
-    from src.handlers.hover import (
-        HoverHandler,
-        get_hover_handler,
-    )
+    from src.handlers.hover import HoverHandler, get_hover_handler
 
     assert HoverHandler is not None
     assert get_hover_handler is not None

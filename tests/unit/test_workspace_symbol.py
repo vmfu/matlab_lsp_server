@@ -2,7 +2,6 @@
 Unit tests for Workspace Symbol Handler.
 """
 
-import pytest
 from pygls.server import LanguageServer
 
 from src.handlers.workspace_symbol import WorkspaceSymbolHandler, get_workspace_symbol_handler
@@ -144,10 +143,7 @@ def test_get_workspace_symbol_handler():
 
 def test_workspace_symbol_handler_module_imports():
     """Test that workspace symbol handler module can be imported."""
-    from src.handlers.workspace_symbol import (
-        WorkspaceSymbolHandler,
-        get_workspace_symbol_handler,
-    )
+    from src.handlers.workspace_symbol import WorkspaceSymbolHandler, get_workspace_symbol_handler
 
     assert WorkspaceSymbolHandler is not None
     assert get_workspace_symbol_handler is not None

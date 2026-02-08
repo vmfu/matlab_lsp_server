@@ -5,7 +5,7 @@ This module handles textDocument/publishDiagnostics notifications
 to publish analysis results to the LSP client.
 """
 
-from typing import Any, Dict, List
+from typing import List
 
 from lsprotocol.types import Diagnostic, DiagnosticSeverity, Position, Range
 from pygls.server import LanguageServer

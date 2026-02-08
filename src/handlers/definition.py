@@ -7,11 +7,7 @@ go-to-definition functionality for MATLAB symbols.
 
 from typing import List, Optional
 
-from lsprotocol.types import (
-    Location,
-    Position,
-    Range,
-)
+from lsprotocol.types import Location, Position, Range
 from pygls.server import LanguageServer
 
 from ..utils.logging import get_logger
@@ -23,13 +19,15 @@ logger = get_logger(__name__)
 class DefinitionHandler:
     """Handler for go-to-definition in MATLAB LSP server."""
 
-    def __init__(self, symbol_table: SymbolTable = None):
+    def __init__(self, symbol_table: Optional[SymbolTable] = None):
         """Initialize definition handler.
 
         Args:
             symbol_table (SymbolTable): Symbol table instance
         """
-        self._symbol_table = symbol_table if symbol_table else get_symbol_table()
+        self._symbol_table = (
+            symbol_table if symbol_table else get_symbol_table()
+        )
         logger.debug("DefinitionHandler initialized")
 
     def provide_definition(
@@ -37,7 +35,7 @@ class DefinitionHandler:
         server: LanguageServer,
         file_uri: str,
         position: Position,
-        word: str = None
+        word: Optional[str] = None,
     ) -> Optional[Location]:
         """
         Provide definition location for a symbol at cursor.
@@ -62,9 +60,7 @@ class DefinitionHandler:
 
         # Search for symbol in current file
         file_symbols = self._symbol_table.get_symbols_by_uri(file_uri)
-        symbol = self._find_symbol_at_position(
-            file_symbols, position, word
-        )
+        symbol = self._find_symbol_at_position(file_symbols, position, word)
 
         if not symbol:
             # Also search in all files
@@ -86,10 +82,7 @@ class DefinitionHandler:
         return location
 
     def _find_symbol_at_position(
-        self,
-        symbols: list,
-        position: Position,
-        word: str
+        self, symbols: List[Symbol], position: Position, word: str
     ) -> Optional[Symbol]:
         """
         Find symbol at specific position.
@@ -118,9 +111,7 @@ class DefinitionHandler:
         return None
 
     def _find_symbol_by_name(
-        self,
-        symbols: list,
-        name: str
+        self, symbols: List[Symbol], name: str
     ) -> Optional[Symbol]:
         """
         Find symbol by name (case-insensitive).
@@ -172,7 +163,7 @@ class DefinitionHandler:
         server: LanguageServer,
         file_uri: str,
         position: Position,
-        word: str = None
+        word: Optional[str] = None,
     ) -> List[Location]:
         """
         Provide all definition locations for a symbol.
@@ -196,16 +187,13 @@ class DefinitionHandler:
 
         # Find all symbols matching name (case-insensitive)
         matching_symbols = [
-            s for s in all_symbols
-            if s.name.lower() == word.lower()
+            s for s in all_symbols if s.name.lower() == word.lower()
         ]
 
         # Create locations for all matches
         locations = [self._create_location(s) for s in matching_symbols]
 
-        logger.debug(
-            f"Found {len(locations)} definitions for '{word}'"
-        )
+        logger.debug(f"Found {len(locations)} definitions for '{word}'")
 
         return locations
 

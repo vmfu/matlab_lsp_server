@@ -26,6 +26,7 @@ class CacheEntry:
         ttl (float): Time to live in seconds
         size (int): Approximate memory size in bytes
     """
+
     value: Any
     timestamp: float = field(default_factory=time.time)
     ttl: float = 300.0  # 5 minutes default
@@ -46,7 +47,7 @@ class CacheManager:
     def __init__(self):
         """Initialize cache manager."""
         self._cache: Dict[str, CacheEntry] = {}
-        self._stats = {
+        self._stats: Dict[str, int] = {
             "hits": 0,
             "misses": 0,
             "evictions": 0,
@@ -81,12 +82,7 @@ class CacheManager:
         logger.debug(f"Cache hit: {key}")
         return entry.value
 
-    def set(
-        self,
-        key: str,
-        value: Any,
-        ttl: float = None
-    ) -> None:
+    def set(self, key: str, value: Any, ttl: Optional[float] = None) -> None:
         """
         Set value in cache.
 
@@ -109,10 +105,7 @@ class CacheManager:
         )
 
         self._cache[key] = entry
-        logger.debug(
-            f"Cache set: {key} "
-            f"(TTL: {ttl}s, Size: {size} bytes)"
-        )
+        logger.debug(f"Cache set: {key} " f"(TTL: {ttl}s, Size: {size} bytes)")
 
     def invalidate(self, key: str) -> bool:
         """
@@ -181,11 +174,8 @@ class CacheManager:
 
     def print_stats(self) -> None:
         """Print cache statistics to logger."""
-        total_requests = (
-            self._stats["hits"] +
-            self._stats["misses"]
-        )
-        hit_rate = 0
+        total_requests = self._stats["hits"] + self._stats["misses"]
+        hit_rate: float = 0.0
         if total_requests > 0:
             hit_rate = self._stats["hits"] / total_requests
 
@@ -210,7 +200,9 @@ def get_cache_manager() -> CacheManager:
     return _cache_manager
 
 
-def generate_parse_key(file_uri: str, content_hash: str = None) -> str:
+def generate_parse_key(
+    file_uri: str, content_hash: Optional[str] = None
+) -> str:
     """
     Generate cache key for parse result.
 
@@ -226,7 +218,9 @@ def generate_parse_key(file_uri: str, content_hash: str = None) -> str:
     return f"parse:{file_uri}"
 
 
-def generate_mlint_key(file_uri: str, content_hash: str = None) -> str:
+def generate_mlint_key(
+    file_uri: str, content_hash: Optional[str] = None
+) -> str:
     """
     Generate cache key for mlint result.
 
@@ -252,4 +246,4 @@ def hash_content(content: str) -> str:
     Returns:
         str: MD5 hash of content
     """
-    return hashlib.md5(content.encode('utf-8')).hexdigest()
+    return hashlib.md5(content.encode("utf-8")).hexdigest()

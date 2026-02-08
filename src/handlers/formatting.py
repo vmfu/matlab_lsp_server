@@ -5,12 +5,9 @@ This module implements textDocument/formatting to provide
 code formatting functionality for MATLAB files.
 """
 
-from typing import List
+from typing import List, Optional
 
-from lsprotocol.types import (
-    DocumentFormattingOptions,
-    TextEdit,
-)
+from lsprotocol.types import FormattingOptions, Position, Range, TextEdit
 from pygls.server import LanguageServer
 
 from ..utils.logging import get_logger
@@ -35,7 +32,7 @@ class FormattingHandler:
         server: LanguageServer,
         file_uri: str,
         content: str,
-        options: DocumentFormattingOptions = None
+        options: Optional[FormattingOptions] = None,
     ) -> List[TextEdit]:
         """
         Provide code formatting edits for a file.
@@ -70,14 +67,16 @@ class FormattingHandler:
 
         # If content is different, create edit
         if formatted_content != content:
+            lines = content.split("\n")
+            range_obj = Range(
+                start=Position(line=0, character=0),
+                end=Position(
+                    line=len(lines) - 1,
+                    character=len(lines[-1]) if lines else 0,
+                ),
+            )
             edit = TextEdit(
-                range={
-                    "start": {"line": 0, "character": 0},
-                    "end": {
-                        "line": len(content.split('\n')) - 1,
-                        "character": len(content.split('\n')[-1]),
-                    },
-                },
+                range=range_obj,
                 new_text=formatted_content,
             )
             edits.append(edit)
@@ -105,11 +104,11 @@ class FormattingHandler:
         Returns:
             str: Formatted content
         """
-        lines = content.split('\n')
+        lines = content.split("\n")
         formatted_lines = []
 
         indent_level = 0
-        indent_str = ' ' * indent_size if insert_spaces else '\t'
+        indent_str = " " * indent_size if insert_spaces else "\t"
 
         for line in lines:
             # Check line type
@@ -121,13 +120,23 @@ class FormattingHandler:
                 continue
 
             # Handle end statements (reduce indent)
-            if stripped_line.startswith('end'):
+            if stripped_line.startswith("end"):
                 indent_level = max(0, indent_level - 1)
 
             # Handle classdef/function/for/while/if (increase indent)
             elif any(
                 stripped_line.startswith(keyword)
-                for keyword in ['classdef', 'function', 'for', 'while', 'if', 'else', 'elseif', 'try', 'catch']
+                for keyword in [
+                    "classdef",
+                    "function",
+                    "for",
+                    "while",
+                    "if",
+                    "else",
+                    "elseif",
+                    "try",
+                    "catch",
+                ]
             ):
                 # Apply current indent
                 formatted_line = indent_str * indent_level + stripped_line
@@ -140,11 +149,11 @@ class FormattingHandler:
             formatted_lines.append(formatted_line)
 
         # Join lines
-        formatted_content = '\n'.join(formatted_lines)
+        formatted_content = "\n".join(formatted_lines)
 
         # Ensure trailing newline
-        if not formatted_content.endswith('\n'):
-            formatted_content += '\n'
+        if not formatted_content.endswith("\n"):
+            formatted_content += "\n"
 
         return formatted_content
 

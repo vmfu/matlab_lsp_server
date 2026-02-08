@@ -7,7 +7,7 @@ LRU caching and debouncing for LSP operations.
 
 import time
 from functools import wraps
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from .logging import get_logger
 
@@ -73,9 +73,7 @@ class LRUCache:
         self._cache[key] = value
         self._order.append(key)
 
-        logger.debug(
-            f"LRUCache put: {key} (size: {len(self._cache)})"
-        )
+        logger.debug(f"LRUCache put: {key} (size: {len(self._cache)})")
 
     def clear(self) -> None:
         """Clear all items from cache."""
@@ -105,7 +103,7 @@ class Debouncer:
         self._timer = None
         self._last_args = None
         self._last_kwargs = None
-        self._function = None
+        self._function: Optional[Callable] = None
 
         logger.debug(f"Debouncer initialized with delay {delay}s")
 
@@ -171,6 +169,7 @@ def measure_time(function: Callable) -> Callable:
     Returns:
         Callable: Wrapped function with timing
     """
+
     @wraps(function)
     def wrapper(*args, **kwargs):
         start_time = time.time()
@@ -179,9 +178,7 @@ def measure_time(function: Callable) -> Callable:
 
         elapsed_time = (end_time - start_time) * 1000  # ms
 
-        logger.debug(
-            f"{function.__name__} executed in {elapsed_time:.2f}ms"
-        )
+        logger.debug(f"{function.__name__} executed in {elapsed_time:.2f}ms")
 
         return result
 

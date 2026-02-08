@@ -2,7 +2,7 @@
 Unit tests for Document Synchronization.
 """
 
-import pytest
+
 from src.utils.document_store import Document, DocumentStore
 
 
@@ -118,9 +118,7 @@ def test_document_store_update_nonexistent():
 
 def test_document_sync_module_imports():
     """Test that document sync module can be imported."""
-    from src.protocol.document_sync import (
-        register_document_sync_handlers,
-    )
+    from src.protocol.document_sync import register_document_sync_handlers
     from src.utils.document_store import DocumentStore
 
     assert register_document_sync_handlers is not None

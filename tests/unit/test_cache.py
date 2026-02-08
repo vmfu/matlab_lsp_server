@@ -2,13 +2,11 @@
 Unit tests for Cache Manager.
 """
 
-import time
-import pytest
 from src.utils.cache import (
     CacheManager,
-    get_cache_manager,
-    generate_parse_key,
     generate_mlint_key,
+    generate_parse_key,
+    get_cache_manager,
     hash_content,
 )
 
@@ -182,11 +180,11 @@ def test_cache_stats():
 def test_cache_manager_module_imports():
     """Test that cache module can be imported."""
     from src.utils.cache import (
-        CacheManager,
         CacheEntry,
-        get_cache_manager,
-        generate_parse_key,
+        CacheManager,
         generate_mlint_key,
+        generate_parse_key,
+        get_cache_manager,
         hash_content,
     )
 

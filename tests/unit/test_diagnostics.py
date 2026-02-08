@@ -2,16 +2,11 @@
 Unit tests for Diagnostics Handler.
 """
 
-import pytest
 from lsprotocol.types import Diagnostic, DiagnosticSeverity
 from pygls.server import LanguageServer
 
-from src.handlers.diagnostics import (
-    publish_diagnostics,
-    mlint_result_to_lsp_diagnostics,
-)
 from src.analyzer.base_analyzer import DiagnosticResult
-from src.analyzer.mlint_analyzer import MlintAnalyzer
+from src.handlers.diagnostics import mlint_result_to_lsp_diagnostics, publish_diagnostics
 
 
 def test_mlint_result_to_lsp_diagnostics():
@@ -55,8 +50,8 @@ def test_mlint_result_to_lsp_diagnostics():
 
     # Verify first diagnostic (error)
     assert isinstance(lsp_diagnostics[0], Diagnostic)
-    assert lsp_diagnostics[0].range["start"]["line"] == 9  # 0-based
-    assert lsp_diagnostics[0].range["start"]["character"] == 0  # 0-based
+    assert lsp_diagnostics[0].range.start.line == 9  # 0-based
+    assert lsp_diagnostics[0].range.start.character == 0  # 0-based
     assert lsp_diagnostics[0].message == "Variable 'x' not used."
     assert lsp_diagnostics[0].severity == DiagnosticSeverity.Error
     assert lsp_diagnostics[0].code == "E001"
@@ -64,13 +59,13 @@ def test_mlint_result_to_lsp_diagnostics():
 
     # Verify second diagnostic (warning)
     assert isinstance(lsp_diagnostics[1], Diagnostic)
-    assert lsp_diagnostics[1].range["start"]["line"] == 19
+    assert lsp_diagnostics[1].range.start.line == 19
     assert lsp_diagnostics[1].severity == DiagnosticSeverity.Warning
     assert lsp_diagnostics[1].code == "C001"
 
     # Verify third diagnostic (info)
     assert isinstance(lsp_diagnostics[2], Diagnostic)
-    assert lsp_diagnostics[2].range["start"]["line"] == 29
+    assert lsp_diagnostics[2].range.start.line == 29
     assert lsp_diagnostics[2].severity == DiagnosticSeverity.Information
     assert lsp_diagnostics[2].code == "I001"
 
@@ -99,12 +94,13 @@ def test_publish_diagnostics():
 
     mock_analyzer = MockAnalyzer()
 
-    # Call publish_diagnostics (this will try to call server.lsp.publish_diagnostics)
+    # Call publish_diagnostics (this will try to call
+    # server.lsp.publish_diagnostics)
     # Note: Since we don't have a real LSP client connected, we can't test
     # the actual publish call. We'll just verify the function doesn't crash.
     try:
-        from unittest.mock import MagicMock, patch
-        with patch.object(server, 'lsp') as mock_lsp:
+        from unittest.mock import patch
+        with patch.object(server, 'lsp') as _:
             publish_diagnostics(
                 server=server,
                 file_uri="file:///test.m",
@@ -121,10 +117,38 @@ def test_severity_mapping_in_conversion():
     result = DiagnosticResult(
         file_uri="file:///test.m",
         diagnostics=[
-            {"line": 1, "column": 1, "message": "Test", "severity": "error", "code": "E", "source": "test"},
-            {"line": 2, "column": 1, "message": "Test", "severity": "warning", "code": "W", "source": "test"},
-            {"line": 3, "column": 1, "message": "Test", "severity": "info", "code": "I", "source": "test"},
-            {"line": 4, "column": 1, "message": "Test", "severity": "warning", "code": "", "source": "test"},  # Unknown code
+            {
+                "line": 1,
+                "column": 1,
+                "message": "Test",
+                "severity": "error",
+                "code": "E",
+                "source": "test",
+            },
+            {
+                "line": 2,
+                "column": 1,
+                "message": "Test",
+                "severity": "warning",
+                "code": "W",
+                "source": "test",
+            },
+            {
+                "line": 3,
+                "column": 1,
+                "message": "Test",
+                "severity": "info",
+                "code": "I",
+                "source": "test",
+            },
+            {
+                "line": 4,
+                "column": 1,
+                "message": "Test",
+                "severity": "warning",
+                "code": "",
+                "source": "test",
+            },  # Unknown code
         ]
     )
 
@@ -133,16 +157,18 @@ def test_severity_mapping_in_conversion():
     assert lsp_diagnostics[0].severity == DiagnosticSeverity.Error
     assert lsp_diagnostics[1].severity == DiagnosticSeverity.Warning
     assert lsp_diagnostics[2].severity == DiagnosticSeverity.Information
-    assert lsp_diagnostics[3].severity == DiagnosticSeverity.Warning  # Unknown defaults to warning
+    (
+        lsp_diagnostics[3].severity == DiagnosticSeverity.Warning
+    )  # Unknown defaults to warning
     assert lsp_diagnostics[3].source == "test"
 
 
 def test_diagnostics_handler_module_imports():
     """Test that DiagnosticsHandler module can be imported."""
     from src.handlers.diagnostics import (
-        publish_diagnostics,
+        get_logger,
         mlint_result_to_lsp_diagnostics,
-        get_logger
+        publish_diagnostics,
     )
 
     assert publish_diagnostics is not None

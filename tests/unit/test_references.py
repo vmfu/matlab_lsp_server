@@ -2,7 +2,6 @@
 Unit tests for References Handler.
 """
 
-import pytest
 from lsprotocol.types import Position
 from pygls.server import LanguageServer
 
@@ -111,10 +110,7 @@ def test_get_references_handler():
 
 def test_references_handler_module_imports():
     """Test that references handler module can be imported."""
-    from src.handlers.references import (
-        ReferencesHandler,
-        get_references_handler,
-    )
+    from src.handlers.references import ReferencesHandler, get_references_handler
 
     assert ReferencesHandler is not None
     assert get_references_handler is not None

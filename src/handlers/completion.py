@@ -5,14 +5,9 @@ This module implements textDocument/completion to provide
 code completion suggestions for MATLAB code.
 """
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
-from lsprotocol.types import (
-    CompletionItem,
-    CompletionItemKind,
-    CompletionList,
-    Position,
-)
+from lsprotocol.types import CompletionItem, CompletionItemKind, CompletionList
 from pygls.server import LanguageServer
 
 from ..utils.logging import get_logger
@@ -25,7 +20,7 @@ class CompletionHandler:
     """Handler for code completion in MATLAB LSP server."""
 
     # Built-in MATLAB functions and keywords
-    BUILTIN_COMPLETIONS = {
+    BUILTIN_COMPLETIONS: Dict[str, Dict[str, Any]] = {
         # Math functions
         "sin": {"kind": CompletionItemKind.Function, "detail": "math.sin"},
         "cos": {"kind": CompletionItemKind.Function, "detail": "math.cos"},
@@ -33,46 +28,86 @@ class CompletionHandler:
         "sqrt": {"kind": CompletionItemKind.Function, "detail": "math.sqrt"},
         "abs": {"kind": CompletionItemKind.Function, "detail": "math.abs"},
         # Array operations
-        "zeros": {"kind": CompletionItemKind.Function, "detail": "creates zero array"},
-        "ones": {"kind": CompletionItemKind.Function, "detail": "creates ones array"},
-        "eye": {"kind": CompletionItemKind.Function, "detail": "creates identity matrix"},
-        "size": {"kind": CompletionItemKind.Function, "detail": "array dimensions"},
-        "length": {"kind": CompletionItemKind.Function, "detail": "array length"},
+        "zeros": {
+            "kind": CompletionItemKind.Function,
+            "detail": "creates zero array",
+        },
+        "ones": {
+            "kind": CompletionItemKind.Function,
+            "detail": "creates ones array",
+        },
+        "eye": {
+            "kind": CompletionItemKind.Function,
+            "detail": "creates identity matrix",
+        },
+        "size": {
+            "kind": CompletionItemKind.Function,
+            "detail": "array dimensions",
+        },
+        "length": {
+            "kind": CompletionItemKind.Function,
+            "detail": "array length",
+        },
         # Control flow
         "if": {"kind": CompletionItemKind.Keyword, "detail": "conditional"},
         "else": {"kind": CompletionItemKind.Keyword, "detail": "alternative"},
-        "elseif": {"kind": CompletionItemKind.Keyword, "detail": "conditional"},
+        "elseif": {
+            "kind": CompletionItemKind.Keyword,
+            "detail": "conditional",
+        },
         "for": {"kind": CompletionItemKind.Keyword, "detail": "loop"},
         "while": {"kind": CompletionItemKind.Keyword, "detail": "loop"},
-        "end": {"kind": CompletionItemKind.Keyword, "detail": "block terminator"},
-        "function": {"kind": CompletionItemKind.Keyword, "detail": "function definition"},
-        "return": {"kind": CompletionItemKind.Keyword, "detail": "return value"},
+        "end": {
+            "kind": CompletionItemKind.Keyword,
+            "detail": "block terminator",
+        },
+        "function": {
+            "kind": CompletionItemKind.Keyword,
+            "detail": "function definition",
+        },
+        "return": {
+            "kind": CompletionItemKind.Keyword,
+            "detail": "return value",
+        },
         "break": {"kind": CompletionItemKind.Keyword, "detail": "exit loop"},
-        "continue": {"kind": CompletionItemKind.Keyword, "detail": "next iteration"},
+        "continue": {
+            "kind": CompletionItemKind.Keyword,
+            "detail": "next iteration",
+        },
         # Built-in functions
         "disp": {"kind": CompletionItemKind.Function, "detail": "display"},
-        "fprintf": {"kind": CompletionItemKind.Function, "detail": "print to file"},
+        "fprintf": {
+            "kind": CompletionItemKind.Function,
+            "detail": "print to file",
+        },
         "input": {"kind": CompletionItemKind.Function, "detail": "user input"},
-        "keyboard": {"kind": CompletionItemKind.Function, "detail": "debug mode"},
-        "error": {"kind": CompletionItemKind.Function, "detail": "throw error"},
-        "warning": {"kind": CompletionItemKind.Function, "detail": "issue warning"},
+        "keyboard": {
+            "kind": CompletionItemKind.Function,
+            "detail": "debug mode",
+        },
+        "error": {
+            "kind": CompletionItemKind.Function,
+            "detail": "throw error",
+        },
+        "warning": {
+            "kind": CompletionItemKind.Function,
+            "detail": "issue warning",
+        },
     }
 
-    def __init__(self, symbol_table: SymbolTable = None):
+    def __init__(self, symbol_table: Optional[SymbolTable] = None):
         """Initialize completion handler.
 
         Args:
             symbol_table (SymbolTable): Symbol table instance
         """
-        self._symbol_table = symbol_table if symbol_table else get_symbol_table()
+        self._symbol_table = (
+            symbol_table if symbol_table else get_symbol_table()
+        )
         logger.debug("CompletionHandler initialized")
 
     def provide_completion(
-        self,
-        server: LanguageServer,
-        file_uri: str,
-        position: Any,
-        prefix: str
+        self, server: LanguageServer, file_uri: str, position: Any, prefix: str
     ) -> CompletionList:
         """
         Provide completion suggestions for a position in file.
@@ -87,8 +122,16 @@ class CompletionHandler:
             CompletionList: List of completion items
         """
         # Handle position as either Position object or dict
-        line = position.line if hasattr(position, 'line') else position.get('line', 0)
-        character = position.character if hasattr(position, 'character') else position.get('character', 0)
+        line = (
+            position.line
+            if hasattr(position, "line")
+            else position.get("line", 0)
+        )
+        character = (
+            position.character
+            if hasattr(position, "character")
+            else position.get("character", 0)
+        )
 
         logger.debug(
             f"Providing completion for {file_uri}:"
@@ -101,9 +144,9 @@ class CompletionHandler:
 
         # 1. Add symbols from current file
         file_symbols = self._symbol_table.get_symbols_by_uri(file_uri)
-        candidates.extend(self._create_completion_items_from_symbols(
-            file_symbols, prefix
-        ))
+        candidates.extend(
+            self._create_completion_items_from_symbols(file_symbols, prefix)
+        )
 
         # 2. Add built-in MATLAB functions and keywords
         candidates.extend(self._create_completion_items_from_builtins(prefix))
@@ -114,7 +157,9 @@ class CompletionHandler:
         # Limit to top 20 results
         limited_candidates = ranked_candidates[:20]
 
-        logger.debug(f"Returning {len(limited_candidates)} completion candidates")
+        logger.debug(
+            f"Returning {len(limited_candidates)} completion candidates"
+        )
 
         return CompletionList(
             is_incomplete=False,
@@ -122,9 +167,7 @@ class CompletionHandler:
         )
 
     def _create_completion_items_from_symbols(
-        self,
-        symbols: List[Symbol],
-        prefix: str
+        self, symbols: List[Symbol], prefix: str
     ) -> List[CompletionItem]:
         """
         Create completion items from symbol list.
@@ -165,8 +208,7 @@ class CompletionHandler:
         return items
 
     def _create_completion_items_from_builtins(
-        self,
-        prefix: str
+        self, prefix: str
     ) -> List[CompletionItem]:
         """
         Create completion items from built-in functions.
@@ -202,9 +244,7 @@ class CompletionHandler:
         return items
 
     def _rank_candidates(
-        self,
-        candidates: List[CompletionItem],
-        prefix: str
+        self, candidates: List[CompletionItem], prefix: str
     ) -> List[CompletionItem]:
         """
         Rank completion candidates by relevance.
@@ -224,7 +264,7 @@ class CompletionHandler:
         if not prefix:
             return candidates
 
-        # Calculate relevance score for each candidate
+        # Ensure sort_text is not None for sorting
         for candidate in candidates:
             label_lower = candidate.label.lower()
             prefix_lower = prefix.lower()
@@ -240,13 +280,13 @@ class CompletionHandler:
                 candidate.sort_text = f"2:{candidate.label}"
 
         # Sort by relevance (sort_text)
-        ranked = sorted(candidates, key=lambda x: x.sort_text)
+        # Use str() to handle Optional[str]
+        ranked = sorted(candidates, key=lambda x: str(x.sort_text))
 
         return ranked
 
     def _map_symbol_kind_to_completion_kind(
-        self,
-        symbol_kind: str
+        self, symbol_kind: str
     ) -> CompletionItemKind:
         """Map symbol kind to LSP CompletionItemKind."""
         kind_map = {

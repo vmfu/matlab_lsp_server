@@ -5,11 +5,12 @@ This module contains the core lifecycle handlers that manage the
 server's lifecycle: initialize, shutdown, and exit.
 """
 
-from typing import Any, Optional
+from typing import Any
 
 from lsprotocol.types import (
     InitializeParams,
     InitializeResult,
+    InitializeResultServerInfoType,
 )
 from pygls.server import LanguageServer
 
@@ -46,7 +47,8 @@ def register_lifecycle_handlers(server: LanguageServer) -> None:
     """
     global _document_store, _mlint_analyzer
 
-    # Initialize document store and analyzer (analyzer will be recreated in initialize)
+    # Initialize document store and analyzer
+    # (analyzer will be recreated in initialize)
     _document_store = DocumentStore()
     _mlint_analyzer = MlintAnalyzer()
 
@@ -65,10 +67,15 @@ def register_lifecycle_handlers(server: LanguageServer) -> None:
     @server.feature("initialize")
     async def on_initialize(params: InitializeParams) -> InitializeResult:
         """Handle the initialize request."""
+        client_name = (
+            params.client_info.name if params.client_info else "unknown"
+        )
+        client_version = (
+            params.client_info.version if params.client_info else "unknown"
+        )
         logger.info(
-            f"Initialize request from client: "
-            f"{params.client_info.name if params.client_info else 'unknown'} "
-            f"v{params.client_info.version if params.client_info else 'unknown'}"
+            "Initialize request from client: "
+            f"{client_name} v{client_version}"
         )
 
         # Extract MATLAB path from initialization options
@@ -95,7 +102,8 @@ def register_lifecycle_handlers(server: LanguageServer) -> None:
                 elif "matlab_path" in init_opts:
                     matlab_path = init_opts.get("matlab_path")
                     logger.debug(
-                        f"Found matlab path from matlab_path key: {matlab_path}"
+                        "Found matlab path from matlab_path key: "
+                        f"{matlab_path}"
                     )
 
         # Recreate MlintAnalyzer with configured path
@@ -109,8 +117,9 @@ def register_lifecycle_handlers(server: LanguageServer) -> None:
             )
         else:
             logger.error(
-                f"MlintAnalyzer is NOT available! "
-                f"matlab_path={matlab_path}, mlint_path={_mlint_analyzer.mlint_path}"
+                "MlintAnalyzer is NOT available! "
+                f"matlab_path={matlab_path}, "
+                f"mlint_path={_mlint_analyzer.mlint_path}"
             )
 
         # Update document_sync handlers with new analyzer
@@ -124,10 +133,10 @@ def register_lifecycle_handlers(server: LanguageServer) -> None:
         logger.info("Server capabilities configured")
         result = InitializeResult(
             capabilities=capabilities,
-            server_info={
-                "name": "matlab-lsp",
-                "version": "0.1.0",
-            },
+            server_info=InitializeResultServerInfoType(
+                name="matlab-lsp",
+                version="0.1.0",
+            ),
         )
         logger.info(f"Returning initialize result: {result}")
         return result

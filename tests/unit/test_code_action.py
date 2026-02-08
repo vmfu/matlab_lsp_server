@@ -2,7 +2,6 @@
 Unit tests for Code Action Handler.
 """
 
-import pytest
 from lsprotocol.types import Position, Range
 from pygls.server import LanguageServer
 
@@ -55,7 +54,9 @@ def test_generate_quick_fixes_missing_semicolon():
     fixes = handler.generate_quick_fixes_from_diagnostic(diagnostic)
 
     # Should have fix for semicolon
-    semicolon_fixes = [f for f in fixes if 'semicolon' in f.get('title', '').lower()]
+    semicolon_fixes = [
+        f for f in fixes if 'semicolon' in f.get('title', '').lower()
+    ]
     assert len(semicolon_fixes) >= 1
 
 
@@ -85,10 +86,7 @@ def test_get_code_action_handler():
 
 def test_code_action_handler_module_imports():
     """Test that code action handler module can be imported."""
-    from src.handlers.code_action import (
-        CodeActionHandler,
-        get_code_action_handler,
-    )
+    from src.handlers.code_action import CodeActionHandler, get_code_action_handler
 
     assert CodeActionHandler is not None
     assert get_code_action_handler is not None

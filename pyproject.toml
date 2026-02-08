@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Vladimir M. Funtikov", email = "github@funtikov.dev"}
 ]
 keywords = ["lsp", "matlab", "language-server", "code-intelligence"]
 classifiers = [
@@ -54,10 +54,10 @@ dev = [
 matlab-lsp = "src.server:main"
 
 [project.urls]
-Homepage = "https://github.com/your-username/lsp_matlab_for_windows"
-Documentation = "https://github.com/your-username/lsp_matlab_for_windows#readme"
-Repository = "https://github.com/your-username/lsp_matlab_for_windows.git"
-Issues = "https://github.com/your-username/lsp_matlab_for_windows/issues"
+Homepage = "https://github.com/vmfuntikov/lsp_matlab_for_windows"
+Documentation = "https://github.com/vmfuntikov/lsp_matlab_for_windows#readme"
+Repository = "https://github.com/vmfuntikov/lsp_matlab_for_windows.git"
+Issues = "https://github.com/vmfuntikov/lsp_matlab_for_windows/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]

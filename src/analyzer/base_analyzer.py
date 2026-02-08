@@ -6,7 +6,7 @@ This module provides abstract base class for all code analyzers.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from ..utils.logging import get_logger
 
@@ -28,6 +28,7 @@ class DiagnosticResult:
             - code (str): Error code (if available)
             - source (str): Source of the diagnostic (e.g., "mlint")
     """
+
     file_uri: str
     diagnostics: List[Dict[str, Any]]
 
@@ -39,7 +40,7 @@ class BaseAnalyzer(ABC):
     the analyze() method.
     """
 
-    def __init__(self, matlab_path: str = None):
+    def __init__(self, matlab_path: Optional[str] = None):
         """Initialize analyzer.
 
         Args:
