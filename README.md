@@ -9,7 +9,7 @@ A lightweight, fast, and cross-platform Language Server Protocol (LSP) implement
 ## Quick Install
 
 ```bash
-pip install lsp-matlab-for-windows
+pip install matlab-lsp-server
 ```
 
 That's it! The server is now ready to use.
@@ -74,11 +74,11 @@ That's it! The server is now ready to use.
 
 ```bash
 # Using pip (recommended)
-pip install lsp-matlab-for-windows
+pip install matlab-lsp-server
 
 # Or from source
-git clone https://github.com/yourusername/lsp_matlab_for_windows.git
-cd lsp_matlab_for_windows
+git clone https://github.com/yourusername/matlab_lsp_server.git
+cd matlab_lsp_server
 pip install -e .
 ```
 
@@ -195,22 +195,22 @@ export LSP_MAX_DIAGNOSTICS="100"
 ### Method 1: pip install (Recommended)
 
 ```bash
-pip install lsp-matlab-for-windows
+pip install matlab-lsp-server
 matlab-lsp --stdio
 ```
 
 ### Method 2: Install from Source
 
 ```bash
-git clone https://github.com/yourusername/lsp_matlab_for_windows.git
-cd lsp_matlab_for_windows
+git clone https://github.com/yourusername/matlab_lsp_server.git
+cd matlab_lsp_server
 pip install -e .
 python server.py --stdio
 ```
 
 ### Method 3: Download Release
 
-1. Download from [Releases](https://github.com/yourusername/lsp_matlab_for_windows/releases)
+1. Download from [Releases](https://github.com/yourusername/matlab_lsp_server/releases)
 2. Extract the archive
 3. Run: `python server.py --stdio`
 
@@ -307,7 +307,7 @@ python server.py --stdio
 ### Project Structure
 
 ```
-lsp_matlab_for_windows/
+matlab_lsp_server/
 ├── server.py              # Main entry point
 ├── requirements.txt        # Dependencies
 ├── pyproject.toml        # Package config
@@ -412,9 +412,9 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ## Links
 
-- **GitHub:** https://github.com/yourusername/lsp_matlab_for_windows
-- **PyPI:** https://pypi.org/project/lsp-matlab-for-windows/
-- **Issues:** https://github.com/yourusername/lsp_matlab_for_windows/issues
+- **GitHub:** https://github.com/yourusername/matlab_lsp_server
+- **PyPI:** https://pypi.org/project/matlab-lsp-server/
+- **Issues:** https://github.com/yourusername/matlab_lsp_server/issues
 
 ---
 

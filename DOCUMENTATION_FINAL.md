@@ -168,7 +168,7 @@ LSP MATLAB Server is a complete Language Server Protocol (LSP) implementation pr
 
 ### Root Directory
 ```
-lsp_matlab_for_windows/
+matlab_lsp_server/
 ├── src/                    # Source code
 │   ├── parser/           # MATLAB parser
 │   ├── handlers/         # LSP handlers
@@ -338,8 +338,8 @@ python run_server.py --version
 ### From Source
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/lsp_matlab_for_windows.git
-cd lsp_matlab_for_windows
+git clone https://github.com/yourusername/matlab_lsp_server.git
+cd matlab_lsp_server
 
 # Install in development mode
 pip install -e .

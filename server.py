@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-MATLAB LSP Server for Windows
+MATLAB LSP Server
 
-Language Server Protocol implementation for MATLAB language support.
+Lightweight Language Server Protocol implementation for MATLAB language support.
 """
 
 import argparse

@@ -1,8 +1,26 @@
 # Changelog
 
-All notable changes to the LSP MATLAB Server project.
+All notable changes to the MATLAB LSP Server project.
 
 ## [0.1.0] - 2026-02-07
+
+### Important Notice
+
+**Package Rename:** The package has been renamed from `lsp-matlab-for-windows` to `matlab-lsp-server` to better reflect its cross-platform capabilities.
+
+- **Old Package:** `lsp-matlab-for-windows`
+- **New Package:** `matlab-lsp-server`
+
+**Installation:**
+```bash
+# Old package name (deprecated)
+pip install lsp-matlab-for-windows
+
+# New package name (use this!)
+pip install matlab-lsp-server
+```
+
+See [MIGRATION.md](MIGRATION.md) for detailed migration instructions.
 
 ### Added
 

@@ -22,10 +22,10 @@ This document provides step-by-step instructions for completing the release of L
 
 ```bash
 # Replace with your GitHub repository URL
-git remote add origin https://github.com/YOUR_USERNAME/lsp_matlab_for_windows.git
+git remote add origin https://github.com/YOUR_USERNAME/matlab_lsp_server.git
 
 # Or if using SSH
-git remote add origin git@github.com:YOUR_USERNAME/lsp_matlab_for_windows.git
+git remote add origin git@github.com:YOUR_USERNAME/matlab_lsp_server.git
 ```
 
 ### 1.2 Push to GitHub
@@ -41,7 +41,7 @@ git push origin v0.1.0
 **Note:** If you get a "remote already exists" error:
 ```bash
 # Update existing remote
-git remote set-url origin https://github.com/YOUR_USERNAME/lsp_matlab_for_windows.git
+git remote set-url origin https://github.com/YOUR_USERNAME/matlab_lsp_server.git
 ```
 
 ---
@@ -86,10 +86,10 @@ This is the initial stable release of LSP MATLAB Server for Windows - a lightwei
 
 **Quick Install:**
 ```bash
-pip install lsp-matlab-for-windows
+pip install matlab-lsp-server
 ```
 
-For detailed installation instructions, see [INSTALL.md](https://github.com/YOUR_USERNAME/lsp_matlab_for_windows/blob/master/INSTALL.md)
+For detailed installation instructions, see [INSTALL.md](https://github.com/YOUR_USERNAME/matlab_lsp_server/blob/master/INSTALL.md)
 
 ### Why This Over Official MathWorks LSP?
 
@@ -125,10 +125,10 @@ After installation, configure your LSP client (e.g., TUI Crush, VS Code, Neovim)
 
 ### Documentation
 
-- [README](https://github.com/YOUR_USERNAME/lsp_matlab_for_windows/blob/master/README.md) - Main documentation
-- [INSTALL.md](https://github.com/YOUR_USERNAME/lsp_matlab_for_windows/blob/master/INSTALL.md) - Installation guide
-- [CHANGELOG.md](https://github.com/YOUR_USERNAME/lsp_matlab_for_windows/blob/master/CHANGELOG.md) - Version history
-- [CONTRIBUTING.md](https://github.com/YOUR_USERNAME/lsp_matlab_for_windows/blob/master/CONTRIBUTING.md) - Contributing guidelines
+- [README](https://github.com/YOUR_USERNAME/matlab_lsp_server/blob/master/README.md) - Main documentation
+- [INSTALL.md](https://github.com/YOUR_USERNAME/matlab_lsp_server/blob/master/INSTALL.md) - Installation guide
+- [CHANGELOG.md](https://github.com/YOUR_USERNAME/matlab_lsp_server/blob/master/CHANGELOG.md) - Version history
+- [CONTRIBUTING.md](https://github.com/YOUR_USERNAME/matlab_lsp_server/blob/master/CONTRIBUTING.md) - Contributing guidelines
 
 ### Known Limitations
 
@@ -137,13 +137,13 @@ After installation, configure your LSP client (e.g., TUI Crush, VS Code, Neovim)
 
 ### Support
 
-- Report bugs: [GitHub Issues](https://github.com/YOUR_USERNAME/lsp_matlab_for_windows/issues)
-- Feature requests: [GitHub Discussions](https://github.com/YOUR_USERNAME/lsp_matlab_for_windows/discussions)
-- Documentation: [Project Wiki](https://github.com/YOUR_USERNAME/lsp_matlab_for_windows/wiki)
+- Report bugs: [GitHub Issues](https://github.com/YOUR_USERNAME/matlab_lsp_server/issues)
+- Feature requests: [GitHub Discussions](https://github.com/YOUR_USERNAME/matlab_lsp_server/discussions)
+- Documentation: [Project Wiki](https://github.com/YOUR_USERNAME/matlab_lsp_server/wiki)
 
 ### License
 
-MIT License - see [LICENSE](https://github.com/YOUR_USERNAME/lsp_matlab_for_windows/blob/master/LICENSE) file
+MIT License - see [LICENSE](https://github.com/YOUR_USERNAME/matlab_lsp_server/blob/master/LICENSE) file
 
 ---
 
@@ -176,8 +176,8 @@ pip install build twine
 python -m build
 
 # Output will be in dist/ directory:
-# dist/lsp_matlab_for_windows-0.1.0.tar.gz
-# dist/lsp_matlab_for_windows-0.1.0-py3-none-any.whl
+# dist/matlab_lsp_server-0.1.0.tar.gz
+# dist/matlab_lsp_server-0.1.0-py3-none-any.whl
 ```
 
 ### 3.2 Test on TestPyPI First
@@ -188,7 +188,7 @@ twine check dist/*
 twine upload --repository testpypi dist/*
 
 # Test installation from TestPyPI
-pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple lsp-matlab-for-windows
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple matlab-lsp-server
 ```
 
 ### 3.3 Publish to PyPI
@@ -198,14 +198,14 @@ pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://
 twine upload dist/*
 
 # Verify installation
-pip install lsp-matlab-for-windows
+pip install matlab-lsp-server
 ```
 
 ### 3.4 Post-Publish Verification
 
-1. Go to https://pypi.org/project/lsp-matlab-for-windows/
+1. Go to https://pypi.org/project/matlab-lsp-server/
 2. Verify package information is correct
-3. Check that installation works: `pip install lsp-matlab-for-windows`
+3. Check that installation works: `pip install matlab-lsp-server`
 
 ---
 
@@ -213,9 +213,9 @@ pip install lsp-matlab-for-windows
 
 After completing all steps, verify:
 
-- [ ] Tag `v0.1.0` is visible on GitHub: `https://github.com/YOUR_USERNAME/lsp_matlab_for_windows/tags`
-- [ ] Release is visible on GitHub: `https://github.com/YOUR_USERNAME/lsp_matlab_for_windows/releases`
-- [ ] Package can be installed: `pip install lsp-matlab-for-windows`
+- [ ] Tag `v0.1.0` is visible on GitHub: `https://github.com/YOUR_USERNAME/matlab_lsp_server/tags`
+- [ ] Release is visible on GitHub: `https://github.com/YOUR_USERNAME/matlab_lsp_server/releases`
+- [ ] Package can be installed: `pip install matlab-lsp-server`
 - [ ] Server runs correctly: `matlab-lsp --version`
 - [ ] Documentation links in release notes work correctly
 
@@ -230,7 +230,7 @@ After completing all steps, verify:
 git remote -v
 
 # Update remote URL
-git remote set-url origin https://github.com/YOUR_USERNAME/lsp_matlab_for_windows.git
+git remote set-url origin https://github.com/YOUR_USERNAME/matlab_lsp_server.git
 ```
 
 ### Issue: "failed to push some refs"
@@ -276,7 +276,7 @@ git push origin master
 ## Notes
 
 - This is the **v0.1.0 initial release**
-- Package name on PyPI: `lsp-matlab-for-windows`
+- Package name on PyPI: `matlab-lsp-server`
 - Version: `0.1.0`
 - License: MIT
 

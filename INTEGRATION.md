@@ -42,8 +42,8 @@
 
 ```bash
 # Клонируйте репозиторий
-git clone https://github.com/your-username/lsp_matlab_for_windows.git
-cd lsp_matlab_for_windows
+git clone https://github.com/your-username/matlab_lsp_server.git
+cd matlab_lsp_server
 
 # Создайте виртуальное окружение
 python -m venv venv
@@ -110,7 +110,7 @@ telnet localhost 4389
     "matlab": {
       "command": "python",
       "args": [
-        "C:/Users/MSI/Desktop/projects/lsp_matlab_for_windows/server.py",
+        "C:/Users/MSI/Desktop/projects/matlab_lsp_server/server.py",
         "--stdio"
       ],
       "filetypes": ["matlab", "m"],
@@ -119,7 +119,7 @@ telnet localhost 4389
         ".matlab-lsprc.json"
       ],
       "workspace": [
-        "C:/Users/MSI/Desktop/projects/lsp_matlab_for_windows"
+        "C:/Users/MSI/Desktop/projects/matlab_lsp_server"
       ],
       "settings": {
         "matlab": {
@@ -153,7 +153,7 @@ telnet localhost 4389
     "matlab": {
       "command": "python",
       "args": [
-        "C:/Users/MSI/Desktop/projects/lsp_matlab_for_windows/server.py",
+        "C:/Users/MSI/Desktop/projects/matlab_lsp_server/server.py",
         "--stdio",
         "--verbose"
       ],
@@ -164,7 +164,7 @@ telnet localhost 4389
         "project.m"
       ],
       "workspace": [
-        "C:/Users/MSI/Desktop/projects/lsp_matlab_for_windows",
+        "C:/Users/MSI/Desktop/projects/matlab_lsp_server",
         "C:/Users/MSI/Desktop/other/matlab/project"
       ],
       "settings": {
@@ -187,7 +187,7 @@ telnet localhost 4389
         }
       },
       "env": {
-        "PYTHONPATH": "C:/Users/MSI/Desktop/projects/lsp_matlab_for_windows/src",
+        "PYTHONPATH": "C:/Users/MSI/Desktop/projects/matlab_lsp_server/src",
         "MATLAB_PATH": "C:\\Program Files\\MATLAB\\R2023b\\bin\\win64"
       },
       "initializationOptions": {
@@ -226,7 +226,7 @@ crush
 
 ```bash
 # В TUI Crush
-:e C:/Users/MSI/Desktop/projects/lsp_matlab_for_windows/for_tests/test_matlab_lsp_simple.m
+:e C:/Users/MSI/Desktop/projects/matlab_lsp_server/for_tests/test_matlab_lsp_simple.m
 ```
 
 ### 3. Проверка LSP статуса
@@ -365,7 +365,7 @@ Results:
 2. Проверьте путь к серверу:
 ```json
 "args": [
-  "C:/Users/MSI/Desktop/projects/lsp_matlab_for_windows/server.py",
+  "C:/Users/MSI/Desktop/projects/matlab_lsp_server/server.py",
   "--stdio"
 ]
 ```
@@ -591,7 +591,7 @@ dir "C:\Program Files\MATLAB\R2023b\bin\win64\mlint.exe"
 local lspconfig = require('lspconfig')
 
 lspconfig.matlab_lsp.setup {
-  cmd = { 'python', 'C:/Users/MSI/Desktop/projects/lsp_matlab_for_windows/server.py', '--stdio' },
+  cmd = { 'python', 'C:/Users/MSI/Desktop/projects/matlab_lsp_server/server.py', '--stdio' },
   filetypes = { 'matlab', 'm' },
   root_dir = lspconfig.util.root_pattern('.git', '.matlab-lsprc.json'),
   settings = {
@@ -612,7 +612,7 @@ autocmd BufRead,BufNewFile *.m set filetype=matlab
 if executable('python')
   au User lsp_setup call lsp#register_server({
     \ 'name': 'matlab-lsp',
-    \ 'cmd': {server_info->['python', 'C:/Users/MSI/Desktop/projects/lsp_matlab_for_windows/server.py', '--stdio']},
+    \ 'cmd': {server_info->['python', 'C:/Users/MSI/Desktop/projects/matlab_lsp_server/server.py', '--stdio']},
     \ 'whitelist': ['matlab', 'm'],
     \ 'workspace_config': {
     \   'matlab': {
@@ -635,7 +635,7 @@ endif
   :after lsp-mode
   :config
   (setq lsp-matlab-server-path "python")
-  (setq lsp-matlab-server-args '("C:/Users/MSI/Desktop/projects/lsp_matlab_for_windows/server.py" "--stdio"))
+  (setq lsp-matlab-server-args '("C:/Users/MSI/Desktop/projects/matlab_lsp_server/server.py" "--stdio"))
   (setq lsp-matlab-matlab-path "C:\\Program Files\\MATLAB\\R2023b\\bin\\win64"))
 ```
 

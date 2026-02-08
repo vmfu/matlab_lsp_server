@@ -9,7 +9,7 @@
 - **Python Version:** 3.10.4
 - **Operating System:** Windows 10/11
 - **MATLAB Installation:** Not required (standalone analyzer mode)
-- **Test Directory:** F:/Projects/lsp_matlab_for_windows
+- **Test Directory:** F:/Projects/matlab_lsp_server
 
 ## 1. Automated Testing (Phase 5.1)
 

@@ -21,7 +21,7 @@ Complete installation instructions for LSP MATLAB Server on Windows, Linux, and 
 The fastest way to get started:
 
 ```bash
-pip install lsp-matlab-for-windows
+pip install matlab-lsp-server
 ```
 
 That's it! Now [configure your editor](#editor-configuration) and start coding.
@@ -58,7 +58,7 @@ That's it! Now [configure your editor](#editor-configuration) and start coding.
 
 ```bash
 # Install from PyPI
-pip install lsp-matlab-for-windows
+pip install matlab-lsp-server
 
 # Verify installation
 python -m matlab_lsp --version
@@ -80,7 +80,7 @@ matlab-lsp-env\Scripts\activate
 source matlab-lsp-env/bin/activate
 
 # Install
-pip install lsp-matlab-for-windows
+pip install matlab-lsp-server
 ```
 
 ---
@@ -91,8 +91,8 @@ pip install lsp-matlab-for-windows
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/lsp_matlab_for_windows.git
-cd lsp_matlab_for_windows
+git clone https://github.com/yourusername/matlab_lsp_server.git
+cd matlab_lsp_server
 
 # Install in editable mode
 pip install -e .
@@ -110,7 +110,7 @@ python server.py --stdio
 
 **Best for:** Offline installation, specific version, no Git
 
-1. Go to [Releases page](https://github.com/yourusername/lsp_matlab_for_windows/releases)
+1. Go to [Releases page](https://github.com/yourusername/matlab_lsp_server/releases)
 2. Download latest release (`.tar.gz` or `.zip`)
 3. Extract the archive:
    ```bash
@@ -145,10 +145,10 @@ python server.py --stdio
 
 ```bash
 # Open Command Prompt or PowerShell
-pip install lsp-matlab-for-windows
+pip install matlab-lsp-server
 
 # Or from PowerShell
-python -m pip install lsp-matlab-for-windows
+python -m pip install matlab-lsp-server
 ```
 
 #### MATLAB Path Configuration
@@ -199,7 +199,7 @@ python3 -m venv matlab-lsp-env
 source matlab-lsp-env/bin/activate
 
 # Install server
-pip install lsp-matlab-for-windows
+pip install matlab-lsp-server
 ```
 
 #### MATLAB Path Configuration
@@ -250,7 +250,7 @@ python3 -m venv matlab-lsp-env
 source matlab-lsp-env/bin/activate
 
 # Install server
-pip install lsp-matlab-for-windows
+pip install matlab-lsp-server
 ```
 
 #### MATLAB Path Configuration
@@ -515,7 +515,7 @@ python -m matlab_lsp --stdio --verbose
 **Solution:**
 1. Check Python version: `python --version` (must be 3.10+)
 2. Check dependencies: `pip check`
-3. Reinstall: `pip install --force-reinstall lsp-matlab-for-windows`
+3. Reinstall: `pip install --force-reinstall matlab-lsp-server`
 
 #### "Slow performance"
 
@@ -533,7 +533,7 @@ python -m matlab_lsp --stdio --verbose
 python -m venv fresh_env
 fresh_env\Scripts\activate  # Windows
 source fresh_env/bin/activate  # Linux/macOS
-pip install lsp-matlab-for-windows
+pip install matlab-lsp-server
 ```
 
 ### Getting Help
@@ -541,8 +541,8 @@ pip install lsp-matlab-for-windows
 If you're still having issues:
 
 1. Check [FAQ in README](README.md#troubleshooting)
-2. Search [existing issues](https://github.com/yourusername/lsp_matlab_for_windows/issues)
-3. [Create a new issue](https://github.com/yourusername/lsp_matlab_for_windows/issues/new)
+2. Search [existing issues](https://github.com/yourusername/matlab_lsp_server/issues)
+3. [Create a new issue](https://github.com/yourusername/matlab_lsp_server/issues/new)
 4. Include:
    - OS and version
    - Python version
@@ -556,7 +556,7 @@ If you're still having issues:
 
 ```bash
 # Using pip
-pip uninstall lsp-matlab-for-windows
+pip uninstall matlab-lsp-server
 
 # Remove config (optional)
 rm ~/.matlab-lsprc.json  # Linux/macOS
@@ -574,4 +574,4 @@ rm %USERPROFILE%\.matlab-lsprc.json  # Windows
 
 ---
 
-**Need help?** See [README](README.md) or [create an issue](https://github.com/yourusername/lsp_matlab_for_windows/issues)
+**Need help?** See [README](README.md) or [create an issue](https://github.com/yourusername/matlab_lsp_server/issues)

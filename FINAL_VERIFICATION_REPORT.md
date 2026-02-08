@@ -27,7 +27,7 @@
 
 **Root Directory:**
 ```
-lsp_matlab_for_windows/
+matlab_lsp_server/
 ├── src/                    # Source code (verified present)
 ├── tests/                   # Test suite (verified present)
 ├── server.py                # Entry point (verified present)

@@ -3,9 +3,9 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "lsp-matlab-for-windows"
+name = "matlab-lsp-server"
 version = "0.1.0"
-description = "Language Server Protocol implementation for MATLAB on Windows"
+description = "Lightweight Language Server Protocol implementation for MATLAB"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
@@ -54,10 +54,10 @@ dev = [
 matlab-lsp = "src.server:main"
 
 [project.urls]
-Homepage = "https://github.com/vmfuntikov/lsp_matlab_for_windows"
-Documentation = "https://github.com/vmfuntikov/lsp_matlab_for_windows#readme"
-Repository = "https://github.com/vmfuntikov/lsp_matlab_for_windows.git"
-Issues = "https://github.com/vmfuntikov/lsp_matlab_for_windows/issues"
+Homepage = "https://github.com/vmfuntikov/matlab-lsp-server"
+Documentation = "https://github.com/vmfuntikov/matlab-lsp-server#readme"
+Repository = "https://github.com/vmfuntikov/matlab-lsp-server.git"
+Issues = "https://github.com/vmfuntikov/matlab-lsp-server/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]

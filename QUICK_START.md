@@ -81,8 +81,8 @@ python run_server.py --stdio
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/lsp_matlab_for_windows.git
-cd lsp_matlab_for_windows
+git clone https://github.com/yourusername/matlab_lsp_server.git
+cd matlab_lsp_server
 
 # Install in development mode
 pip install -e .

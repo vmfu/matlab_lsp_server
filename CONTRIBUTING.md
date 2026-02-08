@@ -49,8 +49,8 @@ Be respectful, inclusive, and constructive. We welcome contributions from everyo
 ```bash
 # Fork the repository on GitHub
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/lsp_matlab_for_windows.git
-cd lsp_matlab_for_windows
+git clone https://github.com/YOUR_USERNAME/matlab_lsp_server.git
+cd matlab_lsp_server
 ```
 
 ### 2. Create Virtual Environment
@@ -356,7 +356,7 @@ pre-commit install
 
 ### Creating Pull Request
 
-1. Go to [GitHub Pull Requests](https://github.com/yourusername/lsp_matlab_for_windows/pulls)
+1. Go to [GitHub Pull Requests](https://github.com/yourusername/matlab_lsp_server/pulls)
 2. Click "New Pull Request"
 3. Select your branch
 4. Fill in PR template:
@@ -378,7 +378,7 @@ pre-commit install
 
 ### Before Reporting
 
-1. Search [existing issues](https://github.com/yourusername/lsp_matlab_for_windows/issues)
+1. Search [existing issues](https://github.com/yourusername/matlab_lsp_server/issues)
 2. Check [FAQ in README](README.md#troubleshooting)
 3. Reproduce the bug with latest version
 
@@ -432,7 +432,7 @@ python -m matlab_lsp --stdio --verbose > debug.log 2>&1
 
 ### Before Suggesting
 
-1. Search [existing issues](https://github.com/yourusername/lsp_matlab_for_windows/issues)
+1. Search [existing issues](https://github.com/yourusername/matlab_lsp_server/issues)
 2. Check [ROADMAP](README.md#roadmap)
 3. Consider if it's a core LSP feature
 
@@ -515,5 +515,5 @@ Thank you for contributing! 🎉
 ## Questions?
 
 - Check [Documentation](README.md)
-- Search [Issues](https://github.com/yourusername/lsp_matlab_for_windows/issues)
-- Create [Discussion](https://github.com/yourusername/lsp_matlab_for_windows/discussions)
+- Search [Issues](https://github.com/yourusername/matlab_lsp_server/issues)
+- Create [Discussion](https://github.com/yourusername/matlab_lsp_server/discussions)

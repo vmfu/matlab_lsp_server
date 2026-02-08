@@ -7,8 +7,8 @@ Guide for developing and extending LSP MATLAB Server.
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/lsp_matlab_for_windows.git
-cd lsp_matlab_for_windows
+git clone https://github.com/yourusername/matlab_lsp_server.git
+cd matlab_lsp_server
 ```
 
 ### 2. Install Dependencies
@@ -33,7 +33,7 @@ pytest --version
 ## Project Structure
 
 ```
-lsp_matlab_for_windows/
+matlab_lsp_server/
 ├── src/                    # Source code
 ├── tests/                   # Tests
 ├── docs/                    # Documentation (planned)

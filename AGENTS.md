@@ -100,7 +100,7 @@ bash mlint.sh file.m
 
 **Current State** (as implemented):
 ```
-lsp_matlab_for_windows/
+matlab_lsp_server/
 ├── server.py                 # Main LSP server entry point
 ├── requirements.txt          # Production dependencies
 ├── requirements-dev.txt      # Development dependencies
@@ -118,7 +118,7 @@ lsp_matlab_for_windows/
 
 **Planned Structure** (from ARCHITECTURE.md):
 ```
-lsp_matlab_for_windows/
+matlab_lsp_server/
 ├── server.py
 ├── requirements.txt
 ├── requirements-dev.txt
@@ -461,7 +461,7 @@ To test with TUI Crush, configure in `.crush.json`:
     "matlab": {
       "command": "python",
       "args": [
-        "C:/path/to/lsp_matlab_for_windows/server.py",
+        "C:/path/to/matlab_lsp_server/server.py",
         "--stdio"
       ],
       "filetypes": ["matlab", "m"],
