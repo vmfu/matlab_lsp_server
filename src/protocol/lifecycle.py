@@ -78,30 +78,42 @@ def register_lifecycle_handlers(server: LanguageServer) -> None:
             f"{client_name} v{client_version}"
         )
 
-        # Extract MATLAB path from initialization options
+        # Extract configuration from initialization options
+        # Priority: initializationOptions > config file > env > default
         matlab_path = None
+        max_diagnostics = None
+
         if params.initialization_options:
             init_opts = params.initialization_options
+            logger.debug(f"Initialization options: {init_opts}")
+
             # Support both flat and nested structures
             if isinstance(init_opts, dict):
                 # Try nested structure: {matlab: {matlabPath: "..."}}
                 if "matlab" in init_opts and isinstance(
                     init_opts["matlab"], dict
                 ):
-                    matlab_path = init_opts["matlab"].get("matlabPath")
-                    logger.debug(
-                        f"Found matlab path from nested config: {matlab_path}"
+                    matlab_opts = init_opts["matlab"]
+                    matlab_path = matlab_opts.get("matlabPath")
+                    max_diagnostics = matlab_opts.get("maxDiagnostics")
+                    logger.info(
+                        f"Matlab options from init: "
+                        f"path={matlab_path}, "
+                        f"maxDiag={max_diagnostics}"
                     )
                 # Try flat structure: {matlabPath: "..."}
                 elif "matlabPath" in init_opts:
                     matlab_path = init_opts.get("matlabPath")
-                    logger.debug(
-                        f"Found matlab path from flat config: {matlab_path}"
+                    max_diagnostics = init_opts.get("maxDiagnostics")
+                    logger.info(
+                        f"Matlab options from flat init: "
+                        f"path={matlab_path}, "
+                        f"maxDiag={max_diagnostics}"
                     )
                 # Try other common keys
                 elif "matlab_path" in init_opts:
                     matlab_path = init_opts.get("matlab_path")
-                    logger.debug(
+                    logger.info(
                         "Found matlab path from matlab_path key: "
                         f"{matlab_path}"
                     )

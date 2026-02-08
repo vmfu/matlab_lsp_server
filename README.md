@@ -2,7 +2,7 @@
 
 A lightweight, fast, and cross-platform Language Server Protocol (LSP) implementation for MATLAB files.
 
-**Version:** 0.1.0 | **License:** MIT | **Python:** 3.10+
+**Version:** 0.2.0 | **License:** MIT | **Python:** 3.10+
 
 ---
 
@@ -38,6 +38,56 @@ python -m matlab_lsp --stdio --no-init-config
 - `-v, --verbose` - Enable verbose logging
 - `--no-init-config` - Disable automatic `.matlab-lsprc.json` creation
 - `--version` - Show version information
+
+### Configuration Methods
+
+You can configure the server in multiple ways (priority order):
+
+1. **Editor Settings** (highest) - Pass settings via LSP client
+2. **Config File** - `.matlab-lsprc.json` in project root
+3. **Environment Variables** - `MATLAB_PATH`
+4. **Auto-Discovery** - Automatically finds MATLAB in standard locations
+
+#### Quick Editor Configuration
+
+**TUI Crush (`.crush.json`):**
+```json
+{
+  "lsp": {
+    "matlab": {
+      "command": "python",
+      "args": ["-m", "matlab_lsp", "--stdio"],
+      "filetypes": ["matlab", "m"],
+      "root_markers": [".git", ".matlab-lsprc.json"]
+    }
+  }
+}
+```
+
+**VS Code:**
+```json
+{
+  "languageserver": {
+    "matlab": {
+      "command": "python",
+      "args": ["-m", "matlab-lsp", "--stdio"],
+      "filetypes": ["matlab", "m"],
+      "rootPatterns": [".git", ".matlab-lsprc.json"]
+    }
+  }
+}
+```
+
+**Neovim (nvim-lspconfig):**
+```lua
+require('lspconfig').matlab_lsp.setup({
+  cmd = {'python', '-m', 'matlab_lsp', '--stdio'},
+  filetypes = {'matlab', 'm'},
+  root_dir = require('lspconfig.util').root_pattern('.git', '.matlab-lsprc.json'),
+})
+```
+
+*See [INTEGRATION.md](INTEGRATION.md) for detailed configuration for all editors including Emacs, Vim, OpenCode, and cclsp.*
 
 ---
 
@@ -213,27 +263,11 @@ If you reinstall MATLAB to a different location:
 
 ```json
 {
-  "matlabPath": "C:/Program Files/MATLAB/R2023b",
-  "workspace": ["C:/MyProjects"],
-  "diagnosticRules": {
-    "all": true,
-    "unusedVariable": true,
-    "missingSemicolon": false
-  },
-  "formatting": {
-    "indentSize": 4,
-    "insertSpaces": true
-  },
-  "completion": {
-    "enableSnippets": true,
-    "maxSuggestions": 50
-  },
-  "cache": {
-    "enabled": true,
-    "maxSize": 1000
-  }
+  "matlabPath": "C:/Program Files/MATLAB/R2023b"
 }
 ```
+
+**That's it!** All other settings use sensible defaults. For more configuration options, see [INTEGRATION.md](INTEGRATION.md).
 
 ### Environment Variables
 
@@ -242,12 +276,6 @@ You can also configure using environment variables:
 ```bash
 # MATLAB installation path
 export MATLAB_PATH="C:/Program Files/MATLAB/R2023b"
-
-# Log level (DEBUG, INFO, WARNING, ERROR)
-export LSP_LOG_LEVEL="INFO"
-
-# Maximum diagnostics per file
-export LSP_MAX_DIAGNOSTICS="100"
 ```
 
 ---
@@ -326,7 +354,7 @@ python server.py --stdio --verbose
 
 ```bash
 python server.py --version
-# Output: MATLAB LSP Server v0.1.0
+# Output: MATLAB LSP Server v0.2.0
 ```
 
 ---
@@ -353,13 +381,11 @@ python server.py --version
 ### Get Debug Logs
 
 ```bash
-# Windows
-set LSP_LOG_LEVEL=DEBUG
-python server.py --stdio
+# Use the --verbose flag
+python -m matlab_lsp --stdio --verbose
 
-# Linux/macOS
-export LSP_LOG_LEVEL=DEBUG
-python server.py --stdio
+# Or from source
+python server.py --stdio --verbose
 ```
 
 ---
@@ -416,7 +442,7 @@ pytest tests/unit/test_parser.py::test_parse_function
 
 ---
 
-## Version: 0.1.0
+## Version: 0.2.0
 
 ### What's Included
 
@@ -480,5 +506,5 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ---
 
-**LSP MATLAB Server v0.1.0**
+**LSP MATLAB Server v0.2.0**
 **Fast. Lightweight. Cross-Platform.**
