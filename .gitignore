@@ -40,12 +40,8 @@ htmlcov/
 *.temp
 *.bak
 
-# Agent and task files (development notes)
-AGENTS.md
-TODO.md
-TODO_final.md
-*TODO*.md
-*AGENTS*.md
+# Development task and agent files (keep in repo for reference)
+# TODO.md, TODO_final.md, AGENTS.md, MIGRATION.md, RENAME_COMPLETE.md are kept in repo
 
 # Root-level test and debug scripts (not in tests/)
 test_*.py
