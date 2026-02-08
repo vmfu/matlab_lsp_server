@@ -55,7 +55,13 @@ pip install -r requirements.txt
 
 ### 2. Настройка пути к MATLAB
 
-Создайте файл `.matlab-lsprc.json` в корне проекта:
+Скопируйте пример конфигурации:
+
+```bash
+cp .matlab-lsprc.json.example .matlab-lsprc.json
+```
+
+Затем создайте файл `.matlab-lsprc.json` в корне проекта:
 
 ```json
 {
@@ -661,7 +667,13 @@ endif
 
 ### Проектная конфигурация
 
-Создайте `.matlab-lsprc.json` в каждом проекте:
+Скопируйте пример конфигурации в каждый проект:
+
+```bash
+cp .matlab-lsprc.json.example .matlab-lsprc.json
+```
+
+Затем создайте `.matlab-lsprc.json` в каждом проекте:
 
 ```json
 {

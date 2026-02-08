@@ -161,7 +161,12 @@ setx MATLAB_PATH "C:\Program Files\MATLAB\R2023b"
 ```
 
 **Option 2: Config File**
-Create `.matlab-lsprc.json`:
+Copy the example configuration file:
+```bash
+cp .matlab-lsprc.json.example .matlab-lsprc.json
+```
+
+Then edit `.matlab-lsprc.json` and set your MATLAB path:
 ```json
 {
   "matlabPath": "C:/Program Files/MATLAB/R2023b"
@@ -213,7 +218,12 @@ echo 'export MATLAB_PATH="/usr/local/MATLAB/R2023b"' >> ~/.bashrc
 ```
 
 **Option 2: Config File**
-Create `.matlab-lsprc.json`:
+Copy the example configuration file:
+```bash
+cp .matlab-lsprc.json.example .matlab-lsprc.json
+```
+
+Then edit `.matlab-lsprc.json`:
 ```json
 {
   "matlabPath": "/usr/local/MATLAB/R2023b"
@@ -264,7 +274,12 @@ echo 'export MATLAB_PATH="/Applications/MATLAB_R2023b.app"' >> ~/.zshrc
 ```
 
 **Option 2: Config File**
-Create `.matlab-lsprc.json`:
+Copy the example configuration file:
+```bash
+cp .matlab-lsprc.json.example .matlab-lsprc.json
+```
+
+Then edit `.matlab-lsprc.json`:
 ```json
 {
   "matlabPath": "/Applications/MATLAB_R2023b.app"
@@ -277,7 +292,13 @@ Create `.matlab-lsprc.json`:
 
 ### Configuration File
 
-Create `.matlab-lsprc.json` in your project root:
+Copy the example configuration file to your project root:
+
+```bash
+cp .matlab-lsprc.json.example .matlab-lsprc.json
+```
+
+Then edit `.matlab-lsprc.json`:
 
 ```json
 {
@@ -496,7 +517,7 @@ curl https://bootstrap.pypa.io/get-pip.py | python
 **Solution:**
 1. Install MATLAB R2020b or later
 2. Set `MATLAB_PATH` environment variable
-3. Create `.matlab-lsprc.json` with `matlabPath`
+3. Copy `.matlab-lsprc.json.example` to `.matlab-lsprc.json` and configure `matlabPath`
 4. Server will use standalone analyzer (limited features)
 
 #### "No diagnostics shown"

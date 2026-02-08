@@ -147,7 +147,13 @@ Open any `.m` file in your editor. The LSP server will automatically start and p
 
 ## Configuration
 
-Create `.matlab-lsprc.json` in your project root:
+Copy the example configuration file to your project root:
+
+```bash
+cp .matlab-lsprc.json.example .matlab-lsprc.json
+```
+
+Then edit `.matlab-lsprc.json` with your settings:
 
 ```json
 {

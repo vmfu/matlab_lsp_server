@@ -1,5 +1,5 @@
 {
-  "matlabPath": "H:\\Program Files\\MATLAB\\R2023b\\bin\\win64",
+  "matlabPath": "C:/Program Files/MATLAB/R2023b",
   "maxDiagnostics": 100,
   "diagnosticRules": {
     "all": true,
