@@ -53,6 +53,11 @@ MANUAL_TESTING_REPORT.md
 v0.1.0_RELEASE_SUMMARY.md
 FINAL_VERIFICATION_REPORT.md
 
+# Outdated files (not used in current version)
+index.html
+create_release.py
+src/matlab_server.py
+
 # Development task and agent files (keep in repo for reference)
 # AGENTS.md is kept for AI agent context
 
