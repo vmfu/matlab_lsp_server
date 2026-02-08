@@ -48,29 +48,36 @@ class MlintAnalyzer(BaseAnalyzer):
         Find mlint.exe executable.
 
         Searches in multiple locations:
-        1. Configured MATLAB path (if provided)
-        2. System PATH
+        1. Configured MATLAB path (if provided and valid)
+        2. System PATH (recursive search)
         3. Common MATLAB installation paths
 
         Returns:
             Optional[str]: Path to mlint.exe or None if not found
         """
         if self.matlab_path:
-            # Use configured MATLAB path
+            # Use configured MATLAB path if it exists
             matlab_dir = Path(self.matlab_path)
-            possible_paths = [
-                matlab_dir / "bin" / "win64" / "mlint.exe",
-                matlab_dir / "bin" / "mlint.exe",
-                matlab_dir / "bin" / "mlint.bat",
-            ]
-            for path in possible_paths:
-                if path.exists():
-                    logger.debug(f"Found mlint at: {path}")
-                    return str(path)
+            if matlab_dir.exists():
+                possible_paths = [
+                    matlab_dir / "bin" / "win64" / "mlint.exe",
+                    matlab_dir / "bin" / "mlint.exe",
+                    matlab_dir / "bin" / "mlint.bat",
+                ]
+                for path in possible_paths:
+                    if path.exists():
+                        logger.debug(f"Found mlint at configured path: {path}")
+                        return str(path)
+            else:
+                logger.warning(
+                    f"Configured MATLAB path does not exist: {self.matlab_path}. "
+                    "Searching for alternative..."
+                )
 
-        # Search in PATH
-        mlint_in_path = self._find_in_path("mlint.exe")
+        # Search in PATH (recursive)
+        mlint_in_path = self._find_mlint_in_path_recursive()
         if mlint_in_path:
+            logger.info(f"Found mlint in PATH: {mlint_in_path}")
             return mlint_in_path
 
         # Search in common installation paths (platform-specific)
@@ -78,17 +85,29 @@ class MlintAnalyzer(BaseAnalyzer):
             common_paths = [
                 Path("C:/Program Files/MATLAB"),
                 Path("C:/Program Files (x86)/MATLAB"),
+                Path("D:/Program Files/MATLAB"),
+                Path("E:/Program Files/MATLAB"),
+                Path("F:/Program Files/MATLAB"),
+                Path("G:/Program Files/MATLAB"),
                 Path("H:/Program Files/MATLAB"),
+                Path("I:/Program Files/MATLAB"),
+                Path("J:/Program Files/MATLAB"),
             ]
         elif platform.system() == "Darwin":  # macOS
             common_paths = [
                 Path("/Applications/MATLAB_R*.app"),
+                Path("/Applications/MATLAB.app"),
+                Path("/usr/local/MATLAB"),
             ]
         else:  # Linux and others
             common_paths = [
                 Path("/usr/local/MATLAB"),
                 Path("/opt/MATLAB"),
+                Path("/opt/matlab"),
+                Path("/usr/local/matlab"),
                 Path.home() / "MATLAB",
+                Path.home() / "matlab",
+                Path("/usr/share/matlab"),
             ]
 
         for base in common_paths:
@@ -101,13 +120,44 @@ class MlintAnalyzer(BaseAnalyzer):
                     # Try newest version first
                     mlint_path = self._find_mlint_in_dir(Path(match))
                     if mlint_path:
+                        logger.info(f"Found mlint at: {mlint_path}")
                         return mlint_path
             elif base.exists():
                 mlint_path = self._find_mlint_in_dir(base)
                 if mlint_path:
+                    logger.info(f"Found mlint at: {mlint_path}")
                     return mlint_path
 
         logger.warning("mlint not found in any location")
+        return None
+
+    def _find_mlint_in_path_recursive(self) -> Optional[str]:
+        """Recursively search for mlint.exe in PATH directories.
+
+        Returns:
+            Path to mlint.exe or None
+        """
+        mlint_names = ["mlint.exe", "mlint"] if platform.system() != "Windows" else ["mlint.exe", "mlint.bat"]
+
+        for path_dir in os.environ.get("PATH", "").split(os.pathsep):
+            base_dir = Path(path_dir)
+            if not base_dir.exists():
+                continue
+
+            # Search recursively up to 3 levels deep
+            for root, dirs, files in os.walk(base_dir):
+                # Limit depth to avoid searching entire filesystem
+                depth = root.replace(str(base_dir), "").count(os.sep)
+                if depth > 3:
+                    dirs[:] = []  # Don't go deeper
+                    continue
+
+                for mlint_name in mlint_names:
+                    if mlint_name in files:
+                        full_path = Path(root) / mlint_name
+                        if full_path.exists():
+                            return str(full_path)
+
         return None
 
     def _find_mlint_in_dir(self, base_dir: Path) -> Optional[str]:
@@ -138,14 +188,6 @@ class MlintAnalyzer(BaseAnalyzer):
                 if mlint_name in files:
                     return str(Path(root) / mlint_name)
 
-        return None
-
-    def _find_in_path(self, executable: str) -> Optional[str]:
-        """Find executable in system PATH."""
-        for path_dir in os.environ.get("PATH", "").split(os.pathsep):
-            full_path = Path(path_dir) / executable
-            if full_path.exists():
-                return str(full_path)
         return None
 
     def is_available(self) -> bool:

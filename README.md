@@ -189,10 +189,26 @@ Then edit `.matlab-lsprc.json` with your settings:
 - Server tries to find MATLAB in standard locations
 - Server logs a warning: "MlintAnalyzer is NOT available!"
 
+**Auto-Discovery on First Run:**
+On first startup, the server automatically searches for MATLAB in:
+1. System PATH (recursive search, finds even in bin/win64/)
+2. Standard installation paths:
+   - Windows: `C:/Program Files/MATLAB`, `D:/Program Files/MATLAB`, etc.
+   - macOS: `/Applications/MATLAB_R*.app`
+   - Linux: `/usr/local/MATLAB`, `/opt/MATLAB`, `~/MATLAB`
+3. If found, `matlabPath` is auto-filled in `.matlab-lsprc.json`
+
 **To enable full diagnostics:**
 1. Set `matlabPath` in `.matlab-lsprc.json`
 2. Or set `MATLAB_PATH` environment variable
 3. Or ensure MATLAB is in system PATH
+
+**Handling MATLAB Reinstallation:**
+If you reinstall MATLAB to a different location:
+- Server will detect the old path is invalid
+- Automatically searches for new MATLAB location
+- Falls back to basic LSP features if MATLAB not found
+- Update `matlabPath` in config to specify new location
 
 
 ```json

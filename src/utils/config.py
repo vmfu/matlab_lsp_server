@@ -1,8 +1,10 @@
 """Configuration management for MATLAB LSP Server."""
 
 import json
+import os
+import platform
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field, field_validator
 from pydantic.fields import FieldInfo
@@ -265,8 +267,11 @@ def create_default_config(config_path: Path | None = None) -> Path:
     if config_path.exists():
         return config_path
 
+    # Try to find MATLAB automatically
+    matlab_path = _find_matlab_path()
+
     default_config = {
-        "matlabPath": "",
+        "matlabPath": matlab_path if matlab_path else "",
         "maxDiagnostics": 100,
         "diagnosticRules": {
             "all": True,
@@ -282,6 +287,175 @@ def create_default_config(config_path: Path | None = None) -> Path:
         json.dumps(default_config, indent=2), encoding="utf-8"
     )
     return config_path
+
+
+def _find_matlab_path() -> Optional[str]:
+    """Find MATLAB installation directory.
+
+    Searches in multiple locations:
+    1. System PATH (recursive search)
+    2. Common MATLAB installation paths
+
+    Returns:
+        Path to MATLAB directory (e.g., "C:/Program Files/MATLAB/R2023b")
+        or None if not found
+    """
+    # Search in PATH first
+    matlab_path = _find_matlab_in_path()
+    if matlab_path:
+        return matlab_path
+
+    # Search in common installation paths
+    matlab_path = _find_matlab_in_common_paths()
+    if matlab_path:
+        return matlab_path
+
+    return None
+
+
+def _find_matlab_in_path() -> Optional[str]:
+    """Recursively search for MATLAB in system PATH.
+
+    Returns:
+        Path to MATLAB directory or None
+    """
+    mlint_in_path = _find_mlint_in_path_recursive()
+    if mlint_in_path:
+        # mlint path: H:/MATLAB/R2023b/bin/win64/mlint.exe
+        # Extract MATLAB path: H:/MATLAB/R2023b
+        mlint_path = Path(mlint_in_path)
+
+        # Navigate up 3 levels: win64 -> bin -> R2023b
+        # This gives us the MATLAB version directory
+        matlab_root = mlint_path
+        for _ in range(3):
+            matlab_root = matlab_root.parent
+            if matlab_root.parent == matlab_root:
+                return str(mlint_path.parent.parent)  # Fallback
+
+        # Verify this looks like a MATLAB directory
+        if "MATLAB" in str(matlab_root.parent) or (
+            matlab_root.name.startswith("R") and len(matlab_root.name) == 5
+        ):
+            return str(matlab_root)
+
+    return None
+
+
+def _find_mlint_in_path_recursive() -> Optional[str]:
+    """Recursively search for mlint.exe in PATH directories.
+
+    Returns:
+        Path to mlint.exe or None
+    """
+    mlint_names = ["mlint.exe", "mlint"] if platform.system() != "Windows" else ["mlint.exe", "mlint.bat"]
+
+    for path_dir in os.environ.get("PATH", "").split(os.pathsep):
+        base_dir = Path(path_dir)
+        if not base_dir.exists():
+            continue
+
+        # Search recursively up to 3 levels deep
+        for root, dirs, files in os.walk(base_dir):
+            # Limit depth to avoid searching entire filesystem
+            depth = root.replace(str(base_dir), "").count(os.sep)
+            if depth > 3:
+                dirs[:] = []  # Don't go deeper
+                continue
+
+            for mlint_name in mlint_names:
+                if mlint_name in files:
+                    full_path = Path(root) / mlint_name
+                    if full_path.exists():
+                        return str(full_path)
+
+    return None
+
+
+def _find_matlab_in_common_paths() -> Optional[str]:
+    """Search for MATLAB in common installation paths.
+
+    Returns:
+        Path to MATLAB directory or None
+    """
+    # Common installation paths by platform
+    if platform.system() == "Windows":
+        common_paths = [
+            Path("C:/Program Files/MATLAB"),
+            Path("C:/Program Files (x86)/MATLAB"),
+            Path("D:/Program Files/MATLAB"),
+            Path("E:/Program Files/MATLAB"),
+            Path("F:/Program Files/MATLAB"),
+            Path("G:/Program Files/MATLAB"),
+            Path("H:/Program Files/MATLAB"),
+            Path("I:/Program Files/MATLAB"),
+            Path("J:/Program Files/MATLAB"),
+        ]
+    elif platform.system() == "Darwin":  # macOS
+        common_paths = [
+            Path("/Applications/MATLAB_R*.app"),
+            Path("/Applications/MATLAB.app"),
+            Path("/usr/local/MATLAB"),
+        ]
+    else:  # Linux and others
+        common_paths = [
+            Path("/usr/local/MATLAB"),
+            Path("/opt/MATLAB"),
+            Path("/opt/matlab"),
+            Path("/usr/local/matlab"),
+            Path.home() / "MATLAB",
+            Path.home() / "matlab",
+            Path("/usr/share/matlab"),
+        ]
+
+    import glob as glob_module
+
+    for base in common_paths:
+        # Handle glob patterns (for version directories)
+        if "*" in str(base):
+            matches = glob_module.glob(str(base))
+            for match in sorted(matches, reverse=True):
+                # Try newest version first
+                mlint_path = _find_mlint_in_dir(Path(match))
+                if mlint_path:
+                    return str(Path(match))
+        elif base.exists():
+            mlint_path = _find_mlint_in_dir(base)
+            if mlint_path:
+                return str(base)
+
+    return None
+
+
+def _find_mlint_in_dir(base_dir: Path) -> Optional[str]:
+    """Find mlint in a directory tree.
+
+    Args:
+        base_dir: Base directory to search
+
+    Returns:
+        Path to mlint executable or None
+    """
+    # Platform-specific mlint binary names
+    if platform.system() == "Windows":
+        mlint_names = ["mlint.exe", "mlint.bat"]
+    else:
+        mlint_names = ["mlint"]
+
+    # Search in bin directories first (faster)
+    for root, dirs, files in os.walk(base_dir):
+        if "bin" in root:
+            for mlint_name in mlint_names:
+                if mlint_name in files:
+                    return str(Path(root) / mlint_name)
+
+    # If not found in bin, search all directories (fallback)
+    for root, dirs, files in os.walk(base_dir):
+        for mlint_name in mlint_names:
+            if mlint_name in files:
+                return str(Path(root) / mlint_name)
+
+    return None
 
 
 def ensure_config_exists(

@@ -368,12 +368,22 @@ If `matlabPath` is not configured or left empty:
 
 **How mlint is located:**
 1. Checks configured `matlabPath` in `.matlab-lsprc.json`
+   - Validates path exists before using
+   - If invalid, continues searching (handles reinstallation)
 2. Checks `MATLAB_PATH` environment variable
-3. Searches in system PATH
+3. Searches in system PATH (recursive search)
+   - Finds mlint even in `bin/win64/` subdirectories
+   - Searches up to 3 levels deep from PATH entries
 4. Checks standard installation paths:
-   - Windows: `C:/Program Files/MATLAB`, `H:/Program Files/MATLAB`
-   - macOS: `/Applications/MATLAB_R*.app`
-   - Linux: `/usr/local/MATLAB`, `/opt/MATLAB`
+   - Windows: `C:/Program Files/MATLAB`, `D:/...`, `H:/...` (multiple drives)
+   - macOS: `/Applications/MATLAB_R*.app`, `/Applications/MATLAB.app`
+   - Linux: `/usr/local/MATLAB`, `/opt/MATLAB`, `~/MATLAB`, `/usr/share/matlab`
+
+**Auto-Discovery on First Run:**
+When `.matlab-lsprc.json` is created, the server:
+- Searches for MATLAB automatically
+- Fills `matlabPath` if found
+- Leaves empty if not found (basic features still work)
 
 If mlint is not found, server logs: `"MlintAnalyzer is NOT available!"`
 

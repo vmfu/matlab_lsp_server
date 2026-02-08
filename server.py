@@ -99,12 +99,27 @@ def main() -> int:
     # Create default config if not exists
     if not args.no_init_config:
         config_path = Path.cwd() / ".matlab-lsprc.json"
-        config_created = ensure_config_exists(config_path)
+        config_created = ensure_config_exists()
         if config_created:
-            logger.info(
-                f"Created default config at {config_path}. "
-                "Edit to set matlabPath for full diagnostics."
-            )
+            import json
+            try:
+                with open(config_path, "r", encoding="utf-8") as f:
+                    config = json.load(f)
+                    matlab_path = config.get("matlabPath", "")
+                    if matlab_path:
+                        logger.info(
+                            f"Auto-generated config with MATLAB path: {matlab_path}"
+                        )
+                    else:
+                        logger.info(
+                            "Auto-generated config. MATLAB not found. "
+                            "Basic LSP features will work without MATLAB. "
+                            "To enable full diagnostics, install MATLAB and set matlabPath."
+                        )
+            except Exception:
+                logger.info("Auto-generated config created")
+        else:
+            logger.info("Using existing config file")
 
     # Validate arguments
     if not args.stdio and not args.tcp:
