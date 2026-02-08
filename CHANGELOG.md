@@ -1,5 +1,37 @@
 # Changelog
 
+All notable changes to MATLAB LSP Server project.
+
+## [0.2.0] - 2026-02-08
+
+### Features
+- **Improved MATLAB Auto-Discovery**: Enhanced path handling for better MATLAB installation detection across different platforms
+- **Auto-Configuration**: Server now auto-generates `.matlab-lsprc.json` configuration on first run
+
+### Performance
+- **Faster mlint Search**: mlint is now searched only in `bin/` directories, avoiding full filesystem scans
+- **Optimized Path Resolution**: Improved path handling for `matlabPath` configuration option
+
+### Bug Fixes
+- **Fixed mlint.bat References**: Removed non-existent `mlint.bat` from search paths (MATLAB only provides `mlint.exe`)
+- **Graceful Empty Path Handling**: Better handling when `matlabPath` is not configured or empty
+
+### Documentation
+- **Simplified README Configurations**: Streamlined editor configuration examples with minimal required settings
+- **Added 7 CLI Editor Configurations**: VS Code, Neovim, Vim, Emacs, TUI Crush, OpenCode CLI, Claude Code LSP / cclsp
+- **Cleaned Up Documentation**: Removed 11 unused documentation files to reduce repository clutter
+- **Improved Config Documentation**: Updated docs to reflect implemented configuration options
+
+### Cleanup
+- **Removed Outdated Files**:
+  - `index.html` (empty file)
+  - `create_release.py` (outdated script)
+  - `src/matlab_server.py` (old duplicate implementation)
+  - `mlint.bat` and `mlint.sh` (manual linting scripts)
+- **Removed User-Specific Configs**: `.crush.json` and `.bat` files are no longer tracked
+
+# Changelog
+
 All notable changes to the MATLAB LSP Server project.
 
 ## [0.1.0] - 2026-02-07
