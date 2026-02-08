@@ -58,6 +58,10 @@ index.html
 create_release.py
 src/matlab_server.py
 
+# Manual linting scripts (for development use only)
+mlint.bat
+mlint.sh
+
 # Development task and agent files (keep in repo for reference)
 # AGENTS.md is kept for AI agent context
 
