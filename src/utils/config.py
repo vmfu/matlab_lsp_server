@@ -431,7 +431,7 @@ def _find_mlint_in_dir(base_dir: Path) -> Optional[str]:
     """Find mlint in a directory tree.
 
     Args:
-        base_dir: Base directory to search
+        base_dir: Base directory to search (e.g., "C:/Program Files/MATLAB")
 
     Returns:
         Path to mlint executable or None
@@ -439,18 +439,12 @@ def _find_mlint_in_dir(base_dir: Path) -> Optional[str]:
     # mlint binary name
     mlint_names = ["mlint.exe"] if platform.system() == "Windows" else ["mlint"]
 
-    # Search in bin directories first (faster)
+    # Only search in bin directories (mlint is always in bin/)
     for root, dirs, files in os.walk(base_dir):
         if "bin" in root:
             for mlint_name in mlint_names:
                 if mlint_name in files:
                     return str(Path(root) / mlint_name)
-
-    # If not found in bin, search all directories (fallback)
-    for root, dirs, files in os.walk(base_dir):
-        for mlint_name in mlint_names:
-            if mlint_name in files:
-                return str(Path(root) / mlint_name)
 
     return None
 
