@@ -2,7 +2,7 @@
 
 A lightweight, fast, and cross-platform Language Server Protocol (LSP) implementation for MATLAB files.
 
-**Version:** 0.2.0 | **License:** MIT | **Python:** 3.10+
+**Version:** 0.2.1 | **License:** MIT | **Python:** 3.10+
 
 📖 **[See INTEGRATION.md](INTEGRATION.md) for detailed editor configuration guides and advanced options.**
 

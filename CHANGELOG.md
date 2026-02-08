@@ -1,6 +1,28 @@
 # Changelog
 
 All notable changes to MATLAB LSP Server project.
+## [0.2.1] - 2026-02-09
+
+### Bug Fixes
+- Fix package structure for proper PyPI installation
+- Update imports for pygls 2.0 compatibility
+- Remove non-existent InitializeResultServerInfoType import
+- Fix entry point to use correct module path
+
+### Documentation
+- Update INSTALL.md to match README and INTEGRATION.md
+- Update all commands to use 'matlab-lsp' instead of 'python -m matlab_lsp'
+- Update version to 0.2.1 in all documentation
+- Update DEVELOPMENT.md with correct imports and structure
+- Update CONTRIBUTING.md with correct URLs and commands
+- Document auto-discovery feature
+
+### Changed
+- Update pygls imports from 'pygls.server' to 'pygls.lsp.server'
+- Change server_info to use dict instead of InitializeResultServerInfoType
+
+---
+
 
 ## [0.2.0] - 2026-02-08
 

@@ -35,7 +35,7 @@ Be respectful, inclusive, and constructive. We welcome contributions from everyo
 
 ### First Contribution
 
-1. Fork the repository
+1. Fork repository
 2. Create a feature branch
 3. Make your changes
 4. Submit a pull request
@@ -47,7 +47,7 @@ Be respectful, inclusive, and constructive. We welcome contributions from everyo
 ### 1. Fork and Clone
 
 ```bash
-# Fork the repository on GitHub
+# Fork repository on GitHub
 # Clone your fork
 git clone https://github.com/YOUR_USERNAME/matlab_lsp_server.git
 cd matlab_lsp_server
@@ -83,7 +83,7 @@ pip install -r requirements-dev.txt
 pytest
 
 # Check version
-python server.py --version
+matlab-lsp --version
 ```
 
 ---
@@ -175,6 +175,9 @@ isort src/ tests/
 
 # Lint code
 flake8 src/ tests/
+
+# Type check
+mypy src/
 ```
 
 ### Type Hints
@@ -204,7 +207,7 @@ def analyze_file(
     """Analyze a MATLAB file for errors and warnings.
 
     Args:
-        file_path: Path to the .m file to analyze
+        file_path: Path to .m file to analyze
         rules: Diagnostic rules to apply
 
     Returns:
@@ -231,6 +234,34 @@ async def handle_completion(
     return result
 ```
 
+### pygls 2.0 Imports
+
+Use correct imports for pygls 2.0:
+
+```python
+# Correct
+from pygls.lsp.server import LanguageServer
+from lsprotocol.types import InitializeParams
+
+# Incorrect (pygls 1.x)
+from pygls.server import LanguageServer
+```
+
+### Package Imports
+
+Use absolute imports within the package:
+
+```python
+# Correct
+from matlab_lsp_server.handlers.base import BaseHandler
+from matlab_lsp_server.utils.logging import get_logger
+from matlab_lsp_server.parser.matlab_parser import MatlabParser
+
+# Incorrect (old structure)
+from src.handlers.base import BaseHandler
+from ..utils.logging import get_logger
+```
+
 ---
 
 ## Testing
@@ -251,10 +282,10 @@ pytest tests/integration/
 pytest tests/unit/test_parser.py::test_parse_function
 
 # Run with coverage
-pytest --cov=src --cov-report=html
+pytest --cov=src.matlab_lsp_server --cov-report=html
 
 # Run with verbose output
-pytest -v
+pytest -v --tb=short
 ```
 
 ### Writing Tests
@@ -263,7 +294,7 @@ Use pytest with descriptive names:
 
 ```python
 import pytest
-from src.parser.matlab_parser import MatlabParser
+from matlab_lsp_server.parser.matlab_parser import MatlabParser
 
 def test_parse_simple_function():
     """Test parsing of a simple function definition."""
@@ -281,11 +312,11 @@ def test_parse_simple_function():
 ```
 tests/
 ├── conftest.py           # Pytest fixtures
-├── unit/                 # Unit tests
+├── unit/                # Unit tests
 │   ├── test_parser.py
 │   ├── test_analyzer.py
 │   └── test_handlers.py
-└── integration/          # Integration tests
+└── integration/           # Integration tests
     ├── test_server.py
     └── test_mlint_integration.py
 ```
@@ -337,7 +368,7 @@ mypy src/
 pytest
 
 # Check coverage (should be >70%)
-pytest --cov=src
+pytest --cov=src.matlab_lsp_server
 ```
 
 ### Pre-commit Hooks (Optional)
@@ -354,9 +385,19 @@ pre-commit install
 # Now hooks run automatically on commit
 ```
 
+### Manual Hook Run
+
+```bash
+# Run all hooks
+pre-commit run --all-files
+
+# Run on specific files
+pre-commit run --files src/matlab_lsp_server/parser.py
+```
+
 ### Creating Pull Request
 
-1. Go to [GitHub Pull Requests](https://github.com/yourusername/matlab_lsp_server/pulls)
+1. Go to [GitHub Pull Requests](https://github.com/vmfu/matlab_lsp_server/pulls)
 2. Click "New Pull Request"
 3. Select your branch
 4. Fill in PR template:
@@ -378,9 +419,9 @@ pre-commit install
 
 ### Before Reporting
 
-1. Search [existing issues](https://github.com/yourusername/matlab_lsp_server/issues)
+1. Search [existing issues](https://github.com/vmfu/matlab_lsp_server/issues)
 2. Check [FAQ in README](README.md#troubleshooting)
-3. Reproduce the bug with latest version
+3. Reproduce bug with latest version
 
 ### Bug Report Template
 
@@ -398,6 +439,9 @@ Steps to reproduce the behavior:
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
+**Actual behavior**
+A clear and concise description of what actually happened.
+
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
@@ -406,24 +450,23 @@ If applicable, add screenshots to help explain your problem.
  - Python Version: [e.g. 3.11.5]
  - MATLAB Version: [e.g. R2023b]
  - Editor: [e.g. VS Code 1.85.0]
- - Server Version: [e.g. 0.1.0]
+ - Server Version: [e.g. 0.2.1]
 
 **Additional context**
 Add any other context about the problem here.
 
 **Logs**
-[Attach debug logs from running with `--verbose`]
+Attach debug logs from running with `--verbose` flag.
 ```
 
 ### Get Debug Logs
 
 ```bash
-# Enable verbose logging
-export LSP_LOG_LEVEL=DEBUG  # Linux/macOS
-set LSP_LOG_LEVEL=DEBUG     # Windows
+# Run server with verbose logging
+matlab-lsp --stdio --verbose
 
-# Run server
-python -m matlab_lsp --stdio --verbose > debug.log 2>&1
+# Save logs to file
+matlab-lsp --stdio --verbose > debug.log 2>&1
 ```
 
 ---
@@ -432,8 +475,8 @@ python -m matlab_lsp --stdio --verbose > debug.log 2>&1
 
 ### Before Suggesting
 
-1. Search [existing issues](https://github.com/yourusername/matlab_lsp_server/issues)
-2. Check [ROADMAP](README.md#roadmap)
+1. Search [existing issues](https://github.com/vmfu/matlab_lsp_server/issues)
+2. Check [ROADMAP in README](README.md#roadmap)
 3. Consider if it's a core LSP feature
 
 ### Feature Request Template
@@ -462,31 +505,65 @@ Add any other context or screenshots about the feature request here.
 - [LSP Specification](https://microsoft.github.io/language-server-protocol/)
 - [pygls Documentation](https://pygls.readthedocs.io/)
 - [lsprotocol Types](https://lsprotocol.readthedocs.io/)
-- [MATLAB Documentation](https://www.mathworks.com/help/matlab/)
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Design decisions and structure
+- [DEVELOPMENT.md](DEVELOPMENT.md) - Developer guide
+- [AGENTS.md](AGENTS.md) - AI agent development guide
+
+### Editor Documentation
+- [INTEGRATION.md](INTEGRATION.md) - Editor integration guides
+- [TUI Crush](https://charm.sh/crush/)
+- [VS Code LSP](https://code.visualstudio.com/api/language-extensions/language-server-extension-guide)
+- [Neovim LSP](https://neovim.io/doc/user/lsp.html)
+- [Emacs lsp-mode](https://emacs-lsp.github.io/lsp-mode/)
+
+### MATLAB Documentation
+- [MATLAB Documentation](https://www.mathworks.com/help/)
+- [MATLAB Syntax](https://www.mathworks.com/help/matlab/ref/)
+- [Class Definitions](https://www.mathworks.com/help/matlab/ref/classdef.html)
 
 ### Code Structure
 
 ```
 src/
-├── protocol/         # LSP lifecycle (initialize, shutdown, exit)
-├── handlers/         # LSP method handlers
-│   ├── completion.py
-│   ├── hover.py
-│   ├── diagnostics.py
-│   └── ...
-├── parser/           # MATLAB code parser
-│   ├── matlab_parser.py
-│   └── models.py
-├── analyzer/         # Code analyzers
-│   ├── base_analyzer.py
-│   └── mlint_analyzer.py
-├── features/         # Feature management
-│   └── feature_manager.py
-└── utils/           # Utilities
-    ├── cache.py
-    ├── logging.py
-    ├── config.py
-    └── ...
+└── matlab_lsp_server/       # Main package
+    ├── __init__.py
+    ├── server.py              # Entry point (CLI)
+    ├── matlab_server.py       # LSP server class
+    ├── analyzer/              # Code analyzers
+    │   ├── __init__.py
+    │   ├── base_analyzer.py
+    │   └── mlint_analyzer.py
+    ├── features/              # LSP features
+    │   ├── __init__.py
+    │   └── feature_manager.py
+    ├── handlers/              # LSP method handlers
+    │   ├── __init__.py
+    │   ├── base.py
+    │   ├── completion.py
+    │   ├── diagnostics.py
+    │   ├── hover.py
+    │   ├── definition.py
+    │   ├── references.py
+    │   ├── document_symbol.py
+    │   ├── code_action.py
+    │   ├── formatting.py
+    │   └── workspace_symbol.py
+    ├── parser/                # MATLAB parser
+    │   ├── __init__.py
+    │   ├── matlab_parser.py
+    │   └── models.py
+    ├── protocol/              # LSP protocol handlers
+    │   ├── __init__.py
+    │   ├── lifecycle.py
+    │   └── document_sync.py
+    └── utils/                # Utilities
+        ├── __init__.py
+        ├── cache.py
+        ├── config.py
+        ├── document_store.py
+        ├── logging.py
+        ├── performance.py
+        └── symbol_table.py
 ```
 
 ### MCP Tools Used
@@ -508,12 +585,15 @@ Contributors will be recognized in:
 - README.md (contributors section)
 - GitHub contributors list
 
-Thank you for contributing! 🎉
-
 ---
 
 ## Questions?
 
 - Check [Documentation](README.md)
-- Search [Issues](https://github.com/yourusername/matlab_lsp_server/issues)
-- Create [Discussion](https://github.com/yourusername/matlab_lsp_server/discussions)
+- Read [DEVELOPMENT.md](DEVELOPMENT.md)
+- Search [Issues](https://github.com/vmfu/matlab_lsp_server/issues)
+- Create [Discussion](https://github.com/vmfu/matlab_lsp_server/discussions)
+
+---
+
+Thank you for contributing! 🎉
