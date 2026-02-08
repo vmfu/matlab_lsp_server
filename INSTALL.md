@@ -1,6 +1,6 @@
 # Installation Guide
 
-Complete installation instructions for LSP MATLAB Server on Windows, Linux, and macOS.
+Complete installation instructions for MATLAB LSP Server on Windows, Linux, and macOS.
 
 ---
 
@@ -25,6 +25,8 @@ pip install matlab-lsp-server
 ```
 
 That's it! Now [configure your editor](#editor-configuration) and start coding.
+
+For detailed editor integration guides, see [INTEGRATION.md](INTEGRATION.md).
 
 ---
 
@@ -61,10 +63,10 @@ That's it! Now [configure your editor](#editor-configuration) and start coding.
 pip install matlab-lsp-server
 
 # Verify installation
-python -m matlab_lsp --version
+matlab-lsp --version
 
 # Run server
-python -m matlab_lsp --stdio
+matlab-lsp --stdio
 ```
 
 #### Using Virtual Environment (Recommended)
@@ -91,17 +93,17 @@ pip install matlab-lsp-server
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/matlab_lsp_server.git
+git clone https://github.com/vmfu/matlab_lsp_server.git
 cd matlab_lsp_server
 
 # Install in editable mode
 pip install -e .
 
 # Verify installation
-python server.py --version
+matlab-lsp --version
 
 # Run server
-python server.py --stdio
+matlab-lsp --stdio
 ```
 
 ---
@@ -110,12 +112,12 @@ python server.py --stdio
 
 **Best for:** Offline installation, specific version, no Git
 
-1. Go to [Releases page](https://github.com/yourusername/matlab_lsp_server/releases)
+1. Go to [Releases page](https://github.com/vmfu/matlab_lsp_server/releases)
 2. Download latest release (`.tar.gz` or `.zip`)
 3. Extract the archive:
    ```bash
    # Linux/macOS
-   tar -xzf lsp_matlab_server_v*.tar.gz
+   tar -xzf matlab_lsp_server_v*.tar.gz
 
    # Windows
    # Right-click and extract
@@ -127,7 +129,7 @@ python server.py --stdio
    ```
 6. Run server:
    ```bash
-   python server.py --stdio
+   matlab-lsp --stdio
    ```
 
 ---
@@ -153,20 +155,24 @@ python -m pip install matlab-lsp-server
 
 #### MATLAB Path Configuration
 
-If MATLAB is installed, configure the path:
+**Option 1: Auto-discovery (Recommended)**
 
-**Option 1: Environment Variable**
+The server automatically detects MATLAB in standard locations:
+- `C:/Program Files/MATLAB/`
+- `D:/Program Files/MATLAB/` (and other drives)
+- Searches for `mlint.exe` recursively
+
+No configuration needed for most setups!
+
+**Option 2: Environment Variable**
 ```cmd
 setx MATLAB_PATH "C:\Program Files\MATLAB\R2023b"
 ```
 
-**Option 2: Config File**
-Copy the example configuration file:
-```bash
-cp .matlab-lsprc.json.example .matlab-lsprc.json
-```
+**Option 3: Config File**
 
-Then edit `.matlab-lsprc.json` and set your MATLAB path:
+The server automatically creates `.matlab-lsprc.json` on first run with auto-detected MATLAB path. You can edit it:
+
 ```json
 {
   "matlabPath": "C:/Program Files/MATLAB/R2023b"
@@ -176,7 +182,7 @@ Then edit `.matlab-lsprc.json` and set your MATLAB path:
 #### Troubleshooting
 - If `pip` not found: Add Python to PATH and restart terminal
 - If scripts not found: Reinstall Python with "Add to PATH" checked
-- If mlint not found: Set `MATLAB_PATH` or install MATLAB
+- If mlint not found: Server will use standalone analyzer (basic features work)
 
 ---
 
@@ -209,26 +215,25 @@ pip install matlab-lsp-server
 
 #### MATLAB Path Configuration
 
-If MATLAB is installed, configure the path:
+**Option 1: Auto-discovery (Recommended)**
 
-**Option 1: Environment Variable**
+The server automatically detects MATLAB in standard locations:
+- `/usr/local/MATLAB/`
+- `/opt/MATLAB/`
+- `~/MATLAB/`
+- Searches for `mlint` recursively
+
+No configuration needed for most setups!
+
+**Option 2: Environment Variable**
 ```bash
 export MATLAB_PATH="/usr/local/MATLAB/R2023b"
 echo 'export MATLAB_PATH="/usr/local/MATLAB/R2023b"' >> ~/.bashrc
 ```
 
-**Option 2: Config File**
-Copy the example configuration file:
-```bash
-cp .matlab-lsprc.json.example .matlab-lsprc.json
-```
+**Option 3: Config File**
 
-Then edit `.matlab-lsprc.json`:
-```json
-{
-  "matlabPath": "/usr/local/MATLAB/R2023b"
-}
-```
+The server automatically creates `.matlab-lsprc.json` on first run.
 
 #### Octave Support (Experimental)
 
@@ -265,26 +270,24 @@ pip install matlab-lsp-server
 
 #### MATLAB Path Configuration
 
-If MATLAB is installed, configure the path:
+**Option 1: Auto-discovery (Recommended)**
 
-**Option 1: Environment Variable**
+The server automatically detects MATLAB in standard locations:
+- `/Applications/MATLAB_R*.app`
+- `/Applications/MATLAB.app`
+- Searches for `mlint` recursively
+
+No configuration needed for most setups!
+
+**Option 2: Environment Variable**
 ```bash
 export MATLAB_PATH="/Applications/MATLAB_R2023b.app"
 echo 'export MATLAB_PATH="/Applications/MATLAB_R2023b.app"' >> ~/.zshrc
 ```
 
-**Option 2: Config File**
-Copy the example configuration file:
-```bash
-cp .matlab-lsprc.json.example .matlab-lsprc.json
-```
+**Option 3: Config File**
 
-Then edit `.matlab-lsprc.json`:
-```json
-{
-  "matlabPath": "/Applications/MATLAB_R2023b.app"
-}
-```
+The server automatically creates `.matlab-lsprc.json` on first run.
 
 ---
 
@@ -297,23 +300,56 @@ The server automatically creates `.matlab-lsprc.json` with default settings on f
 To disable automatic configuration, use `--no-init-config` flag:
 
 ```bash
-python -m matlab_lsp --stdio --no-init-config
+matlab-lsp --stdio --no-init-config
 ```
 
-### Manual Configuration
+### Configuration Priority
 
-Copy the example configuration file to your project root:
+MATLAB LSP Server supports multiple configuration methods with the following priority order:
 
-```bash
-cp .matlab-lsprc.json.example .matlab-lsprc.json
+1. **Editor Settings** (highest) - Passed via LSP client during initialization
+2. **Config File** - `.matlab-lsprc.json` in project root
+3. **Environment Variables** - `MATLAB_PATH`, `MATLAB_LSP_*`
+4. **Auto-Discovery** - Automatically finds MATLAB in standard locations
+5. **Default Values** - Built-in defaults
+
+**Note:** Settings from higher priority sources override those from lower priority sources.
+
+### Configuration Options
+
+The server supports both nested and flat configuration structures:
+
+**Option 1: Nested structure (recommended)**
+```json
+{
+  "matlab": {
+    "matlabPath": "C:/Program Files/MATLAB/R2023b",
+    "maxDiagnostics": 100,
+    "diagnosticRules": {
+      "all": true,
+      "unusedVariable": true,
+      "missingSemicolon": false
+    },
+    "formatting": {
+      "indentSize": 4,
+      "insertSpaces": true
+    },
+    "completion": {
+      "enableSnippets": true,
+      "maxSuggestions": 50
+    },
+    "cache": {
+      "enabled": true,
+      "maxSize": 1000
+    }
+  }
+}
 ```
 
-Then edit `.matlab-lsprc.json`:
-
+**Option 2: Flat structure (also supported)**
 ```json
 {
   "matlabPath": "C:/Program Files/MATLAB/R2023b",
-  "workspace": ["C:/MyProjects"],
   "maxDiagnostics": 100,
   "diagnosticRules": {
     "all": true,
@@ -335,13 +371,12 @@ Then edit `.matlab-lsprc.json`:
 }
 ```
 
-### Configuration Options
+### Complete Configuration Options Reference
 
 | Option | Type | Default | Description |
 |---------|-------|----------|-------------|
-| `matlabPath` | string | auto | Path to MATLAB installation |
-| `workspace` | array | [] | Workspace folders to index |
-| `maxDiagnostics` | integer | 100 | Max diagnostics per file |
+| `matlabPath` | string | auto | Path to MATLAB installation (can be empty for auto-discovery) |
+| `maxDiagnostics` | integer | 100 | Max diagnostics per file (range: 0-1000) |
 | `diagnosticRules.all` | boolean | true | Enable all rules |
 | `diagnosticRules.unusedVariable` | boolean | true | Check unused variables |
 | `diagnosticRules.missingSemicolon` | boolean | false | Check missing semicolons |
@@ -385,66 +420,67 @@ When `.matlab-lsprc.json` is created, the server:
 - Fills `matlabPath` if found
 - Leaves empty if not found (basic features still work)
 
-If mlint is not found, server logs: `"MlintAnalyzer is NOT available!"`
+If mlint is not found, the server logs: `"MlintAnalyzer is NOT available!"`
 
 ### Environment Variables
 
+You can also configure using environment variables:
+
 ```bash
 # MATLAB path
-export MATLAB_PATH="C:/Program Files/MATLAB/R2023b"
+export MATLAB_PATH="/usr/local/MATLAB/R2023b"
 
-# Log level (DEBUG, INFO, WARNING, ERROR)
-export LSP_LOG_LEVEL="INFO"
-
-# Maximum diagnostics
-export LSP_MAX_DIAGNOSTICS="100"
-
-# Cache size
-export LSP_CACHE_SIZE="1000"
+# Configuration options (prefix: MATLAB_LSP_)
+export MATLAB_LSP_MAX_DIAGNOSTICS="100"
+export MATLAB_LSP_DIAGNOSTIC_RULES_ALL="true"
 ```
+
+| Environment Variable | Config Option | Example |
+|-------------------|----------------|---------|
+| `MATLAB_PATH` | `matlabPath` | `export MATLAB_PATH="/usr/local/MATLAB/R2023b"` |
+| `MATLAB_LSP_MAX_DIAGNOSTICS` | `maxDiagnostics` | `export MATLAB_LSP_MAX_DIAGNOSTICS="50"` |
+| `MATLAB_LSP_DIAGNOSTIC_RULES_ALL` | `diagnosticRules.all` | `export MATLAB_LSP_DIAGNOSTIC_RULES_ALL="true"` |
 
 ---
 
 ## Editor Configuration
 
-### TUI Crush
+For detailed editor integration guides, see [INTEGRATION.md](INTEGRATION.md).
 
-Create or edit `~/.crush.json`:
+### Quick Examples
 
+**TUI Crush (`.crush.json`):**
 ```json
 {
   "lsp": {
     "matlab": {
-      "command": "python",
-      "args": ["-m", "matlab-lsp", "--stdio"],
-      "filetypes": ["m"],
-      "root_markers": [".git", ".matlab-lsprc.json"]
+      "command": "matlab-lsp",
+      "args": ["--stdio"],
+      "filetypes": ["matlab", "m"],
+      "root_markers": [".git", ".matlab-lsprc.json", "project.m"]
     }
   }
 }
 ```
 
-### VS Code
-
-Install the official MATLAB extension, then configure:
-
-**Option 1: Using settings.json**
-```json
-{
-  "matlab.lsp.enabled": true,
-  "matlab.lsp.path": "python",
-  "matlab.lsp.args": ["-m", "matlab-lsp", "--stdio"]
-}
+**Neovim (`init.lua`):**
+```lua
+require('lspconfig').matlab_lsp.setup({
+  cmd = { "matlab-lsp", "--stdio" },
+  filetypes = { "matlab", "m" },
+  root_dir = require('lspconfig.util').root_pattern(
+    ".git", ".matlab-lsprc.json", "project.m"
+  ),
+})
 ```
 
-**Option 2: Using languageserver.json**
-Create `.vscode/languageserver.json`:
+**VS Code (`.vscode/settings.json`):**
 ```json
 {
   "languageserver": {
     "matlab": {
-      "command": "python",
-      "args": ["-m", "matlab-lsp", "--stdio"],
+      "command": "matlab-lsp",
+      "args": ["--stdio"],
       "filetypes": ["matlab", "m"],
       "rootPatterns": [".git", ".matlab-lsprc.json"]
     }
@@ -452,37 +488,16 @@ Create `.vscode/languageserver.json`:
 }
 ```
 
-### Neovim (nvim-lspconfig)
-
-Add to `init.lua`:
-
-```lua
-require('lspconfig').matlab_lsp.setup({
-  cmd = {"python", "-m", "matlab-lsp", "--stdio"},
-  filetypes = {"matlab", "m"},
-  root_dir = require('lspconfig.util').root_pattern(
-    ".git", ".matlab-lsprc.json"
-  ),
-  settings = {
-    matlab = {
-      diagnostics = { all = true },
-      completion = { maxSuggestions = 50 }
-    }
-  }
-})
-```
-
-### Emacs (eglot)
-
-Add to `init.el`:
-
+**Emacs (`init.el`):**
 ```elisp
 (use-package eglot
   :ensure t
   :config
   (add-to-list 'eglot-server-programs
-               '(matlab-mode . ("python" "-m" "matlab-lsp" "--stdio"))))
+               '(matlab-mode . ("matlab-lsp" "--stdio"))))
 ```
+
+*See [INTEGRATION.md](INTEGRATION.md) for more editors and detailed configuration.*
 
 ---
 
@@ -492,16 +507,16 @@ Add to `init.el`:
 
 ```bash
 # Check version
-python -m matlab_lsp --version
+matlab-lsp --version
 
-# Expected output: MATLAB LSP Server v0.1.0
+# Expected output: MATLAB LSP Server v0.2.1
 ```
 
 ### Test Server
 
 ```bash
 # Run in TCP mode for testing
-python -m matlab_lsp --tcp --port 4389
+matlab-lsp --tcp --port 4389
 
 # In another terminal, connect
 telnet localhost 4389
@@ -529,7 +544,7 @@ telnet localhost 4389
    end
    ```
 2. Open file in editor with LSP
-3. Should see warning about unused variable
+3. Should see warning about unused variable (if MATLAB is configured)
 
 ---
 
@@ -560,20 +575,25 @@ curl https://bootstrap.pypa.io/get-pip.py | python
 #### "mlint not found"
 
 **Solution:**
-1. Install MATLAB R2020b or later
-2. Set `MATLAB_PATH` environment variable
-3. Copy `.matlab-lsprc.json.example` to `.matlab-lsprc.json` and configure `matlabPath`
-4. Server will use standalone analyzer (limited features)
+1. Server will use standalone analyzer (basic features work)
+2. The server auto-detects MATLAB in standard locations
+3. Or manually configure via `.matlab-lsprc.json`:
+   ```json
+   {
+     "matlabPath": "C:/Program Files/MATLAB/R2023b"
+   }
+   ```
+4. Or set `MATLAB_PATH` environment variable
 
 #### "No diagnostics shown"
 
 **Solution:**
 ```bash
-# Enable debug logging
-export LSP_LOG_LEVEL="DEBUG"
+# Enable verbose logging
+matlab-lsp --stdio --verbose
 
-# Check logs for errors
-python -m matlab_lsp --stdio --verbose
+# Check MATLAB path configuration
+# Verify mlint is found in logs
 ```
 
 #### "Server not starting"
@@ -607,9 +627,10 @@ pip install matlab-lsp-server
 If you're still having issues:
 
 1. Check [FAQ in README](README.md#troubleshooting)
-2. Search [existing issues](https://github.com/yourusername/matlab_lsp_server/issues)
-3. [Create a new issue](https://github.com/yourusername/matlab_lsp_server/issues/new)
-4. Include:
+2. Read [INTEGRATION.md](INTEGRATION.md) for detailed editor-specific guides
+3. Search [existing issues](https://github.com/vmfu/matlab_lsp_server/issues)
+4. [Create a new issue](https://github.com/vmfu/matlab_lsp_server/issues/new)
+5. Include:
    - OS and version
    - Python version
    - Error messages
@@ -633,11 +654,11 @@ rm %USERPROFILE%\.matlab-lsprc.json  # Windows
 
 ## Next Steps
 
-- [ ] Configure your [editor](#editor-configuration)
-- [ ] Create a [configuration file](#configuration)
+- [ ] Configure your [editor](#editor-configuration) or see [INTEGRATION.md](INTEGRATION.md)
 - [ ] Read [README](README.md) for features
 - [ ] Check [CHANGELOG](CHANGELOG.md) for updates
+- [ ] Explore [ARCHITECTURE.md](ARCHITECTURE.md) for technical details
 
 ---
 
-**Need help?** See [README](README.md) or [create an issue](https://github.com/yourusername/matlab_lsp_server/issues)
+**Need help?** See [README](README.md) or [create an issue](https://github.com/vmfu/matlab_lsp_server/issues)

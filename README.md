@@ -417,7 +417,7 @@ python server.py --stdio --verbose
 
 ```bash
 python server.py --version
-# Output: MATLAB LSP Server v0.2.0
+# Output: MATLAB LSP Server v0.2.1
 ```
 
 ---
@@ -565,11 +565,11 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ## Links
 
-- **GitHub:** https://github.com/yourusername/matlab_lsp_server
+- **GitHub:** https://github.com/vmfu/matlab_lsp_server
 - **PyPI:** https://pypi.org/project/matlab-lsp-server/
-- **Issues:** https://github.com/yourusername/matlab_lsp_server/issues
+- **Issues:** https://github.com/vmfu/matlab_lsp_server/issues
 
 ---
 
-**LSP MATLAB Server v0.2.0**
+**LSP MATLAB Server v0.2.1**
 **Fast. Lightweight. Cross-Platform.**
