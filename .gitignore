@@ -40,8 +40,21 @@ htmlcov/
 *.temp
 *.bak
 
+# Documentation files not referenced in README.md
+TODO.md
+TODO_final.md
+MIGRATION.md
+QUICK_START.md
+DOCUMENTATION.md
+DOCUMENTATION_FINAL.md
+RENAME_COMPLETE.md
+RELEASE_INSTRUCTIONS.md
+MANUAL_TESTING_REPORT.md
+v0.1.0_RELEASE_SUMMARY.md
+FINAL_VERIFICATION_REPORT.md
+
 # Development task and agent files (keep in repo for reference)
-# TODO.md, TODO_final.md, AGENTS.md, MIGRATION.md, RENAME_COMPLETE.md are kept in repo
+# AGENTS.md is kept for AI agent context
 
 # Root-level test and debug scripts (not in tests/)
 test_*.py

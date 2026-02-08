@@ -54,27 +54,13 @@ You can configure the server in multiple ways (priority order):
 
 #### Quick Editor Configuration
 
-**TUI Crush (`.crush.json`):**
-```json
-{
-  "lsp": {
-    "matlab": {
-      "command": "python",
-      "args": ["-m", "matlab_lsp", "--stdio"],
-      "filetypes": ["matlab", "m"],
-      "root_markers": [".git", ".matlab-lsprc.json"]
-    }
-  }
-}
-```
-
-**VS Code:**
+**VS Code (`.vscode/settings.json`):**
 ```json
 {
   "languageserver": {
     "matlab": {
       "command": "python",
-      "args": ["-m", "matlab-lsp", "--stdio"],
+      "args": ["-m", "matlab_lsp", "--stdio"],
       "filetypes": ["matlab", "m"],
       "rootPatterns": [".git", ".matlab-lsprc.json"]
     }
@@ -87,11 +73,80 @@ You can configure the server in multiple ways (priority order):
 require('lspconfig').matlab_lsp.setup({
   cmd = {'python', '-m', 'matlab_lsp', '--stdio'},
   filetypes = {'matlab', 'm'},
-  root_dir = require('lspconfig.util').root_pattern('.git', '.matlab-lsprc.json'),
+  root_dir = require('lspconfig.util').root_pattern('.git', '.matlab-lsprc.json', 'project.m')
 })
 ```
 
-*See [INTEGRATION.md](INTEGRATION.md) for detailed configuration for all editors including Emacs, Vim, OpenCode, and cclsp.*
+**Vim (vim-lsp):**
+```vim
+" .vimrc
+autocmd BufRead,BufNewFile *.m set filetype=matlab
+
+if executable('python')
+  au User lsp_setup call lsp#register_server({
+    \ 'name': 'matlab-lsp',
+    \ 'cmd': {server_info->['python', '-m', 'matlab_lsp', '--stdio']},
+    \ 'whitelist': ['matlab', 'm']
+    \ })
+endif
+```
+
+**Emacs (lsp-mode):**
+```elisp
+;; init.el
+(use-package lsp-mode
+  :config
+  (lsp-register-client
+    (make-lsp-client
+      :new-connection (lsp-stdio-connection '("python" "-m" "matlab_lsp" "--stdio"))
+      :major-modes '(matlab-mode)
+      :server-id 'matlab-lsp)))
+
+(use-package matlab-mode
+  :config
+  (add-hook 'matlab-mode-hook #'lsp))
+```
+
+**TUI Crush (`.crush.json`):**
+```json
+{
+  "lsp": {
+    "matlab": {
+      "command": "python",
+      "args": ["-m", "matlab_lsp", "--stdio"],
+      "filetypes": ["matlab", "m"],
+      "root_markers": [".git", ".matlab-lsprc.json", "project.m"]
+    }
+  }
+}
+```
+
+**OpenCode CLI (`.opencode.json`):**
+```json
+{
+  "lsp": {
+    "matlab": {
+      "command": ["python", "-m", "matlab_lsp", "--stdio"],
+      "extensions": [".m"]
+    }
+  }
+}
+```
+
+**Claude Code LSP / cclsp (`cclsp.json`):**
+```json
+{
+  "servers": [
+    {
+      "extensions": ["m"],
+      "command": ["python", "-m", "matlab_lsp", "--stdio"],
+      "rootDir": "."
+    }
+  ]
+}
+```
+
+*See [INTEGRATION.md](INTEGRATION.md) for detailed configuration and advanced options.*
 
 ---
 
