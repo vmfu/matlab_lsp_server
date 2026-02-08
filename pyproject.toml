@@ -54,10 +54,10 @@ dev = [
 matlab-lsp = "src.server:main"
 
 [project.urls]
-Homepage = "https://github.com/vmfuntikov/matlab-lsp-server"
-Documentation = "https://github.com/vmfuntikov/matlab-lsp-server#readme"
-Repository = "https://github.com/vmfuntikov/matlab-lsp-server.git"
-Issues = "https://github.com/vmfuntikov/matlab-lsp-server/issues"
+Homepage = "https://github.com/vmfu/matlab_lsp_server"
+Documentation = "https://github.com/vmfu/matlab_lsp_server#readme"
+Repository = "https://github.com/vmfu/matlab_lsp_server.git"
+Issues = "https://github.com/vmfu/matlab_lsp_server/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
