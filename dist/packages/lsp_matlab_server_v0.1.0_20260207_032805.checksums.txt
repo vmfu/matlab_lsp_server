@@ -1,7 +1,0 @@
-LSP MATLAB Server v0.1.0 - Checksums
-Generated: 2026-02-07T03:28:06.189802
-
-lsp_matlab_server_v0.1.0_20260207_032805.tar.gz
-MD5:    c2a8f80a98b84acd5b966e7ac4adc9e5
-SHA256: d71890a5c8f93a45d556877132440c672f615b32a60f9b7f040dfcd6b9d355aa
-
