@@ -509,7 +509,7 @@ require('lspconfig').matlab_lsp.setup({
 # Check version
 matlab-lsp --version
 
-# Expected output: MATLAB LSP Server v0.2.1
+# Expected output: MATLAB LSP Server v0.2.3
 ```
 
 ### Test Server
