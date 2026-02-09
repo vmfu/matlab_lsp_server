@@ -2,7 +2,7 @@
 
 A lightweight, fast, and cross-platform Language Server Protocol (LSP) implementation for MATLAB files.
 
-**Version:** 0.2.1 | **License:** MIT | **Python:** 3.10+
+**Version:** 0.2.3 | **License:** MIT | **Python:** 3.10+
 
 📖 **[See INTEGRATION.md](INTEGRATION.md) for detailed editor configuration guides and advanced options.**
 
@@ -98,7 +98,7 @@ endif
   :config
   (lsp-register-client
     (make-lsp-client
-      :new-connection (lsp-stdio-connection '("python" "matlab-lsp" "--stdio"))
+      :new-connection (lsp-stdio-connection "matlab-lsp")
       :major-modes '(matlab-mode)
       :server-id 'matlab-lsp)))
 
@@ -417,7 +417,7 @@ python server.py --stdio --verbose
 
 ```bash
 python server.py --version
-# Output: MATLAB LSP Server v0.2.1
+# Output: MATLAB LSP Server v0.2.3
 ```
 
 ---
@@ -507,7 +507,7 @@ pytest tests/unit/test_parser.py::test_parse_function
 
 ---
 
-## Version: 0.2.0
+## Version: 0.2.3
 
 ### What's Included
 
@@ -571,5 +571,5 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ---
 
-**LSP MATLAB Server v0.2.1**
+**LSP MATLAB Server v0.2.3**
 **Fast. Lightweight. Cross-Platform.**
