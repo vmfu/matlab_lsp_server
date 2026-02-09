@@ -230,8 +230,8 @@ Create or edit `~/.crush.json`:
 {
   "lsp": {
     "matlab": {
-      "command": "python",
-      "args": ["matlab-lsp", "--stdio"],
+      "command": "matlab-lsp",
+      "args": ["--stdio"],
       "filetypes": ["m"],
       "root_markers": [".git", ".matlab-lsprc.json"]
     }
