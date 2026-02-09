@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "matlab-lsp-server"
-version = "0.2.1"
+version = "0.2.2"
 description = "Lightweight Language Server Protocol implementation for MATLAB"
 readme = "README.md"
 requires-python = ">=3.10"

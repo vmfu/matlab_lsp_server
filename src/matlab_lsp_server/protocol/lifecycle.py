@@ -146,7 +146,7 @@ def register_lifecycle_handlers(server: LanguageServer) -> None:
             capabilities=capabilities,
             server_info={
                 "name": "matlab-lsp",
-                "version": "0.2.1"
+                "version": "0.2.2"
             },
         )
         logger.info(f"Returning initialize result: {result}")
