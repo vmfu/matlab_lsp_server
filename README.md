@@ -112,8 +112,8 @@ endif
 {
   "lsp": {
     "matlab": {
-      "command": "python",
-      "args": ["matlab-lsp", "--stdio"],
+      "command": "matlab-lsp",
+      "args": ["--stdio"],
       "filetypes": ["matlab", "m"],
       "root_markers": [".git", ".matlab-lsprc.json", "project.m"]
     }
@@ -140,8 +140,8 @@ endif
   "servers": [
     {
       "extensions": ["m"],
-      "command": "python",
-      "args": ["matlab-lsp", "--stdio"],
+      "command": "matlab-lsp",
+      "args": ["--stdio"],
       "rootDir": "."
     }
   ]

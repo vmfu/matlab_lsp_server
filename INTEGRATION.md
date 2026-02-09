@@ -215,7 +215,8 @@ Create a `.opencode.json` file in your project root:
   "$schema": "https://opencode.ai/config.json",
   "lsp": {
     "matlab": {
-      "command": ["python", "matlab-lsp", "--stdio", "--verbose"],
+      "command": "matlab-lsp",
+      "args": ["--stdio", "--verbose"],
       "extensions": [".m"],
       "initialization": {
         "matlabPath": "C:\\Program Files\\MATLAB\\R2023b",
