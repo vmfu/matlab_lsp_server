@@ -126,7 +126,8 @@ endif
 {
   "lsp": {
     "matlab": {
-      "command": ["python", "matlab-lsp", "--stdio"],
+      "command": "matlab-lsp",
+      "args": ["--stdio"],
       "extensions": [".m"]
     }
   }
@@ -139,7 +140,8 @@ endif
   "servers": [
     {
       "extensions": ["m"],
-      "command": ["python", "matlab-lsp", "--stdio"],
+      "command": "python",
+      "args": ["matlab-lsp", "--stdio"],
       "rootDir": "."
     }
   ]
@@ -246,7 +248,7 @@ Create `.vscode/settings.json`:
   "languageserver": {
     "matlab": {
       "command": "python",
-      "args": ["-m", "matlab-lsp", "--stdio"],
+      "args": ["-m", "matlab_lsp_server.server", "--stdio"],
       "filetypes": ["matlab", "m"],
       "rootPatterns": [".git", ".matlab-lsprc.json"]
     }
@@ -262,7 +264,7 @@ Add to `init.lua` or `init.vim`:
 
 ```lua
 require('lspconfig').matlab_lsp.setup({
-  cmd = {"python", "-m", "matlab-lsp", "--stdio"},
+  cmd = {"matlab-lsp", "--stdio"},
   filetypes = {"matlab", "m"},
   root_dir = require('lspconfig.util').root_pattern(
     ".git", ".matlab-lsprc.json"
