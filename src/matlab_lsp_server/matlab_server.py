@@ -62,7 +62,7 @@ class MatLSServer(LanguageServer):
                 capabilities=fm.get_capabilities(),
                 server_info={
                     "name": "matlab-lsp",
-                    "version": "0.2.3"
+                    "version": "0.2.4"
                 },
             )
 
