@@ -30,16 +30,16 @@ def create_parser() -> argparse.ArgumentParser:
         epilog="""
 Examples:
   # Run in stdio mode (for LSP clients)
-  python server.py --stdio
+  matlab-lsp --stdio
 
   # Run in TCP mode (for debugging)
-  python server.py --tcp --port 4389
+  matlab-lsp --tcp --port 4389
 
   # Run with verbose logging
-  python server.py --stdio --verbose
+  matlab-lsp --stdio --verbose
 
   # Show version
-  python server.py --version
+  matlab-lsp --version
         """,
     )
 
