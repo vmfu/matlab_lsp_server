@@ -101,7 +101,7 @@ The server will automatically detect MATLAB installation in standard locations. 
 
 ```bash
 # Run in TCP mode for testing
-python -m matlab_lsp --tcp --port 4389
+matlab-lsp --tcp --port 4389
 
 # In another terminal, check connection
 telnet localhost 4389
@@ -197,7 +197,7 @@ Create a `.opencode.json` file in your project root:
   "$schema": "https://opencode.ai/config.json",
   "lsp": {
     "matlab": {
-      "command": ["python", "-m", "matlab_lsp", "--stdio"],
+      "command": "matlab-lsp",
       "extensions": [".m"],
       "initialization": {
         "matlabPath": "C:\\Program Files\\MATLAB\\R2023b",
@@ -215,7 +215,7 @@ Create a `.opencode.json` file in your project root:
   "$schema": "https://opencode.ai/config.json",
   "lsp": {
     "matlab": {
-      "command": ["python", "-m", "matlab_lsp", "--stdio", "--verbose"],
+      "command": ["python", "matlab-lsp", "--stdio", "--verbose"],
       "extensions": [".m"],
       "initialization": {
         "matlabPath": "C:\\Program Files\\MATLAB\\R2023b",
@@ -285,7 +285,7 @@ Create a `cclsp.json` file in your project root:
   "servers": [
     {
       "extensions": ["m"],
-      "command": ["python", "-m", "matlab_lsp", "--stdio"],
+      "command": "matlab-lsp",
       "rootDir": ".",
       "initializationOptions": {
         "matlabPath": "C:\\Program Files\\MATLAB\\R2023b",
@@ -358,7 +358,7 @@ Create or edit `.crush.json`:
   "lsp": {
     "matlab": {
       "command": "python",
-      "args": ["-m", "matlab_lsp", "--stdio"],
+      "args": ["matlab-lsp", "--stdio"],
       "filetypes": ["matlab", "m"],
       "root_markers": [".git", ".matlab-lsprc.json", "project.m"],
       "env": {
@@ -387,7 +387,7 @@ Create or edit `.crush.json`:
   "lsp": {
     "matlab": {
       "command": "python",
-      "args": ["-m", "matlab_lsp", "--stdio", "--verbose"],
+      "args": ["matlab-lsp", "--stdio", "--verbose"],
       "filetypes": ["matlab", "m"],
       "root_markers": [".git", ".matlab-lsprc.json", "project.m"],
       "env": {
@@ -546,11 +546,11 @@ export function activate(context: vscode.ExtensionContext) {
   const serverOptions: ServerOptions = {
     run: {
       command: 'python',
-      args: ['-m', 'matlab_lsp', '--stdio']
+      args: ['matlab-lsp', '--stdio']
     },
     debug: {
       command: 'python',
-      args: ['-m', 'matlab_lsp', '--stdio', '--verbose']
+      args: ['matlab-lsp', '--stdio', '--verbose']
     }
   };
 
@@ -616,7 +616,7 @@ code --install-extension matlab-lsp-0.2.0.vsix
 ```lua
 -- init.lua
 vim.lsp.config('matlab_lsp', {
-  cmd = { 'python', '-m', 'matlab_lsp', '--stdio' },
+  cmd = { 'python', 'matlab-lsp', '--stdio' },
   filetypes = { 'matlab', 'm' },
   root_markers = { '.git', '.matlab-lsprc.json', 'project.m' },
   init_options = {
@@ -641,7 +641,7 @@ vim.lsp.enable('matlab_lsp')
 local lspconfig = require('lspconfig')
 
 lspconfig.matlab_lsp.setup {
-  cmd = { 'python', '-m', 'matlab_lsp', '--stdio' },
+  cmd = { 'python', 'matlab-lsp', '--stdio' },
   filetypes = { 'matlab', 'm' },
   root_dir = lspconfig.util.root_pattern('.git', '.matlab-lsprc.json'),
   init_options = {
@@ -675,7 +675,7 @@ autocmd BufRead,BufNewFile *.m set filetype=matlab
 if executable('python')
   au User lsp_setup call lsp#register_server({
     \ 'name': 'matlab-lsp',
-    \ 'cmd': {server_info->['python', '-m', 'matlab_lsp', '--stdio']},
+    \ 'cmd': {server_info->['python', 'matlab-lsp', '--stdio']},
     \ 'whitelist': ['matlab', 'm'],
     \ 'workspace_config': {
     \   'matlab': {
@@ -699,7 +699,7 @@ endif
   :config
   (lsp-register-client
     (make-lsp-client
-      :new-connection (lsp-stdio-connection '("python" "-m" "matlab_lsp" "--stdio"))
+      :new-connection (lsp-stdio-connection '("python" "matlab-lsp" "--stdio"))
       :major-modes '(matlab-mode)
       :server-id 'matlab-lsp
       :initialization-options
@@ -734,7 +734,7 @@ endif
 
   (lsp-register-client
     (make-lsp-client
-      :new-connection (lsp-stdio-connection '("python" "-m" "matlab_lsp" "--stdio"))
+      :new-connection (lsp-stdio-connection '("python" "matlab-lsp" "--stdio"))
       :major-modes '(matlab-mode)
       :server-id 'matlab-lsp
       :environment-fn (lambda ()
@@ -822,7 +822,7 @@ code test_lsp.m
 
 3. **Test manually:**
    ```bash
-   python -m matlab_lsp --tcp --port 4389 --verbose
+   matlab-lsp --tcp --port 4389 --verbose
    ```
 
 4. **Check dependencies:**
@@ -1096,7 +1096,7 @@ You can configure the server using environment variables. All variables use the 
 
 ```bash
 # Command line
-python -m matlab_lsp --stdio --verbose
+matlab-lsp --stdio --verbose
 
 # Environment variable (not yet implemented)
 # export LSP_LOG_LEVEL="DEBUG"
@@ -1106,7 +1106,7 @@ python -m matlab_lsp --stdio --verbose
 
 ```bash
 # Start server in TCP mode
-python -m matlab_lsp --tcp --port 4389 --verbose
+matlab-lsp --tcp --port 4389 --verbose
 
 # Test with netcat (Windows: use telnet)
 echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | nc localhost 4389

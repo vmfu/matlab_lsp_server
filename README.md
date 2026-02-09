@@ -22,16 +22,16 @@ That's it! The server is now ready to use.
 
 ```bash
 # Run in stdio mode (for LSP clients)
-python -m matlab_lsp --stdio
+matlab-lsp --stdio
 
 # Run in TCP mode (for debugging)
-python -m matlab_lsp --tcp --port 4389
+matlab-lsp --tcp --port 4389
 
 # Enable verbose logging
-python -m matlab_lsp --stdio --verbose
+matlab-lsp --stdio --verbose
 
 # Disable automatic config creation
-python -m matlab_lsp --stdio --no-init-config
+matlab-lsp --stdio --no-init-config
 ```
 
 **Options:**
@@ -60,7 +60,7 @@ You can configure the server in multiple ways (priority order):
   "languageserver": {
     "matlab": {
       "command": "python",
-      "args": ["-m", "matlab_lsp", "--stdio"],
+      "args": ["matlab-lsp", "--stdio"],
       "filetypes": ["matlab", "m"],
       "rootPatterns": [".git", ".matlab-lsprc.json"]
     }
@@ -70,8 +70,8 @@ You can configure the server in multiple ways (priority order):
 
 **Neovim (nvim-lspconfig):**
 ```lua
-require('lspconfig').matlab_lsp.setup({
-  cmd = {'python', '-m', 'matlab_lsp', '--stdio'},
+require('lspconfig').matlab_lsp_server.setup({
+  cmd = {'matlab-lsp'},
   filetypes = {'matlab', 'm'},
   root_dir = require('lspconfig.util').root_pattern('.git', '.matlab-lsprc.json', 'project.m')
 })
@@ -85,7 +85,7 @@ autocmd BufRead,BufNewFile *.m set filetype=matlab
 if executable('python')
   au User lsp_setup call lsp#register_server({
     \ 'name': 'matlab-lsp',
-    \ 'cmd': {server_info->['python', '-m', 'matlab_lsp', '--stdio']},
+    \ 'cmd': {'matlab-lsp'},
     \ 'whitelist': ['matlab', 'm']
     \ })
 endif
@@ -98,7 +98,7 @@ endif
   :config
   (lsp-register-client
     (make-lsp-client
-      :new-connection (lsp-stdio-connection '("python" "-m" "matlab_lsp" "--stdio"))
+      :new-connection (lsp-stdio-connection '("python" "matlab-lsp" "--stdio"))
       :major-modes '(matlab-mode)
       :server-id 'matlab-lsp)))
 
@@ -113,7 +113,7 @@ endif
   "lsp": {
     "matlab": {
       "command": "python",
-      "args": ["-m", "matlab_lsp", "--stdio"],
+      "args": ["matlab-lsp", "--stdio"],
       "filetypes": ["matlab", "m"],
       "root_markers": [".git", ".matlab-lsprc.json", "project.m"]
     }
@@ -126,7 +126,7 @@ endif
 {
   "lsp": {
     "matlab": {
-      "command": ["python", "-m", "matlab_lsp", "--stdio"],
+      "command": ["python", "matlab-lsp", "--stdio"],
       "extensions": [".m"]
     }
   }
@@ -139,7 +139,7 @@ endif
   "servers": [
     {
       "extensions": ["m"],
-      "command": ["python", "-m", "matlab_lsp", "--stdio"],
+      "command": ["python", "matlab-lsp", "--stdio"],
       "rootDir": "."
     }
   ]
@@ -445,7 +445,7 @@ python server.py --version
 
 ```bash
 # Use the --verbose flag
-python -m matlab_lsp --stdio --verbose
+matlab-lsp --stdio --verbose
 
 # Or from source
 python server.py --stdio --verbose

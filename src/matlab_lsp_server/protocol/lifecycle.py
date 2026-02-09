@@ -21,6 +21,9 @@ from matlab_lsp_server.utils.logging import get_logger
 # Import document sync handlers
 from . import document_sync
 
+# Import method handlers
+from . import method_handlers
+
 logger = get_logger(__name__)
 
 # Global feature manager instance
@@ -160,6 +163,7 @@ def register_lifecycle_handlers(server: LanguageServer) -> None:
         # Perform cleanup operations
         # TODO: Clear caches, close file handles, etc.
         logger.info("Server shutting down gracefully")
+        return None
 
     # Define and register exit handler
     @server.feature("exit")
@@ -168,6 +172,10 @@ def register_lifecycle_handlers(server: LanguageServer) -> None:
         logger.info("Exit notification received")
         # Terminate the server process
         # pygls handles this automatically after this handler completes
+        return None
         logger.info("Server process terminating")
+
+    # Register all LSP method handlers
+    method_handlers.register_method_handlers(server)
 
     logger.info("Lifecycle handlers registered")
