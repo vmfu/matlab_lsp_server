@@ -2,28 +2,62 @@ name: Publish to PyPI
 
 on:
   release:
-    types: [published] # Сработает, когда вы создадите "Release" на GitHub
+    types: [published] # Срабатывает, когда вы создаете "Release" на GitHub
 
 jobs:
-  build-n-publish:
+  build-and-publish:
     name: Build and publish to PyPI
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write  # ОБЯЗАТЕЛЬНО для Trusted Publishers
-      contents: read
 
+    # ОЧИЩАЕМ КЕШ ПЕРЕД СБОРКОЙ!
+    # Это гарантирует что использует новый код
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.x"
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # ПРИНУДИТЕЛЬНО: fetch-depth 0 - получить весь код, не только последний коммит
+          fetch-depth: 0
 
-    - name: Install build tools
-      run: pip install build
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
 
-    - name: Build wheel and sdist
-      run: python -m build
+      - name: Clean previous build artifacts
+        run: |
+          # Удаляем старые артефакты
+          rm -rf dist/ build/ *.egg-info
 
-    - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Display version from pyproject.toml
+        run: |
+          # Показываем версию которую мы будем собирать
+          grep -E "version\s*=" pyproject.toml
+
+      - name: Install build tools
+        run: pip install build
+
+      - name: Build wheel and sdist
+        run: |
+          # Собираем пакет - это прочитает версию из pyproject.toml
+          python -m build
+
+      - name: Display built packages
+        run: |
+          # Показываем что мы собрали
+          ls -lah dist/
+
+      - name: Check version in built packages
+        run: |
+          # Проверяем что пакеты имеют правильную версию
+          # Должно быть 0.2.4
+          for file in dist/*; do
+            echo "Package: $file"
+            tar -tzf dist/*.tar.gz -O - | grep -E "version|0\.2\.[0-9]" || true
+            unzip -p dist/*.whl -d /tmp/extracted -x matlab_lsp_server-*egg-info/PKG-INFO 2>/dev/null || true
+            cat /tmp/extracted/matlab_lsp_server-*egg-info/PKG-INFO 2>/dev/null || echo "No PKG-INFO"
+          done
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
