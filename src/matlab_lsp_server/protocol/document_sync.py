@@ -1,3 +1,8 @@
+# Added for v0.2.6: MATLAB parsing
+
+from matlab_lsp_server.parser.matlab_parser import MatlabParser
+
+from matlab_lsp_server.parser.models import get_symbol_table
 """
 Document Synchronization Handlers for MATLAB LSP Server.
 
@@ -30,6 +35,10 @@ mlint_analyzer = None
 
 
 def register_document_sync_handlers(
+    document_store,
+    mlint_analyzer,
+    symbol_table: Optional[SymbolTable] = None,
+    matlab_parser: Optional[MatlabParser] = None
     server: LanguageServer,
     doc_store: DocumentStore,
     analyzer: MlintAnalyzer,
@@ -67,6 +76,14 @@ def register_document_sync_handlers(
         # Add to document store
         document_store.add_document(uri, file_path, content)
 
+        # Added for v0.2.6: Parse MATLAB code to extract symbols
+        try:
+            parse_result = matlab_parser.parse_file(file_path, uri, use_cache=True)
+            symbol_table.update_from_parse_result(uri, content, parse_result)
+            logger.info(f\"Updated symbol table for {file_path}\")
+        except Exception as e:
+            logger.error(f\"Error parsing file {file_path}: {e}\")
+
         # Trigger analysis (only if analyzer is available)
         if mlint_analyzer.is_available():
             publish_diagnostics(server, uri, mlint_analyzer, file_path)
@@ -86,6 +103,9 @@ def register_document_sync_handlers(
 
         # Remove from document store
         document_store.remove_document(uri)
+
+        # Added for v0.2.6: Remove symbols from table
+        symbol_table.remove_symbols_by_uri(uri)
 
     @server.feature("textDocument/didChange")
     async def did_change(params: DidChangeTextDocumentParams) -> None:

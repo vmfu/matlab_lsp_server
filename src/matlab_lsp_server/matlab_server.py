@@ -66,7 +66,7 @@ from matlab_lsp_server.protocol.method_handlers import register_method_handlers
                 capabilities=fm.get_capabilities(),
                 server_info={
                     "name": "matlab-lsp",
-                    "version": "0.2.5"
+                    "version": "0.2.6"
                 },
             )
 

@@ -1,4 +1,5 @@
 """
+from lsprotocol.types import PublishDiagnosticsParams
 Diagnostics Handler for MATLAB LSP Server.
 
 This module handles textDocument/publishDiagnostics notifications
@@ -93,7 +94,8 @@ def publish_diagnostics(
         lsp_diagnostics = mlint_result_to_lsp_diagnostics(result)
 
         # Publish to client
-        server.publish_diagnostics(file_uri, lsp_diagnostics)
+        params = PublishDiagnosticsParams(uri=file_uri, diagnostics=lsp_diagnostics)
+            server.text_document_publish_diagnostics(params)
 
         logger.info(
             f"Published {len(lsp_diagnostics)} diagnostics for {file_path}"

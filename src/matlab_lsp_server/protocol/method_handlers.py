@@ -87,25 +87,45 @@ def register_method_handlers(server: LanguageServer) -> None:
     @server.feature("textDocument/completion")
     async def on_completion(params: CompletionParams) -> CompletionList:
         """Handle completion requests."""
-        return await completion_handler.handle(params)
+        return completion_handler.provide_completion(
+            server,
+            params.text_document.uri,
+            params.position,
+            ""  # prefix
+        )
 
     # Register hover handler
     @server.feature("textDocument/hover")
     async def on_hover(params: HoverParams) -> Hover | None:
         """Handle hover requests."""
-        return await hover_handler.handle(params)
+        return hover_handler.provide_hover(
+            server,
+            params.text_document.uri,
+            params.position,
+            None  # word
+        )
 
     # Register definition handler
     @server.feature("textDocument/definition")
     async def on_definition(params: DefinitionParams) -> list[Location] | list[LocationLink] | None:
         """Handle go-to-definition requests."""
-        return await definition_handler.handle(params)
+        return definition_handler.provide_definition(
+            server,
+            params.text_document.uri,
+            params.position,
+            None  # word
+        )
 
     # Register references handler
     @server.feature("textDocument/references")
     async def on_references(params: ReferenceParams) -> list[Location] | None:
         """Handle find-references requests."""
-        return await references_handler.handle(params)
+        return references_handler.provide_references(
+            server,
+            params.text_document.uri,
+            params.position,
+            True  # include_declaration
+        )
 
     # Register document symbol handler
     @server.feature("textDocument/documentSymbol")
@@ -119,7 +139,10 @@ def register_method_handlers(server: LanguageServer) -> None:
     @server.feature("workspace/symbol")
     async def on_workspace_symbols(params: WorkspaceSymbolParams) -> list[SymbolInformation]:
         """Handle workspace search requests."""
-        return await workspace_symbol_handler.handle(params)
+        return workspace_symbol_handler.provide_workspace_symbols(
+            server,
+            None  # query
+        )
 
     # Register code action handler
     @server.feature("textDocument/codeAction")
@@ -131,6 +154,11 @@ def register_method_handlers(server: LanguageServer) -> None:
     @server.feature("textDocument/formatting")
     async def on_formatting(params: Any) -> list[Any] | None:
         """Handle document formatting requests."""
-        return await formatting_handler.handle(params)
+        return formatting_handler.provide_formatting(
+            server,
+            params.text_document.uri,
+            params.text_document.text,
+            None  # options
+        )
 
     logger.info("All LSP method handlers registered successfully")
