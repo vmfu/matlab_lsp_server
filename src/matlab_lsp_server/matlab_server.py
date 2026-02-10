@@ -56,13 +56,17 @@ class MatLSServer(LanguageServer):
 
             # Return default result (will be overwritten later if needed)
             from matlab_lsp_server.features.feature_manager import FeatureManager
+# CRITICAL FIX v0.2.5: Import lifecycle handlers
+from matlab_lsp_server.protocol.lifecycle import register_lifecycle_handlers
+# CRITICAL FIX v0.2.5: Import method handlers
+from matlab_lsp_server.protocol.method_handlers import register_method_handlers
 
             fm = FeatureManager()
             return InitializeResult(
                 capabilities=fm.get_capabilities(),
                 server_info={
                     "name": "matlab-lsp",
-                    "version": "0.2.4"
+                    "version": "0.2.5"
                 },
             )
 
@@ -133,4 +137,16 @@ class MatLSServer(LanguageServer):
                 self, self._document_store, self._mlint_analyzer
             )
             logger.info("Document sync handlers registered")
+
+            # CRITICAL FIX v0.2.5: Register shutdown/exit handlers (FIXES HANGING!)
+            from matlab_lsp_server.protocol.lifecycle import register_lifecycle_handlers
+            register_lifecycle_handlers(self)
+            logger.info("Lifecycle handlers registered (shutdown/exit with return None)")
+
+            # CRITICAL FIX v0.2.5: Register all LSP method handlers (FIXES DOCUMENT SYMBOLS!)
+            from matlab_lsp_server.protocol.method_handlers import register_method_handlers
+            register_method_handlers(self)
+            logger.info("Method handlers registered (completion, hover, documentSymbol, etc.)")
+            logger.info("[INFO] All handlers now registered correctly!")
+
             logger.info("=== SERVER FULLY CONFIGURED ===")
