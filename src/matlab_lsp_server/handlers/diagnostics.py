@@ -1,14 +1,19 @@
 """
-from lsprotocol.types import PublishDiagnosticsParams
 Diagnostics Handler for MATLAB LSP Server.
 
 This module handles textDocument/publishDiagnostics notifications
-to publish analysis results to the LSP client.
+to publish analysis results to LSP client.
 """
 
 from typing import List
 
-from lsprotocol.types import Diagnostic, DiagnosticSeverity, Position, Range
+from lsprotocol.types import (
+    Diagnostic,
+    DiagnosticSeverity,
+    Position,
+    PublishDiagnosticsParams,
+    Range,
+)
 from pygls.lsp.server import LanguageServer
 
 from matlab_lsp_server.analyzer.base_analyzer import BaseAnalyzer, DiagnosticResult
@@ -95,7 +100,7 @@ def publish_diagnostics(
 
         # Publish to client
         params = PublishDiagnosticsParams(uri=file_uri, diagnostics=lsp_diagnostics)
-            server.text_document_publish_diagnostics(params)
+        server.text_document_publish_diagnostics(params)
 
         logger.info(
             f"Published {len(lsp_diagnostics)} diagnostics for {file_path}"

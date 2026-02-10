@@ -1,8 +1,3 @@
-# Added for v0.2.6: MATLAB parsing
-
-from matlab_lsp_server.parser.matlab_parser import MatlabParser
-
-from matlab_lsp_server.parser.models import get_symbol_table
 """
 Document Synchronization Handlers for MATLAB LSP Server.
 
@@ -13,6 +8,7 @@ This module implements LSP document synchronization methods:
 """
 
 from pathlib import Path
+from typing import Optional
 from urllib.parse import unquote, urlparse
 
 from lsprotocol.types import (
@@ -24,8 +20,10 @@ from pygls.lsp.server import LanguageServer
 
 from matlab_lsp_server.analyzer.mlint_analyzer import MlintAnalyzer
 from matlab_lsp_server.handlers.diagnostics import publish_diagnostics
+from matlab_lsp_server.parser.matlab_parser import MatlabParser
 from matlab_lsp_server.utils.document_store import DocumentStore
 from matlab_lsp_server.utils.logging import get_logger
+from matlab_lsp_server.utils.symbol_table import get_symbol_table, SymbolTable
 
 logger = get_logger(__name__)
 
@@ -35,13 +33,11 @@ mlint_analyzer = None
 
 
 def register_document_sync_handlers(
-    document_store,
-    mlint_analyzer,
-    symbol_table: Optional[SymbolTable] = None,
-    matlab_parser: Optional[MatlabParser] = None
     server: LanguageServer,
     doc_store: DocumentStore,
     analyzer: MlintAnalyzer,
+    symbol_table: Optional[SymbolTable] = None,
+    matlab_parser: Optional[MatlabParser] = None,
 ) -> None:
     """
     Register document synchronization handlers with the server.
@@ -50,6 +46,8 @@ def register_document_sync_handlers(
         server (LanguageServer): LSP server instance
         doc_store (DocumentStore): Document store instance
         analyzer (MlintAnalyzer): Analyzer instance (e.g., MlintAnalyzer)
+        symbol_table (Optional[SymbolTable]): Symbol table for document symbols
+        matlab_parser (Optional[MatlabParser]): MATLAB parser instance
     """
     global document_store, mlint_analyzer
 
@@ -77,12 +75,13 @@ def register_document_sync_handlers(
         document_store.add_document(uri, file_path, content)
 
         # Added for v0.2.6: Parse MATLAB code to extract symbols
-        try:
-            parse_result = matlab_parser.parse_file(file_path, uri, use_cache=True)
-            symbol_table.update_from_parse_result(uri, content, parse_result)
-            logger.info(f\"Updated symbol table for {file_path}\")
-        except Exception as e:
-            logger.error(f\"Error parsing file {file_path}: {e}\")
+        if symbol_table and matlab_parser:
+            try:
+                parse_result = matlab_parser.parse_file(file_path, uri, use_cache=True)
+                symbol_table.update_from_parse_result(uri, content, parse_result)
+                logger.info(f"Updated symbol table for {file_path}")
+            except Exception as e:
+                logger.error(f"Error parsing file {file_path}: {e}")
 
         # Trigger analysis (only if analyzer is available)
         if mlint_analyzer.is_available():
@@ -105,7 +104,8 @@ def register_document_sync_handlers(
         document_store.remove_document(uri)
 
         # Added for v0.2.6: Remove symbols from table
-        symbol_table.remove_symbols_by_uri(uri)
+        if symbol_table:
+            symbol_table.remove_symbols_by_uri(uri)
 
     @server.feature("textDocument/didChange")
     async def did_change(params: DidChangeTextDocumentParams) -> None:
@@ -147,31 +147,32 @@ def register_document_sync_handlers(
         # Trigger analysis with debouncing
         _trigger_analysis_with_debounce(server, uri, file_path)
 
-    def _uri_to_path(uri: str) -> str:
-        """
-        Convert file URI to local file path.
 
-        Args:
-            uri (str): File URI (e.g., "file:///C:/path/to/file.m")
+def _uri_to_path(uri: str) -> str:
+    """
+    Convert file URI to local file path.
 
-        Returns:
-            str: Local file path
-        """
-        # Parse URI
-        parsed = urlparse(uri)
+    Args:
+        uri (str): File URI (e.g., "file:///C:/path/to/file.m")
 
-        # Handle file:/// URIs
-        if parsed.scheme == "file":
-            # Get the path and decode URL encoding
-            path = unquote(parsed.path)
+    Returns:
+        str: Local file path
+    """
+    # Parse URI
+    parsed = urlparse(uri)
 
-            # Remove leading slash on Windows (file:///C:/path -> C:/path)
-            if path.startswith("/") and len(path) > 2 and path[2] == ":":
-                path = path[1:]
+    # Handle file:/// URIs
+    if parsed.scheme == "file":
+        # Get the path and decode URL encoding
+        path = unquote(parsed.path)
 
-            return str(Path(path))
+        # Remove leading slash on Windows (file:///C:/path -> C:/path)
+        if path.startswith("/") and len(path) > 2 and path[2] == ":":
+            path = path[1:]
 
-        return uri
+        return str(Path(path))
+
+    return uri
 
 
 def _trigger_analysis_with_debounce(

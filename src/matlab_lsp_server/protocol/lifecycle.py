@@ -67,11 +67,8 @@ def register_lifecycle_handlers(server: LanguageServer) -> None:
         None
     """
 
-    # Register document synchronization handlers
-    from . import document_sync
-    document_sync.register_document_sync_handlers(server)
-
-    logger.info("Document sync handlers registered via lifecycle module")
+    # Document sync handlers are now registered in MatLSServer.on_initialized()
+    # with symbol_table and matlab_parser parameters
 
     # Register shutdown handler
     # CRITICAL FIX: Add explicit 'return None' to prevent server hanging

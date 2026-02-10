@@ -148,7 +148,11 @@ def register_method_handlers(server: LanguageServer) -> None:
     @server.feature("textDocument/codeAction")
     async def on_code_actions(params: CodeActionParams) -> list[CodeAction] | None:
         """Handle code action requests."""
-        return code_action_handler.handle(params)
+        return code_action_handler.provide_code_actions(
+            server,
+            params.text_document.uri,
+            []  # diagnostics
+        )
 
     # Register document formatting handler
     @server.feature("textDocument/formatting")

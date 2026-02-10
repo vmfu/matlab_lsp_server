@@ -12,9 +12,11 @@ from pygls.lsp.server import LanguageServer
 
 from matlab_lsp_server.analyzer.mlint_analyzer import MlintAnalyzer
 from matlab_lsp_server.features.feature_manager import FeatureManager
+from matlab_lsp_server.parser.matlab_parser import MatlabParser
 from matlab_lsp_server.protocol import document_sync
 from matlab_lsp_server.utils.document_store import DocumentStore
 from matlab_lsp_server.utils.logging import get_logger
+from matlab_lsp_server.utils.symbol_table import get_symbol_table
 
 logger = get_logger(__name__)
 
@@ -27,6 +29,8 @@ class MatLSServer(LanguageServer):
         self._document_store = None
         self._mlint_analyzer = None
         self._feature_manager = None
+        self._symbol_table = None
+        self._matlab_parser = None
 
         # Store initialization params for later use
         self._init_params = None
@@ -56,10 +60,6 @@ class MatLSServer(LanguageServer):
 
             # Return default result (will be overwritten later if needed)
             from matlab_lsp_server.features.feature_manager import FeatureManager
-# CRITICAL FIX v0.2.5: Import lifecycle handlers
-from matlab_lsp_server.protocol.lifecycle import register_lifecycle_handlers
-# CRITICAL FIX v0.2.5: Import method handlers
-from matlab_lsp_server.protocol.method_handlers import register_method_handlers
 
             fm = FeatureManager()
             return InitializeResult(
@@ -132,9 +132,15 @@ from matlab_lsp_server.protocol.method_handlers import register_method_handlers
             # Initialize feature manager
             self._feature_manager = FeatureManager()
 
+            # Initialize symbol table and MATLAB parser for v0.2.6
+            self._symbol_table = get_symbol_table()
+            self._matlab_parser = MatlabParser()
+            logger.info("SymbolTable and MatlabParser initialized")
+
             # Register document sync handlers
             document_sync.register_document_sync_handlers(
-                self, self._document_store, self._mlint_analyzer
+                self, self._document_store, self._mlint_analyzer,
+                self._symbol_table, self._matlab_parser
             )
             logger.info("Document sync handlers registered")
 
