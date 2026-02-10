@@ -63,13 +63,14 @@ jobs:
             cat /tmp/extracted/matlab_lsp_server-*egg-info/PKG-INFO 2>/dev/null || echo "No PKG-INFO"
           done
 
-      - name: Try Publish to PyPI (OIDC)
+      - name: Publish to PyPI (OIDC)
+        id: publish-oidc
         uses: pypa/gh-action-pypi-publish@release/v1
-        # НЕ указываем password - пытается использовать OIDC
         continue-on-error: true
 
       - name: Publish to PyPI (API Token Fallback)
-        if: failure()
+        # Запускаем ТОЛЬКО если предыдущий шаг с id=publish-oidc упал (outcome=failure)
+        if: steps.publish-oidc.outcome == 'failure'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
