@@ -21,14 +21,12 @@ from pygls.lsp.server import LanguageServer
 from matlab_lsp_server.analyzer.mlint_analyzer import MlintAnalyzer
 from matlab_lsp_server.handlers.diagnostics import publish_diagnostics
 from matlab_lsp_server.parser.matlab_parser import MatlabParser
-from matlab_lsp_server.utils.document_store import DocumentStore
 from matlab_lsp_server.utils.logging import get_logger
 from matlab_lsp_server.utils.symbol_table import get_symbol_table, SymbolTable
 
 logger = get_logger(__name__)
 
-# Global instances (will be initialized in server)
-document_store = None
+
 mlint_analyzer = None
 
 
