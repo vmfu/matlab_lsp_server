@@ -225,7 +225,7 @@ class MlintAnalyzer(BaseAnalyzer):
         # mlint returns non-zero if issues are found - this is expected
         # Don't use check=True to avoid CalledProcessError
         result = subprocess.run(
-            [self.mlint_path, file_path, "-id", "-severity", "2"],
+            [self.mlint_path, file_path, "-id"],
             capture_output=True,
             text=True,
         )
