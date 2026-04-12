@@ -170,27 +170,33 @@ matlab_lsp_server/
 - Analyzers: `*Analyzer` (e.g., `MlintAnalyzer`)
 
 ### LSP Method Registration Pattern
-From DEVELOPMENT.md, handlers should follow this pattern:
+
+**Important:** pygls 2.0 has builtin handlers for core protocol methods:
+- `initialize`, `initialized`, `shutdown`, `exit`
+- `textDocument/didOpen`, `textDocument/didChange`, `textDocument/didClose`
+
+Do NOT register custom handlers for these methods — pygls builtins take priority
+and user handlers are silently ignored. Only register handlers for non-builtin methods
+(e.g., `textDocument/completion`, `textDocument/hover`, etc.).
+
+All handlers must be registered in `MatLSServer.__init__()` **before** `start_io()`:
 
 ```python
-from pygls.protocol import LanguageServerProtocol
-from lsprotocol.types import (
-    CompletionParams,
-    CompletionResult
-)
+from matlab_lsp_server.protocol.method_handlers import register_method_handlers
 
-class YourFeatureHandler(BaseHandler):
-    def __init__(self, protocol: LanguageServerProtocol):
-        super().__init__(protocol)
+class MatLSServer(LanguageServer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # ... initialize resources ...
+        register_method_handlers(self)
+```
 
-    @property
-    def method_name(self) -> str:
-        return "textDocument/yourFeature"
+Individual handlers are registered via `@server.feature()`:
 
-    def handle(self, params: YourFeatureParams) -> YourFeatureResult:
-        """Handle your LSP method"""
-        # Implementation
-        pass
+```python
+@server.feature("textDocument/completion")
+async def on_completion(params: CompletionParams) -> CompletionList:
+    return completion_handler.provide_completion(server, uri, position, "")
 ```
 
 ### Configuration Pattern

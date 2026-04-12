@@ -93,7 +93,7 @@ setx MATLAB_PATH "C:\Program Files\MATLAB\R2023b\bin\win64"
 export MATLAB_PATH="/usr/local/MATLAB/R2023b/bin"
 ```
 
-**Option 3: Auto-discovery (NEW in v0.2.0)**
+**Option 3: Auto-discovery**
 
 The server will automatically detect MATLAB installation in standard locations. No configuration needed for most setups.
 
@@ -476,7 +476,7 @@ matlab-lsp-vscode/
   "name": "matlab-lsp",
   "displayName": "MATLAB LSP Server",
   "description": "MATLAB Language Server Protocol implementation",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -605,7 +605,7 @@ cd matlab-lsp-vscode
 npm install
 npm run compile
 vsce package
-code --install-extension matlab-lsp-0.2.0.vsix
+code --install-extension matlab-lsp-0.3.1.vsix
 ```
 
 ---
@@ -844,7 +844,7 @@ code test_lsp.m
    - Via `.matlab-lsprc.json`
    - Via `MATLAB_PATH` environment variable
 
-2. **Auto-discovery (v0.2.0+):**
+2. **Auto-discovery:**
    - Server automatically detects MATLAB in standard locations
    - No configuration needed for most setups
 

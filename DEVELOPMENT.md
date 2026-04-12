@@ -565,25 +565,16 @@ Update version in all files:
 ```python
 # pyproject.toml
 [project]
-version = "0.2.1"
+version = "X.Y.Z"
 
 # src/matlab_lsp_server/__init__.py
-__version__ = "0.2.1"
-
-# src/matlab_lsp_server/server.py
-__version__ = "0.2.1"
-
-# src/matlab_lsp_server/matlab_server.py
-# Update server_info version
-
-# src/matlab_lsp_server/protocol/lifecycle.py
-# Update server_info version
+__version__ = "X.Y.Z"
 ```
 
 ### 2. Update CHANGELOG
 
 ```markdown
-## [0.2.1] - 2025-02-09
+## [X.Y.Z] - YYYY-MM-DD
 
 ### Added
 - New feature description
@@ -599,8 +590,8 @@ __version__ = "0.2.1"
 
 ```bash
 git add -A
-git commit -m "chore(release): bump version to 0.2.1"
-git tag v0.2.1
+git commit -m "chore(release): bump version to X.Y.Z"
+git tag vX.Y.Z
 git push origin master
 git push --tags
 ```
@@ -608,8 +599,8 @@ git push --tags
 ### 4. Create GitHub Release
 
 1. Go to https://github.com/vmfu/matlab_lsp_server/releases/new
-2. Select tag `v0.2.1`
-3. Set title `v0.2.1`
+2. Select tag `vX.Y.Z`
+3. Set title `vX.Y.Z`
 4. Write release notes
 5. Click "Publish release"
 
