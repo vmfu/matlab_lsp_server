@@ -9,13 +9,14 @@ import argparse
 import logging
 import sys
 
+from importlib.metadata import version as pkg_version
 from pathlib import Path
 
 from matlab_lsp_server.matlab_server import MatLSServer
 from matlab_lsp_server.utils.config import ensure_config_exists
 from matlab_lsp_server.utils.logging import get_logger, setup_logging
 
-__version__ = "0.2.2"
+__version__ = pkg_version("matlab-lsp-server")
 __all__ = ["main"]
 
 # Global logger
