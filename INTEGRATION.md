@@ -476,7 +476,7 @@ matlab-lsp-vscode/
   "name": "matlab-lsp",
   "displayName": "MATLAB LSP Server",
   "description": "MATLAB Language Server Protocol implementation",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -605,7 +605,7 @@ cd matlab-lsp-vscode
 npm install
 npm run compile
 vsce package
-code --install-extension matlab-lsp-0.3.1.vsix
+code --install-extension matlab-lsp-0.3.2.vsix
 ```
 
 ---

@@ -2,7 +2,7 @@
 
 A lightweight, fast, and cross-platform Language Server Protocol (LSP) implementation for MATLAB files.
 
-**Version:** 0.3.1 | **License:** MIT | **Python:** 3.10+
+**Version:** 0.3.2 | **License:** MIT | **Python:** 3.10+
 
 📖 **[See INTEGRATION.md](INTEGRATION.md) for detailed editor configuration guides and advanced options.**
 
@@ -419,7 +419,7 @@ python server.py --stdio --verbose
 
 ```bash
 python server.py --version
-# Output: MATLAB LSP Server v0.3.1
+# Output: MATLAB LSP Server v0.3.2
 ```
 
 ---
@@ -509,7 +509,7 @@ pytest tests/unit/test_parser.py::test_parse_function
 
 ---
 
-## Version: 0.3.1
+## Version: 0.3.2
 
 ### What's Included
 
@@ -573,5 +573,5 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ---
 
-**LSP MATLAB Server v0.3.1**
+**LSP MATLAB Server v0.3.2**
 **Fast. Lightweight. Cross-Platform.**

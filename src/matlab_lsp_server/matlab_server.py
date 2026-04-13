@@ -5,6 +5,10 @@ All handler registration happens in __init__, before start_io().
 pygls 2.0 has builtin handlers for core protocol methods
 (initialize, initialized, shutdown, exit, didOpen, didChange, didClose).
 Our handlers extend the server for MATLAB-specific features.
+
+Builtin didOpen/didChange/didClose are generators that yield to
+user-registered handlers after workspace management. So registering
+our custom handlers via @server.feature() chains them correctly.
 """
 
 from pygls.lsp.server import LanguageServer
@@ -62,11 +66,23 @@ class MatLSServer(LanguageServer):
 
         pygls 2.0 builtins handle: initialize, initialized, shutdown,
         exit, textDocument/didOpen, didChange, didClose.
-        We register only the non-builtin handlers here.
+        Builtin document sync handlers are generators that yield to
+        user handlers after workspace management, so our custom
+        didOpen/didChange/didClose handlers chain correctly.
         """
+        from matlab_lsp_server.protocol.document_sync import (
+            register_document_sync_handlers,
+        )
         from matlab_lsp_server.protocol.method_handlers import (
             register_method_handlers,
         )
 
+        register_document_sync_handlers(
+            self,
+            self._document_store,
+            self._mlint_analyzer,
+            self._symbol_table,
+            self._matlab_parser,
+        )
         register_method_handlers(self)
-        logger.info("Method handlers registered")
+        logger.info("All handlers registered")
