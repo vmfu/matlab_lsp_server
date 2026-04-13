@@ -141,7 +141,6 @@ def main() -> int:
     try:
         if args.stdio:
             logger.debug("Starting in stdio mode")
-            sys.stdout.reconfigure(line_buffering=True)
             server.start_io()
         elif args.tcp:
             logger.info(f"Starting TCP mode on " f"{args.host}:{args.port}")
